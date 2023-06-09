@@ -1,0 +1,207 @@
+:root {
+  --primary-color:116, 118, 237;
+  --secoundary-color:255, 255, 255;
+  --table-odd-color:217, 225, 242;
+  --table-even-color:241, 248, 255;
+  --border-color:211, 211, 211;
+  --border-radius-btn:4px;
+  --border-radius:10px; 
+  --danger-color : 255,0,0;
+  }
+
+  .check-sub:hover .check, ul li a:hover, a.active {
+        background: rgba(var(--primary-color));
+        color: rgba(var(--secoundary-color)) !important;
+    }
+
+    .align-left {
+        text-align: left;
+    }
+
+    .custom-padding {
+        padding: 16px 4px;
+    }
+
+  body {
+      background:rgba(var(--primary-color),0.2);
+      margin: 0px;  
+  }
+  header {
+      background: rgba(var(--secoundary-color));
+  }
+  .main-header {
+      padding-bottom: 10px;
+  }
+  .container {
+      max-width: 1220px;
+      padding: 0px 20px ;
+      margin: 0 auto;
+  }
+  .error {
+    justify-content: center;
+    align-items: center;
+      display: flex;
+      padding: 5px;
+      color: rgba(var(--danger-color));
+}
+  .sub-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0px;
+  }
+  .header-menus ul {
+      padding: 0px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      margin: 0px;
+  }
+  .header-menus ul li+li {
+      margin-left: 24px;
+  }
+  .header-menus ul li a {
+      text-decoration: none;
+      color: rgba(var(--body-color));;
+  }
+  button {
+      padding: 12px 24px;
+      background:rgba(var(--primary-color));
+      border: none;
+      border-radius: var(--border-radius-btn);
+      color: rgba(var(--secoundary-color));
+  }
+  .add-suctomer-left input, .add-suctomer-left textarea {
+      width: 140px;
+  }
+  .customer-id input {
+      width: 80px;
+  }
+  .add-customer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+  }
+  .add-customer-popup {
+      width: 500px;
+      padding: 20px;
+      padding-top: 0px;
+      border-radius: var(--border-radius);
+      background: rgba(var(--secoundary-color));
+      margin: 50px auto;
+  }
+  .add-suctomer-left {
+      width: 58%;
+  }
+  .add-suctomer-left div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+  }
+  .add-customer-body {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+  }
+  .add-suctomer-right input {
+      width: 50px;
+  }
+  .add-suctomer-right div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+  .add-suctomer-right {
+      width: 32%;
+  }
+  .add-suctomer-right select {
+      width: 57px;
+      height: 25px;
+  }
+  .add-suctomer-left .address {
+      align-items: flex-start;
+  }
+  
+  .header-menus .sub-menu li+li {
+      margin-left: 0px !important;
+  }
+  .sub-menu {
+      display: none !important;
+      position: absolute;
+      flex-direction: column;
+      row-gap: 10px;
+      align-items: flex-start !important;
+      background: rgba(var(--secoundary-color));
+      padding: 10px !important;
+      border-radius: var(--border-radius-btn);
+      
+  }
+  .sub-menu li{
+      padding: 8px 0px;
+  }
+  .check-sub:hover .sub-menu{
+      display: block !important;
+  }
+  .add-button {
+      text-align: center;
+  }
+  .add-button button {
+      width: 200px;
+      margin-top: 20px;
+  }
+  table input{
+      width: 120px;
+      height: 18px;
+      border-radius: var(--border-radius-btn);
+      border:2px solid rgba(var(--border-color));
+  }
+  table {
+      text-align: center;
+      border-collapse: collapse;
+      padding: 20px !important;
+      margin: 20px auto;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+  }
+  table tr:first-child,
+  table tr:nth-child(2),
+  table tr:nth-child(3){
+      background: rgba(var(--primary-color));
+  }
+  table tr td{
+      padding: 4px;
+  }
+  table tr td:first-child{
+      text-align: right;
+  }
+  tr:nth-child(even) {
+      background-color: rgba(var(--table-even-color));
+  }
+  tr:nth-child(odd) {
+      background-color:rgba(var(--table-odd-color));
+  }   
+  form.login-form {
+      width: 320px;
+      background: rgba(var(--secoundary-color));
+      padding: 20px;
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      border-radius: var(--border-radius);
+  }
+  form h1 {
+      text-align: center;
+      color: rgba(var(--primary-color));
+  }
+  .login div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+  }
+  .login div input {
+      height: 34px;
+  }
