@@ -10,6 +10,9 @@ import Customer from "./Customer";
 import Set from "./Set";
 import CustomerList from "./CustomerList";
 const App = () => {
+
+
+  
   const navigate = useNavigate();
     appWindow.onCloseRequested(async (event) => {
       const confirmed = await confirm('Are you sure?');
