@@ -3,520 +3,74 @@ import Navbar from "./Navbar";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 export default function Report() {
-  const [customers, setcustomers] = useState([]);
-  useEffect(() => {
-    const getNotesFromFile = async () => {
-      try {
-        const myfiledata = await readTextFile('customers.json', { dir: BaseDirectory.Resource });
-        const mycust = JSON.parse(myfiledata);
-        setcustomers(mycust);
-        console.log('Notes list rendered');
-      } catch (error) {
-    await writeTextFile({ path: 'customers.json', contents: JSON.stringify(customers) }, { dir: BaseDirectory.Resource });
-        console.log(error);
-      }
-    };
-    getNotesFromFile();
-  },[]);
 
+  const [entires, setentires] = useState([]);
   
-  const [addFormData, setAddFormData] = useState({
-    customer_id: "",
-    commission : '',
-    dp:'',
-    jodi:'',
-    multiple:'',
-    pana:'',
-    partnership:'',
-    set:'',
-    tp:'',
-    sp:''
-});
-
-  const onChangeSet = async (e) => {
-    const cdata = customers.filter((item) => item.customer_id === e.target.value );
-    const newFormData = { ...addFormData };
-    newFormData['commission'] = cdata[0]?cdata[0]['commission']:'';
-    newFormData['dp']=cdata[0]?cdata[0]['dp']:'';
-    newFormData['jodi']=cdata[0]?cdata[0]['jodi']:'';
-    newFormData['multiple']=cdata[0]?cdata[0]['multiple']:'';
-    newFormData['pana']=cdata[0]?cdata[0]['pana']:'';
-    newFormData['partnership']=cdata[0]?cdata[0]['partnership']:'';
-    newFormData['set']=cdata[0]?cdata[0]['set']:'';
-    newFormData['tp']=cdata[0]?cdata[0]['tp']:'';
-    newFormData['sp']=cdata[0]?cdata[0]['sp']:'';
-   setAddFormData(newFormData);
-  }
-
-  useEffect(() => {
-    console.log(addFormData);
-  }, [addFormData])
-  
+    useEffect(() => {
+      const getNotesFromFile = async () => {
+        try {
+          const myfileNotes = await readTextFile('entires.json', { dir: BaseDirectory.Resource });
+          const mycustomers = JSON.parse(myfileNotes);
+          setentires(mycustomers);
+          console.log(mycustomers);
+          console.log('entires list rendered');
+        } catch (error) {
+          await writeTextFile({ path: 'entires.json', contents: JSON.stringify(entires) }, { dir: BaseDirectory.Resource });
+          getNotesFromFile();
+          console.log(error);
+        }
+      };
+      getNotesFromFile();
+    },[]);
 
   return (
     <>
     <Navbar/>
     <main>
-        <div className="container">
-          <table>
-            <tr>
-              <td>
-                <label htmlFor="customer name"> Customer Name</label><br/>
-                <select name="name" id="name" className="customer-name" onChange={onChangeSet} required>
-                <option key={0} value={''}>Select Customer</option>
-                {customers.map((data, index) => (
-                <option key={index+1} value={data.customer_id}>{data.name}</option>
-                    ))}
-                </select>
-              </td>
-              <td>
-                Set<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                Cummision<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                Multiple<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                SP<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                DP<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                J<br/>
-                <input type="number"/>
-              </td>
-              <td>
-                TP<br/>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label htmlFor="customer id"> Customer ID</label><br/>
-                <select name="customer" id="customer" className="customer-name" onChange={onChangeSet} required>
-                <option key={0} value={''}>Select ID</option>
-                {customers.map((data, index) => (
-                <option key={index+1} value={data.customer_id}>{data.customer_id}</option>
-                    ))}
-                </select>
-              </td>
-              <td>
-                Partnership<br/>
-                <input type="number"/>
-              </td>
-              <td colSpan="6" className="align-left" >
-                Pana cummision<br/>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="date"/>
-              </td>
-              <td>
-                Ammount
-              </td>
-              <td>
-                Pana-Amount
-              </td>
-              <td>
-                Kh
-              </td>
-              <td>
-                SP-Amount
-              </td>
-              <td>
-                DP-Amount
-              </td>
-              <td>
-                J-Amount
-              </td>
-              <td>
-                TP-Amount
-              </td>
-            </tr>
-            <tr>
-              <td>To</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>TK</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>MO</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>KO</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>MK</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>KK</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>A1</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td className="custom-padding">Total-1</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>MO</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>BA</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>MK</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>BK</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>A2</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td className="custom-padding">Total-2</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>Final Total</td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-              <td>
-                <input type="number"/>
-              </td>
-            </tr>
-            <tr>
-              <td>Total Amount</td>
-              <td colSpan="4" className="align-left">
-                <input type="number"/>
-              </td>
-              <td colSpan="3" className="align-left">
-                <input type="number"/>
-              </td>
-            </tr>
-            
-
-          </table>
+    <div className="container">
+      <div >
+        <div className="report-header">
+          <h4>Report</h4>
         </div>
-      </main>
+        <div className="report-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>CID</th>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Timezone</th>
+                    <th>Amount</th>
+                    <th>Pana amount</th>
+                    <th>khula amount</th>
+                    <th>sp amount</th>
+                    <th>dp amount</th>
+                    <th>jodi amount</th>
+                    <th>tp amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {entires.map((data, index) => (
+                      <tr key={index}>
+                      <td>{data.customer_id}</td>
+                      <td>{data.date}</td>
+                      <td>{data.name}</td>
+                      <td>{data.timezone}</td>
+                      <td>{data.amount}</td>
+                      <td>{data.pana_amount}</td>
+                      <td>{data.khula_amount}</td>
+                      <td>{data.sp_amount}</td>
+                      <td>{data.dp_amount}</td>
+                      <td>{data.jodi_amount}</td>
+                      <td>{data.tp_amount}</td>
+                  </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </main>
     </>
   );
 }

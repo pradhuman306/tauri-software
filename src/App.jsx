@@ -9,19 +9,20 @@ import Report from "./Report";
 import Customer from "./Customer";
 import Set from "./Set";
 import CustomerList from "./CustomerList";
+import Calculater from "./Calculater";
+import Entry from "./Entry";
 const App = () => {
 
 
   
   const navigate = useNavigate();
     appWindow.onCloseRequested(async (event) => {
-      const confirmed = await confirm('Are you sure?');
-      if (!confirmed) {
-      event.preventDefault();
-      }else{
+      // if (!confirmed) {
+      // event.preventDefault();
+      // }else{
         localStorage.clear();
-        navigate("/login");
-      }
+        // navigate("/login");
+      // }
     })
   
   return (
@@ -82,7 +83,7 @@ export const appRouter = createBrowserRouter([
         path: "entry",
         element: (
           <PrivateRoute>
-            {/* <Set /> */}
+            <Entry />
           </PrivateRoute>
         ),
       },
@@ -90,7 +91,7 @@ export const appRouter = createBrowserRouter([
         path: "calculater",
         element: (
           <PrivateRoute>
-            {/* <Set /> */}
+            <Calculater />
           </PrivateRoute>
         ),
       },

@@ -30,7 +30,7 @@ const submitHandler = (event) => {
   event.preventDefault();
   console.log(addFormData);
   addNote();
-  navigate('/report');
+  navigate('/entry');
 };
 
 const [notes, setNotes] = useState([]);
@@ -45,7 +45,8 @@ const updateNotes = async (notes) => {
 const addNote = async () => {
   var currentdate = new Date(); 
   var datetime = currentdate.getDate() + "/"+ (currentdate.getMonth()+1)+ "/"+ currentdate.getFullYear() + " " + currentdate.getHours() + ":"+ currentdate.getMinutes() + ":"+ currentdate.getSeconds();
-  addFormData.date = datetime;
+  // addFormData.date = datetime;
+  addFormData.date = new Date(Date.now());
   addFormData.id= Date.now();
   updateNotes([{ ...addFormData }, ...notes]);
   console.log(notes);
@@ -177,9 +178,7 @@ useEffect(() => {
             </div>
           </div>
           <div className="add-button">
-            <button type="submit">
-              Add customer
-            </button>
+            <button type="submit"> Add customer </button>
           </div>
         </form>
         </div>

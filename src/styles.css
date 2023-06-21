@@ -9,7 +9,7 @@
   --danger-color : 255,0,0;
   }
 
-  .check-sub:hover .check, ul li a:hover, a.active {
+  .check-sub:hover .check, ul li a:hover, a.active, li.active {
         background: rgba(var(--primary-color));
         color: rgba(var(--secoundary-color)) !important;
     }
@@ -33,7 +33,7 @@
       padding-bottom: 10px;
   }
   .container {
-      max-width: 1220px;
+      max-width: 2000px;
       padding: 0px 20px ;
       margin: 0 auto;
   }
@@ -71,6 +71,16 @@
       border-radius: var(--border-radius-btn);
       color: rgba(var(--secoundary-color));
   }
+
+  button.active {
+    background: green;
+    color:rgba(var(--primary-color));
+    background: rgba(var(--secoundary-color));
+    border-color:rgba(var(--primary-color));
+    border: 1px solid;
+}
+
+
   .add-suctomer-left input, .add-suctomer-left textarea {
       width: 140px;
   }
@@ -165,6 +175,7 @@
       margin: 20px auto;
       border-radius: var(--border-radius);
       overflow: hidden;
+      width: 100%;
   }
   table tr:first-child,
   table tr:nth-child(2),
@@ -174,7 +185,7 @@
   table tr td{
       padding: 4px;
   }
-  table tr td:first-child{
+  .calculater table tr td:first-child{
       text-align: right;
   }
   tr:nth-child(even) {
@@ -205,3 +216,40 @@
   .login div input {
       height: 34px;
   }
+
+  input {
+    height: 34px;
+  }
+
+  .entry-header {
+    display: flex;
+      list-style: none;
+      padding: 10px;
+      margin: 10px;
+      gap: 50px;
+      cursor: pointer;
+  }
+  .d-flex{
+    display: flex;
+  }
+
+  .right-wrap {
+    width: 230px;
+    flex: 0 0  230px;
+  }
+  .left-warp {
+    width: 230px;
+    flex: 0 0  230px;
+  }
+
+  .center-wrap {
+    width: calc(100% - 480px);
+    flex: 0 0  calc(100% - 480px);
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+

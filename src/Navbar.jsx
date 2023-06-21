@@ -32,7 +32,7 @@ export default function Navbar() {
           </div>
         {isLoggedIn ? 
           <div className="login-btn">
-            <button onClick={handleClick}>Logout</button>
+            <button onClick={()=>handleClick}>Logout</button>
           </div>
         : ''}
         </div>
@@ -43,9 +43,9 @@ export default function Navbar() {
               <li>
             <Link to="/customer" className={location.pathname === '/customer'? 'active':''}>Customer</Link>
               </li>
-              <li>
+              {/* <li>
             <Link to="/cash" className={location.pathname === '/cash'? 'active':''}>Cash</Link>
-              </li>
+              </li> */}
               <li>
             <Link to="/set" className={location.pathname === '/set'? 'active':''}>Set</Link>
               </li>
@@ -53,19 +53,19 @@ export default function Navbar() {
             <Link to="/report" className={location.pathname === '/report'? 'active':''}>Report</Link>
               </li>
               <li>
-            <Link to="/entry" className={location.pathname === '/entry'? 'active':''}>Entry</Link>
+            <Link to="/entry" className={location.pathname === '/entry'? 'active':''}>Entry/edit</Link>
               </li>
-              <li className="check-sub">
-                <a className={location.pathname === '/customer-list' || location.pathname === '/calculater'? 'active':''}>Check</a>
-                <ul className="sub-menu"> 
-                  <li>
+              {/* <li className="check-sub"> */}
+                {/* <a className={location.pathname === '/customer-list' || location.pathname === '/calculater'? 'active':''}>Check</a> */}
+                {/* <ul className="sub-menu">  */}
+                  {/* <li>
             <Link to="/customer-list" className={location.pathname === '/customer-list'? 'active':''}>Customers</Link>
-                  </li>
+                  </li> */}
                   <li>
             <Link to="/calculater" className={location.pathname === '/calculater'? 'active':''}>Calculater</Link>
                   </li>
-                </ul>
-              </li>
+                {/* </ul> */}
+              {/* </li> */}
               <li>
             <Link to="/delete" className={location.pathname === '/delete'? 'active':''}>Delete</Link>
               </li>
