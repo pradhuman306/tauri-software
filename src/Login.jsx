@@ -23,28 +23,28 @@ export default function Login() {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <form className="login-form" onSubmit={handleSubmit}>
-    <div className="login">
-      <h1>Login</h1>
-      <div>
-        <label htmlFor="usernane">Username</label>
-        <input placeholder="Enter Username" type="text" name="username"/>
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input placeholder="Enter Password" type="password" name="password"/>
-      </div>
-      <div>
-        <button type="submit">
-          Login
-        </button>
-      </div>
-    </div>
-    {err != ''?
-    <span className="error">{err}</span>
-    :''}
-  </form>
+        <div className="login">
+          <h1>Login</h1>
+          <div>
+            <label htmlFor="usernane">Username</label>
+            <input placeholder="Enter Username" type="text" name="username" />
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
+            <input
+              placeholder="Enter Password"
+              type="password"
+              name="password"
+            />
+          </div>
+          <div>
+            <button type="submit">Login</button>
+          </div>
+        </div>
+        {err != "" ? <span className="error">{err}</span> : ""}
+      </form>
     </>
   );
 }

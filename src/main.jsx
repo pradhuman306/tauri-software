@@ -5,7 +5,7 @@ import "./styles.css";
 import { RouterProvider } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
- // <React>
-    <RouterProvider router={appRouter} />
- // </React>
+  // <React>
+  <RouterProvider router={appRouter} />
+  // </React>
 );
