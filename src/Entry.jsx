@@ -5,7 +5,7 @@ import { message } from "@tauri-apps/api/dialog";
 
 export default function Entry() {
   const [customers, setcustomers] = useState([]);
-  var [entires, setentires] = useState([]);
+  var [entries, setentries] = useState([]);
   useEffect(() => {
     const getdataFromFile = async () => {
       try {
@@ -14,7 +14,6 @@ export default function Entry() {
         });
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
-        console.log("customers list rendered", mycust);
       } catch (error) {
         await writeTextFile(
           { path: "customers.json", contents: JSON.stringify(customers) },
@@ -22,17 +21,16 @@ export default function Entry() {
         );
         console.log(error);
       }
-      // entires
+      // entries
       try {
-        const myfiledataentries = await readTextFile("entires.json", {
+        const myfiledataentries = await readTextFile("entries.json", {
           dir: BaseDirectory.Resource,
         });
-        const mycustentires = JSON.parse(myfiledataentries);
-        setentires(mycustentires);
-        console.log("entires list rendered", mycustentires);
+        const mycustentries = JSON.parse(myfiledataentries);
+        setentries(mycustentries);
       } catch (error) {
         await writeTextFile(
-          { path: "entires.json", contents: JSON.stringify(entires) },
+          { path: "entries.json", contents: JSON.stringify(entries) },
           { dir: BaseDirectory.Resource }
         );
         console.log(error);
@@ -64,7 +62,6 @@ export default function Entry() {
     }
     list[index]["timezone"] = timezone;
     setInputFields(list);
-    console.log(inputFields);
   };
 
   const addInputField = () => {
@@ -96,7 +93,7 @@ export default function Entry() {
     if (tabActive == "edit") {
       for (let index = 0; index < inputFields.length; index++) {
         const element = inputFields[index];
-        entires = entires.map((obj) => {
+        entries = entries.map((obj) => {
           if (obj.id == element.id) {
             return {
               ...obj,
@@ -117,15 +114,16 @@ export default function Entry() {
         });
       }
       await writeTextFile(
-        { path: "entires.json", contents: JSON.stringify(entires) },
+        { path: "entries.json", contents: JSON.stringify(entries) },
         { dir: BaseDirectory.Resource }
       );
       console.log("entries updated");
     } else {
+    setentries([...entries,...inputFields]);
       await writeTextFile(
         {
-          path: "entires.json",
-          contents: JSON.stringify([...entires, ...inputFields]),
+          path: "entries.json",
+          contents: JSON.stringify([...entries,...inputFields]),
         },
         { dir: BaseDirectory.Resource }
       );
@@ -149,7 +147,6 @@ export default function Entry() {
     }
     setTimeZone("");
     setTabActive("");
-    setDate("");
   };
 
   const newEntry = async (v) => {
@@ -188,10 +185,9 @@ export default function Entry() {
     } else if (timezone == "") {
       await message("First select time.", { title: "Account", type: "error" });
     } else {
-      console.log("entires", entires);
       var startDate = new Date(date + " 00:00:01");
       var endDate = new Date(date + " 23:59:59");
-      const filteredData = entires.filter(function (a) {
+      const filteredData = entries.filter(function (a) {
         var aDate = new Date(a.date);
         return aDate >= startDate && aDate <= endDate && a.timezone == timezone;
       });

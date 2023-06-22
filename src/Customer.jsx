@@ -28,7 +28,6 @@ export default function Customer() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(addFormData);
     addNote();
     navigate("/entry");
   };
@@ -42,7 +41,6 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(notes) },
       { dir: BaseDirectory.Resource }
     );
-    console.log(notes);
   };
 
   const addNote = async () => {
@@ -63,7 +61,6 @@ export default function Customer() {
     addFormData.date = new Date(Date.now());
     addFormData.id = Date.now();
     updateNotes([{ ...addFormData }, ...notes]);
-    console.log(notes);
   };
 
   const onChangeSet = async (e) => {
@@ -89,7 +86,6 @@ export default function Customer() {
         });
         const myNotes = JSON.parse(myfileNotes);
         setNotes(myNotes);
-        console.log("Notes list rendered");
       } catch (error) {
         await writeTextFile(
           { path: "customers.json", contents: JSON.stringify(notes) },
@@ -104,7 +100,6 @@ export default function Customer() {
         });
         const mysetData = JSON.parse(myfilesets);
         updateSetData(mysetData);
-        console.log("Sets list rendered");
       } catch (error) {
         await writeTextFile(
           { path: "set.json", contents: JSON.stringify(setData) },
@@ -134,6 +129,7 @@ export default function Customer() {
                       <label htmlFor="customer">Customer ID</label>
                       <input
                         type="number"
+                        step="any"
                         name="customer_id"
                         onChange={addFormHandler}
                         required
@@ -152,6 +148,7 @@ export default function Customer() {
                       <label htmlFor="customer number">Mobile Number 1</label>
                       <input
                         type="number"
+                        step="any"
                         name="mobile1"
                         onChange={addFormHandler}
                         required
@@ -161,6 +158,7 @@ export default function Customer() {
                       <label htmlFor="customer number">Mobile Number 2</label>
                       <input
                         type="number"
+                        step="any"
                         name="mobile2"
                         onChange={addFormHandler}
                         required
@@ -179,6 +177,7 @@ export default function Customer() {
                       <label>Limit</label>
                       <input
                         type="number"
+                        step="any"
                         name="limit"
                         onChange={addFormHandler}
                         required
@@ -209,6 +208,7 @@ export default function Customer() {
                       <label htmlFor="commission">Commision</label>
                       <input
                         type="number"
+                        step="any"
                         name="commission"
                         value={addFormData ? addFormData.commission : ""}
                         onChange={addFormHandler}
@@ -219,6 +219,7 @@ export default function Customer() {
                       <label htmlFor="pana">Pana</label>
                       <input
                         type="number"
+                        step="any"
                         name="pana"
                         value={addFormData ? addFormData.pana : ""}
                         onChange={addFormHandler}
@@ -229,6 +230,7 @@ export default function Customer() {
                       <label htmlFor="partnership">Partmership</label>
                       <input
                         type="number"
+                        step="any"
                         name="partnership"
                         value={addFormData ? addFormData.partnership : ""}
                         onChange={addFormHandler}
@@ -239,6 +241,7 @@ export default function Customer() {
                       <label htmlFor="multiple">Multiple</label>
                       <input
                         type="number"
+                        step="any"
                         name="multiple"
                         value={addFormData ? addFormData.multiple : ""}
                         onChange={addFormHandler}
@@ -249,6 +252,7 @@ export default function Customer() {
                       <label htmlFor="sp">SP</label>
                       <input
                         type="number"
+                        step="any"
                         name="sp"
                         value={addFormData ? addFormData.sp : ""}
                         onChange={addFormHandler}
@@ -259,6 +263,7 @@ export default function Customer() {
                       <label htmlFor="dp">DP</label>
                       <input
                         type="number"
+                        step="any"
                         name="dp"
                         value={addFormData ? addFormData.dp : ""}
                         onChange={addFormHandler}
@@ -269,6 +274,7 @@ export default function Customer() {
                       <label htmlFor="jodi">JODI</label>
                       <input
                         type="number"
+                        step="any"
                         name="jodi"
                         value={addFormData ? addFormData.jodi : ""}
                         onChange={addFormHandler}
@@ -279,6 +285,7 @@ export default function Customer() {
                       <label htmlFor="tp">TP</label>
                       <input
                         type="number"
+                        step="any"
                         name="tp"
                         value={addFormData ? addFormData.tp : ""}
                         onChange={addFormHandler}

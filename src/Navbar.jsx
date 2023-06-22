@@ -4,7 +4,6 @@ import logo from "./assets/logo.svg";
 
 export default function Navbar() {
   const location = useLocation();
-  console.log(location.pathname);
   const getusername = localStorage.getItem("username");
   const getPassword = localStorage.getItem("password");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,9 +14,10 @@ export default function Navbar() {
     } else {
       setIsLoggedIn(true);
     }
-  }, [getusername, getPassword]);
+  }, [getusername, getPassword,isLoggedIn]);
 
   const handleClick = () => {
+    console.log('logout');
     setIsLoggedIn(false);
     localStorage.clear();
     navigate("/login");
@@ -32,7 +32,7 @@ export default function Navbar() {
             </div>
             {isLoggedIn ? (
               <div className="login-btn">
-                <button onClick={() => handleClick}>Logout</button>
+                <button onClick={(e) => handleClick()}>Logout</button>
               </div>
             ) : (
               ""

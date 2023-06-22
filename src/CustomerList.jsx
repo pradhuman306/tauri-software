@@ -19,7 +19,6 @@ export default function CustomerList() {
     if (searchText !== "") {
       const data = filterData(searchText, userData);
       setcustomers(data);
-      console.log(data);
       if (data.length === 0) {
         console.log("not found any record");
       }
@@ -37,7 +36,6 @@ export default function CustomerList() {
         const mycustomers = JSON.parse(myfileNotes);
         setcustomers(mycustomers);
         setFiltercustomers(mycustomers);
-        console.log("Notes list rendered");
       } catch (error) {
         await writeTextFile(
           { path: "customers.json", contents: JSON.stringify(customers) },
@@ -48,7 +46,6 @@ export default function CustomerList() {
       }
     };
     getNotesFromFile();
-    console.log(customers);
   }, []);
 
   return (

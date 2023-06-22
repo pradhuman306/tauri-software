@@ -17,7 +17,6 @@ export default function Set() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(addFormData);
     addNote();
     navigate("/customer");
   };
@@ -34,7 +33,6 @@ export default function Set() {
 
   const modalAction = () => {
     setIsVisible(false);
-    console.log("modal action triggered");
   };
   const updateData = async (data) => {
     updateSetdata([...data]);
@@ -72,7 +70,6 @@ export default function Set() {
         });
         const mydata = JSON.parse(myfiledata);
         updateSetdata(mydata);
-        console.log("list rendered");
       } catch (error) {
         await writeTextFile(
           { path: "set.json", contents: JSON.stringify(setData) },
@@ -102,6 +99,7 @@ export default function Set() {
                       <label htmlFor="set">Set</label>
                       <input
                         type="number"
+                        step="any"
                         name="set"
                         onChange={addFormHandler}
                         required
@@ -111,6 +109,7 @@ export default function Set() {
                       <label htmlFor="commission">Commision</label>
                       <input
                         type="number"
+                        step="any"
                         name="commission"
                         onChange={addFormHandler}
                         required
@@ -120,6 +119,7 @@ export default function Set() {
                       <label htmlFor="pana">Pana</label>
                       <input
                         type="number"
+                        step="any"
                         name="pana"
                         onChange={addFormHandler}
                         required
@@ -129,6 +129,7 @@ export default function Set() {
                       <label htmlFor="partnership">Partmership</label>
                       <input
                         type="number"
+                        step="any"
                         name="partnership"
                         onChange={addFormHandler}
                         required
@@ -138,6 +139,7 @@ export default function Set() {
                       <label htmlFor="multiple">Multiple</label>
                       <input
                         type="number"
+                        step="any"
                         name="multiple"
                         onChange={addFormHandler}
                         required
@@ -147,6 +149,7 @@ export default function Set() {
                       <label htmlFor="sp">SP</label>
                       <input
                         type="number"
+                        step="any"
                         name="sp"
                         onChange={addFormHandler}
                         required
@@ -156,6 +159,7 @@ export default function Set() {
                       <label htmlFor="dp">DP</label>
                       <input
                         type="number"
+                        step="any"
                         name="dp"
                         onChange={addFormHandler}
                         required
@@ -165,6 +169,7 @@ export default function Set() {
                       <label htmlFor="jodi">JODI</label>
                       <input
                         type="number"
+                        step="any"
                         name="jodi"
                         onChange={addFormHandler}
                         required
@@ -174,6 +179,7 @@ export default function Set() {
                       <label htmlFor="tp">TP</label>
                       <input
                         type="number"
+                        step="any"
                         name="tp"
                         onChange={addFormHandler}
                         required
