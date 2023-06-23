@@ -1,5 +1,4 @@
 import { React, useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 
@@ -84,7 +83,6 @@ export default function Set() {
 
   return (
     <>
-      <Navbar />
       <main>
         <div className="container">
           <div className="add-customer-popup">

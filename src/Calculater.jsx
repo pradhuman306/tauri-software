@@ -1,5 +1,4 @@
 import { React, useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 export default function Calculater() {
@@ -191,7 +190,6 @@ setMainTotal(TOTAL);
 
   return (
     <>
-      <Navbar />
       <main>
         <div className="container calculater">
           <h4>Calculater</h4>

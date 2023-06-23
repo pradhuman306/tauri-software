@@ -11,6 +11,7 @@ import Set from "./Set";
 import CustomerList from "./CustomerList";
 import Calculater from "./Calculater";
 import Entry from "./Entry";
+import Navbar from "./Navbar";
 const App = () => {
 
 
@@ -27,6 +28,7 @@ const App = () => {
   
   return (
     <React.Fragment>
+      <Navbar/>
       <Outlet />
     </React.Fragment>
   );

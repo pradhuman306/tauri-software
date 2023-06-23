@@ -1,6 +1,5 @@
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
 
 export default function Login() {
   const [err, setErr] = useState("");
@@ -23,7 +22,6 @@ export default function Login() {
 
   return (
     <>
-      <Navbar />
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="login">
           <h1>Login</h1>

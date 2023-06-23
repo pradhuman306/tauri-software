@@ -1,5 +1,4 @@
 import { React, useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
 
@@ -200,7 +199,6 @@ export default function Entry() {
   };
   return (
     <>
-      <Navbar />
       <main>
         <div className="container">
           <h4>Entry/Edit</h4>
