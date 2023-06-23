@@ -7,6 +7,8 @@ export default function Report() {
   const [entries, setentries] = useState([]);
   const [filterentries, setfilterentries] = useState([]);
   const [customers, setcustomers] = useState([]);
+  const [reportData, setreportData] = useState([]);
+  const [tabActive, setTabActive] = useState(false);
 
   useEffect(() => {
     const getNotesFromFile = async () => {
@@ -48,33 +50,42 @@ export default function Report() {
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
 
-  function filterData() {
+  const searchData = () => {
+    if (start != "" && end != "") {
+      setTabActive(true);
       var startDate = new Date(start + " 00:00:01");
       var endDate = new Date(end + " 23:59:59");
+      var datevise = [];
+      var customerIds = [];
       const filteredData = filterentries.filter(function (a) {
         var aDate = new Date(a.date);
+        if(aDate >= startDate && aDate <= endDate){
+          if (!datevise.includes(a.date)) {
+            datevise.push(a.date);
+          }
+          if (!customerIds.includes(a.customer_id)) {
+            customerIds.push(a.customer_id);
+          }
+        }
         return (
           aDate >= startDate && aDate <= endDate
         );
       });
-      console.log(filteredData);
-    return filteredData;
-  }
 
-  const searchData = () => {
-    if (start != "" && end != "") {
-      const data = filterData();
-      for (let index = 0; index < data.length; index++) {
-        var forelement = data[index];
-
-        var element = data.filter(
-          (item1) => item1.customer_id === forelement['customer_id']
-        );
-
-        console.log('reduce element', element);
-
+      if(filteredData.length === 0){
+      message("Not found any record.", { title: "Account", type: "error" });
+        return false;
+      }
+      // id loop
+      var reportList = [];
+      for (let index = 0; index < customerIds.length; index++) {
+        var CID = customerIds[index];
+        // date loop
+        for (let index = 0; index < datevise.length; index++) {
+          var vDate = datevise[index];
+          // calculations 
         var cdata = customers.filter(
-          (item) => item.customer_id === element['customer_id']
+          (item) => item.customer_id === CID
         );
         var newFormData = [];
         newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
@@ -86,10 +97,18 @@ export default function Report() {
         newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
         newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
         newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
-        element['setdata'] = newFormData;
-        // calculation 
-        
-        const result = element.reduce((acc, {timezone, amount,dp_amount,jodi_amount,khula_amount,pana_amount,sp_amount,tp_amount}) => ({
+        //
+        var startDate = new Date(vDate + " 00:00:01");
+        var endDate = new Date(vDate + " 23:59:59");
+        var getData = filteredData.filter(function (a) {
+          var aDate = new Date(a.date);
+          return (
+            aDate >= startDate && aDate <= endDate && a.customer_id == CID
+          );
+        });
+
+        if(getData.length){
+          const result = getData.reduce((acc, {timezone, amount,dp_amount,jodi_amount,khula_amount,pana_amount,sp_amount,tp_amount}) => ({
           ...acc, 
           [timezone]: {
             timezone, 
@@ -103,7 +122,7 @@ export default function Report() {
           }
         }), 
         {});
-        
+
         var totalDayData = [];
         var first_arr = ['TO','TK','MO','KO','MK','KK','A1'];
         // total 1 calculate
@@ -143,22 +162,29 @@ export default function Report() {
         var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
         var partnership_percent = SUB_TOTAL * newFormData['partnership']/100;
         var TOTAL = SUB_TOTAL-partnership_percent;
-        
-        if(TOTAL){
-          TOTAL = TOTAL.toFixed(2);
-       element['credit'] = TOTAL;
-       element[0]['credit'] = TOTAL;
-       element['debit'] = TOTAL;
-       element[0]['debit'] = TOTAL;
-        }
-        console.log('element',element);
-        // calculation end
-      }
-      setentries(data);
-      if (data.length === 0) {
-        console.log("not found any record");
-      }
+        var type = parseInt(TOTAL) > 0 ? 'Positive' : 'Negative';
+        reportList.push({
+          'id':CID,
+          'date':vDate,
+          'name':cdata[0] ? cdata[0]["name"] : "",
+          // 'total':TOTAL,
+          'credit': (type == 'Positive') ? TOTAL.toFixed(2) : '',
+          'debit':(type == 'Negative') ? TOTAL.toFixed(2) : '',
+        });
+      } // length condition
+
+        } // date loop end
+      } // customer id loop end
+      reportList.sort(function compare(a, b) {
+        var dateA = new Date(a.date);
+        var dateB = new Date(b.date);
+        return dateA - dateB;
+      });
+      console.log('reportList',reportList);
+      setreportData(reportList);
     } else {
+      setTabActive(false);
+      setreportData([]);
       setentries(filterentries);
     }
   };
@@ -175,8 +201,11 @@ export default function Report() {
   const clear = (e) => {
     setStart("");
     setEnd("");
-    console.log('clear');
-    setentries(filterentries);
+    setTabActive(false);
+  }
+
+  const printReport = (e) => {
+    window.print();
   }
 
   return (
@@ -195,31 +224,35 @@ export default function Report() {
                 onClick={(e) => {
                   searchData();
                 }}
-              >Search</button>
+              >Show</button>
               &nbsp;
               &nbsp;
               &nbsp;
               <button onClick={clear}>Clear</button>
             </div>
+            {tabActive ? 
             <div className="report-body">
+              <br />
+              <br />
+              <div>
+              <button onClick={(e) => printReport(e)}>Print</button>
+              </div>
               <table>
                 <thead>
                   <tr>
                     <th>CID</th>
                     <th>Date</th>
                     <th>Name</th>
-                    <th>Timezone</th>
                     <th>Credit</th>
                     <th>Debit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {entries.map((data, index) => (
+                  {reportData.map((data, index) => (
                     <tr key={index}>
-                      <td>{data.customer_id}</td>
+                      <td>{data.id}</td>
                       <td>{data.date}</td>
                       <td>{data.name}</td>
-                      <td>{data.timezone}</td>
                       <td>{data.credit}</td>
                       <td>{data.debit}</td>
                     </tr>
@@ -227,6 +260,7 @@ export default function Report() {
                 </tbody>
               </table>
             </div>
+            :''}
           </div>
         </div>
       </main>
