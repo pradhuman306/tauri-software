@@ -5,6 +5,17 @@ import { message } from "@tauri-apps/api/dialog";
 export default function Entry() {
   const [customers, setcustomers] = useState([]);
   var [entries, setentries] = useState([]);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const modalOpen = () => {
+    if (isVisible) {
+      setIsVisible(false);
+    } else {
+      setIsVisible(true);
+    }
+  };
+
+
   useEffect(() => {
     const getdataFromFile = async () => {
       try {
@@ -200,9 +211,10 @@ export default function Entry() {
   return (
     <>
       <main>
-        <div className="container">
-          <h4>Entry/Edit</h4>
-          <div>
+        <div className="container over-flow">
+        <div>
+          <div className="time-frame">
+            <h4 className="time-frame-heading">Entry/Edit</h4>
             <header>
               <ul className="entry-header">
                 <li
@@ -279,8 +291,33 @@ export default function Entry() {
                 </li>
               </ul>
             </header>
+            <div className="customer-list-slide">
+              <a href="javascript:void(0)" onClick={modalOpen} >Customers</a>
+            </div>
+            </div>
             <div className="content">
-              <div className="left-wrap">
+              <div className="content-top">
+              <input
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => dateChange(e)}
+                />
+                <div className="btn-wrap">
+                  <button
+                    className={tabActive == "entry" ? "active" : ""}
+                    onClick={() => newEntry("entry")}
+                  >
+                    Entry
+                  </button>
+                  <button
+                    className={tabActive == "edit" ? "active" : ""}
+                    onClick={() => editEntry("edit")}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+              {/* <div className="left-wrap">
                 <input
                   type="date"
                   className="form-control"
@@ -304,7 +341,9 @@ export default function Entry() {
                   <button onClick={saveEntries}>Save</button>
                   <button onClick={cancel}>Cancel</button>
                 </div>
-              </div>
+              </div> */}
+              <div className="main-table-contant">
+
               <div className="center-wrap">
                 {timezone != "" && tabActive != "" ? (
                   <>
@@ -415,7 +454,8 @@ export default function Entry() {
                         })}
                       </tbody>
                     </table>
-                    {tabActive == "entry" ? (
+                    <div>
+                    {timezone != "" && tabActive != "" && tabActive == "entry" ? (
                       <button
                         className="btn btn-outline-success "
                         onClick={addInputField}
@@ -425,30 +465,61 @@ export default function Entry() {
                     ) : (
                       ""
                     )}
+                    </div>
                   </>
                 ) : (
                   ""
                 )}
+                </div>
+                <div className="save-cancel-btn">
+                      <button className="save-btn" onClick={saveEntries}>
+                        Save
+                      </button>
+                      <button className="cancel-btn secondary-btn">
+                        Cancel
+                      </button>
+                    </div>
+              
               </div>
-              <div className="right-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>CUST ID</th>
-                      <th>Name</th>
-                      <th>Set</th>
+              
+            </div>
+          </div>
+            <div className={isVisible ? "modal is-visible" : "modal"}>
+            <div
+              className="modal-overlay modal-toggle customer-toggle"
+              onClick={modalOpen}
+            >x</div>
+            <div className="modal-wrapper modal-transition customer-list-modal">
+              <div className="modal-header">
+                
+                <h2 className="modal-heading"  onClick={modalOpen}>Customers</h2>
+                <button className="modal-close modal-toggle">
+                  
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="modal-content">
+                <div className="customer-list-popup">
+          <table>
+                <thead>
+                  <tr>
+                    <th>CID</th>
+                    <th>Name</th>
+                    <th>Set</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {customers.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.customer_id}</td>
+                      <td>{data.name}</td>
+                      <td>{data.set}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {customers.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.customer_id}</td>
-                        <td>{data.name}</td>
-                        <td>{data.set}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+                </div>
               </div>
             </div>
           </div>

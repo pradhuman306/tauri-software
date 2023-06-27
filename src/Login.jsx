@@ -1,5 +1,7 @@
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import flaglogo from './assets/logo-flat.svg'
+import logo from './assets/logo.svg'
 
 export default function Login() {
   const [err, setErr] = useState("");
@@ -22,27 +24,49 @@ export default function Login() {
 
   return (
     <>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="login">
-          <h1>Login</h1>
-          <div>
-            <label htmlFor="usernane">Username</label>
-            <input placeholder="Enter Username" type="text" name="username" />
-          </div>
-          <div>
-            <label htmlFor="password">Password</label>
-            <input
-              placeholder="Enter Password"
-              type="password"
-              name="password"
-            />
-          </div>
-          <div>
-            <button type="submit">Login</button>
+      <main>
+        <div className="login-page">
+          <div className="login-wrapper">
+            <div className="login-contant">
+              <div className="logo-login">
+                <img src={flaglogo} alt="logo" />
+              </div>
+              <div className="login-form">
+                <h2 className="login-heading">Welcome to Bhole</h2>
+                <p className="sub-tittle">Please enter your details for login.</p>
+
+                <form className="login-form" onSubmit={handleSubmit}>
+                  <div className="login">
+                    <div>
+                      <label htmlFor="usernane">Username</label>
+                      <input placeholder="Enter your username" type="text" name="username" />
+                    </div>
+                    <div className="password-block">
+                      <label htmlFor="password">Password</label>
+                      <input
+                        placeholder="Enter your password"
+                        type="password"
+                        name="password"
+                      />
+                    </div>
+                    <div>
+                      <button className="signin-btn" type="submit">Login</button>
+                    </div>
+                  </div>
+                  {err != "" ? <span className="error">{err}</span> : ""}
+                </form>
+              </div>
+              <div className="copyright">
+                <p className="small-tittle">© 2023 Bhole Software | All right reserved</p>
+              </div>
+            </div>
+            <div className="login-logo">
+              <img src={logo} alt="logo" />
+              <p className="small-tittle">Built <span>❤</span> By Nextige Soft Solution</p>
+            </div>
           </div>
         </div>
-        {err != "" ? <span className="error">{err}</span> : ""}
-      </form>
+      </main>
     </>
   );
 }

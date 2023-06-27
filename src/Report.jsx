@@ -211,25 +211,25 @@ export default function Report() {
     <>
       <main>
         <div className="container">
-          <div>
+          <div className="report-wrapper">
+            <div className="body-header">
             <div className="report-header">
               <h4>Report</h4>
             </div>
-            <div>
+            <div className="report-date-select">
               <input type="date" name="start" value={start} onChange={onchangeHandler} />
+              <p className="select-range ">to</p>
               <input type="date" name="end" value={end} onChange={onchangeHandler}/>
               <button
                 onClick={(e) => {
                   searchData();
                 }}
-              >Show</button>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <button onClick={clear}>Clear</button>
+              >Search</button>
+            </div>
             </div>
             {tabActive ? 
-            <div className="report-body">
+            <div>
+<div className="report-body">
               <br />
               <br />
               <div>
@@ -258,6 +258,11 @@ export default function Report() {
                 </tbody>
               </table>
             </div>
+            <div className="print-delet-btn">
+            <button onClick={(e) => window.print()}>Print</button>
+              <button className="secondary-btn">Delete</button>
+            </div>
+              </div>
             :''}
           </div>
         </div>

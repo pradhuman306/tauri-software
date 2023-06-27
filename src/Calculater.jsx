@@ -191,25 +191,13 @@ setMainTotal(TOTAL);
   return (
     <>
       <main>
-        <div className="container calculater">
-          <h4>Calculater</h4>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <label htmlFor="customer name"> Customer Name</label>
+        
+        <div className="customer-name-date">
+          <div className="container">
+
+            <div className="name-date-wrapper">
+            <div>
+          <label htmlFor="customer name"> Customer Name</label>
                   <br />
                   <select
                     value={selectedCId}
@@ -228,12 +216,27 @@ setMainTotal(TOTAL);
                       </option>
                     ))}
                   </select>
-                </td>
-                <td>
-                  Set
-                  <br />
-                  <input type="number" step="any" name="set" value={addFormData.set} readOnly/>
-                </td>
+          </div>
+          <div>
+            Date <br />
+          <input
+                    type="date"
+                    name="date"
+                    onChange={(e) => inputHandler(e)}
+                  />      
+          </div>
+            </div>
+          </div>
+        </div>
+    <div className="main-section container">
+      <div className="main-section-set">
+      <table className="table-first">
+            <tr>
+              <td>
+              Set
+            <br />
+              <input type="number" step="any" name="set" value={addFormData.set} readOnly/> 
+              </td>
                 <td>
                   Cummision
                   <br />
@@ -255,7 +258,7 @@ setMainTotal(TOTAL);
                   <input type="number" step="any" name="dp" value={addFormData.dp} readOnly/>
                 </td>
                 <td>
-                  J<br />
+                  Jodi<br />
                   <input type="number" step="any" name="jodi"  value={addFormData.jodi} readOnly/>
                 </td>
                 <td>
@@ -263,48 +266,38 @@ setMainTotal(TOTAL);
                   <br />
                   <input type="number" step="any" name="tp" value={addFormData.tp} readOnly/>
                 </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="customer id"> Customer ID</label>
-                  <br />
-                  <select
-                    value={selectedCId}
-                    name="customer"
-                    id="customer"
-                    className="customer-name"
-                    onChange={onChangeSet}
-                    required
-                  >
-                    <option key={0} value={""}>
-                      Select ID
-                    </option>
-                    {customers.map((data, index) => (
-                      <option key={index + 1} value={data.customer_id}>
-                        {data.customer_id}
-                      </option>
-                    ))}
-                  </select>
-                </td>
                 <td>
                   Partnership
                   <br />
                   <input type="number" step="any" name="partnership" value={addFormData.partnership} readOnly/>
                 </td>
-                <td colSpan="6" className="align-left">
+                <td colSpan="6" >
                   Pana cummision
                   <br />
                   <input type="number" step="any" name="pana" value={addFormData.pana} readOnly/>
                 </td>
               </tr>
+              
+          </table>
+      </div>
+        <div className="calculater">
+          <div className="table-perent">
+          <table>
+            {/* <thead>
               <tr>
-                <td>
-                  <input
-                    type="date"
-                    name="date"
-                    onChange={(e) => inputHandler(e)}
-                  />
-                </td>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead> */}
+            <tbody>
+              <tr>
+                <td></td>
                 <td>Amount</td>
                 <td>Pana-Amount</td>
                 <td>Kh</td>
@@ -684,6 +677,8 @@ setMainTotal(TOTAL);
               </tr>
             </tbody>
           </table>
+          </div>
+        </div>
         </div>
       </main>
     </>

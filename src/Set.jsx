@@ -1,6 +1,8 @@
 import { React, useEffect, useState } from "react";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
+import delet from './assets/delet.svg';
+import edit from './assets/edit.svg';
 
 export default function Set() {
   const navigate = useNavigate();
@@ -85,14 +87,58 @@ export default function Set() {
     <>
       <main>
         <div className="container">
-          <div className="add-customer-popup">
-            <div className="add-customer-header">
+        <div className="customer-main-sec">
+          <div className="set-list">
+          <table>
+                <thead>
+                  <tr>
+                    <th style={{minWidth:70+'px'}}>Set</th>
+                    <th style={{minWidth:120+'px'}}>Commision</th>
+                    <th style={{minWidth:80+'px'}}>Pana</th>
+                    <th style={{minWidth:140+'px'}}>Partmership</th>
+                    <th style={{minWidth:120+'px'}}>Multiple</th>
+                    <th style={{minWidth:80+'px'}}>SP</th>
+                    <th style={{minWidth:80+'px'}}>DP</th>
+                    <th style={{minWidth:80+'px'}}>JODI</th>
+                    <th style={{minWidth:80+'px'}}>TP</th>
+                    <th style={{minWidth:100+'px'}}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {setData.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.set}</td>
+                      <td>{data.commisiom}</td>   
+                      <td>{data.pana}</td>     
+                      <td>{data.partmership}</td>
+                      <td>{data.multiple}</td>
+                      <td>{data.sp}</td>        
+                      <td>{data.dp}</td>
+                      <td>{data.jodi}</td>
+                      <td>{data.TP}</td> 
+                      <td>
+                        <div className="action-btns">
+                        <button>
+                          <img src={edit} alt="" />
+                          </button>
+                          <button>
+                            <img src={delet} alt="" />
+                          </button>
+                        </div>
+                        </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="set-add-frame">
+            <div className="add-set-popup">
+            <div className="add-set-header">
               <h4>Add new Set</h4>
             </div>
             <div className="customer-body">
               <form onSubmit={submitHandler}>
-                <div className="add-customer-body">
-                  <div className="add-suctomer-right">
+              <div className="add-suctomer-right">
                     <div className="customer-set">
                       <label htmlFor="set">Set</label>
                       <input
@@ -184,14 +230,15 @@ export default function Set() {
                       />
                     </div>
                   </div>
-                </div>
                 <div className="add-button">
                   <button type="submit">Add Set</button>
                 </div>
               </form>
             </div>
           </div>
-          <button onClick={modalOpen}>Modal Open</button>
+            </div>
+          </div>
+          {/* <button onClick={modalOpen}>Modal Open</button> */}
           <div className={isVisible ? "modal is-visible" : "modal"}>
             <div
               className="modal-overlay modal-toggle"

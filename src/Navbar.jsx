@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "./assets/logo.svg";
+import logo from "./assets/logo-flat.svg";
+import search from "./assets/search.svg";
 
 export default function Navbar() {
   const location = useLocation();
@@ -26,21 +27,18 @@ export default function Navbar() {
     <header>
       <div className="container">
         <div className="header-wrapper">
-          <div className="sub-header">
-            <div className="logo">
-              <img src={logo} alt="logo" />
-            </div>
-            {isLoggedIn ? (
-              <div className="login-btn">
-                <button onClick={(e) => handleClick()}>Logout</button>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
           {isLoggedIn ? (
             <div className="main-header">
               <div className="header-menus">
+              <div className="header-left">
+            <div className="logo">
+              <img src={logo} alt="logo" />
+            </div>
+              <div className="search-wrap">
+                <input type="search" name="search" placeholder="search..."/>
+              </div>
+            </div>
+                <div className="header-right">
                 <ul>
                   <li>
                     <Link
@@ -99,17 +97,16 @@ export default function Navbar() {
                   </li>
                   {/* </ul> */}
                   {/* </li> */}
-                  <li>
-                    <Link
-                      to="/delete"
-                      className={
-                        location.pathname === "/delete" ? "active" : ""
-                      }
-                    >
-                      Delete
-                    </Link>
-                  </li>
+
                 </ul>
+                {isLoggedIn ? (
+              <div className="login-btn">
+                <button onClick={(e) => handleClick()}>Logout</button>
+              </div>
+            ) : (
+              ""
+            )}
+                </div>
               </div>
             </div>
           ) : (
