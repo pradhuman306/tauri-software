@@ -12,6 +12,9 @@ import CustomerList from "./CustomerList";
 import Calculater from "./Calculater";
 import Entry from "./Entry";
 import Navbar from "./Navbar";
+import '@shopify/polaris/build/esm/styles.css';
+import enTranslations from '@shopify/polaris/locales/en.json';
+import {AppProvider, Page, LegacyCard, Button} from '@shopify/polaris';
 const App = () => {
 
 
@@ -28,8 +31,10 @@ const App = () => {
   
   return (
     <React.Fragment>
+        <AppProvider i18n={enTranslations}>
       <Navbar/>
       <Outlet />
+      </AppProvider>
     </React.Fragment>
   );
 };
