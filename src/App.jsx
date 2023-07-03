@@ -15,6 +15,7 @@ import Navbar from "./Navbar";
 import '@shopify/polaris/build/esm/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider, Page, LegacyCard, Button} from '@shopify/polaris';
+import Settings from "./Settings";
 const App = () => {
 
 
@@ -95,7 +96,7 @@ export const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "calculater",
+        path: "calculater/:cid",
         element: (
           <PrivateRoute>
             <Calculater />
@@ -103,10 +104,10 @@ export const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "cash",
+        path: "settings",
         element: (
           <PrivateRoute>
-            {/* <Set /> */}
+            <Settings />
           </PrivateRoute>
         ),
       },

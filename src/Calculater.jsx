@@ -1,10 +1,12 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
+import { useParams } from "react-router-dom";
 
 export default function Calculater() {
   const [customers, setcustomers] = useState([]);
   const [entries, setentries] = useState([]);
-
+  const params = useParams();
+  const date = new Date();
   useEffect(() => {
     const getNotesFromFile = async () => {
       try {
@@ -35,7 +37,26 @@ export default function Calculater() {
       }
     };
     getNotesFromFile();
+  
   }, []);
+useEffect(()=>{
+  if(params.cid != 'default'){
+    onChangeSet(params.cid);
+    let day = date.getDate();
+    let month = date.getMonth()+1;
+    let year = date.getFullYear();
+    if(month.toString().length <= 1){
+      month= '0'+month;
+    }
+    if(day.toString().length <= 1){
+      day= '0'+day;
+    }
+    setDate(year+'-'+month+'-'+day);
+ 
+  }
+
+},[customers,params])
+ 
 
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
@@ -71,13 +92,15 @@ export default function Calculater() {
     tp_amount: 0,
   });
 
-  const onChangeSet = async (e) => {
+  const onChangeSet = (value) => {
+    console.log(value);
     const cdata = customers.filter(
-      (item) => item.customer_id === e.target.value
+      (item) => item.customer_id === value
     );
-    setCID(e.target.value);
+    setCID(value);
+    console.log('cdata',cdata);
     const newFormData = { ...addFormData };
-    newFormData["customer_id"] = e.target.value;
+    newFormData["customer_id"] = value;
     newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
     newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
     newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
@@ -88,7 +111,7 @@ export default function Calculater() {
     newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
     newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
     setAddFormData(newFormData);
-    calculations(e.target.value,selectedDate);
+    calculations(value,selectedDate);
   };
 
   const inputHandler = (e) => {
@@ -204,7 +227,7 @@ setMainTotal(TOTAL);
                     name="name"
                     id="name"
                     className="customer-name"
-                    onChange={onChangeSet}
+                    onChange={(e)=>onChangeSet(e.target.value)}
                     required
                   >
                     <option key={0} value={""}>
@@ -222,6 +245,7 @@ setMainTotal(TOTAL);
           <input
                     type="date"
                     name="date"
+                    value={selectedDate}
                     onChange={(e) => inputHandler(e)}
                   />      
           </div>

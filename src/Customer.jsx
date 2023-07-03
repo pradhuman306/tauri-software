@@ -25,6 +25,16 @@ export default function Customer() {
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
     setAddFormData(newFormData);
+
+ 
+  };
+
+  const editFormHandler = (event) => {
+    const fieldName = event.target.getAttribute("name");
+    const fieldValue = event.target.value;
+    const newFormData1 = { ...editCustomer };
+    newFormData1[fieldName] = fieldValue;
+    setEditCustomer(newFormData1);
   };
 
   const submitHandler = (event) => {
@@ -32,14 +42,19 @@ export default function Customer() {
     addNote();
     navigate("/entry");
   };
+  const updateHandler = (event) => {
+    updateCustomer();
+    event.preventDefault();
+    modalOpen();
+  };
 
-  const [notes, setNotes] = useState([]);
+
   const [setData, updateSetData] = useState([]);
 
-  const updateNotes = async (notes) => {
-    setNotes([...notes]);
+  const addnewcustomer = async (customers) => {
+    setcustomers([...customers]);
     await writeTextFile(
-      { path: "customers.json", contents: JSON.stringify(notes) },
+      { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
   };
@@ -61,7 +76,25 @@ export default function Customer() {
     // addFormData.date = datetime;
     addFormData.date = new Date(Date.now());
     addFormData.id = Date.now();
-    updateNotes([{ ...addFormData }, ...notes]);
+    addnewcustomer([{ ...addFormData }, ...customers]);
+  };
+
+
+  const updateCustomer = async () => {
+    customers = customers.map((obj) => {
+      if (obj.id == editCustomer.id) {
+        return {
+          ...editCustomer
+        };
+      }
+      //else return the object
+      return { ...obj };
+    });
+  await writeTextFile(
+    { path: "customers.json", contents: JSON.stringify(customers) },
+    { dir: BaseDirectory.Resource }
+  );
+  getNotesFromFile();
   };
 
   const onChangeSet = async (e) => {
@@ -78,80 +111,65 @@ export default function Customer() {
     newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
     setAddFormData(newFormData);
   };
+  const getNotesFromFile = async () => {
+    try {
+      const myfilesets = await readTextFile("set.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mysetData = JSON.parse(myfilesets);
+      updateSetData(mysetData);
+    } catch (error) {
+      await writeTextFile(
+        { path: "set.json", contents: JSON.stringify(setData) },
+        { dir: BaseDirectory.Resource }
+      );
+      console.log(error);
+    }
 
+    try {
+      const myfiledata = await readTextFile("customers.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mycustomers = JSON.parse(myfiledata);
+      setcustomers(mycustomers);
+    } catch (error) {
+      await writeTextFile(
+        { path: "customers.json", contents: JSON.stringify(customers) },
+        { dir: BaseDirectory.Resource }
+      );
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const getNotesFromFile = async () => {
-      try {
-        const myfileNotes = await readTextFile("customers.json", {
-          dir: BaseDirectory.Resource,
-        });
-        const myNotes = JSON.parse(myfileNotes);
-        setNotes(myNotes);
-      } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(notes) },
-          { dir: BaseDirectory.Resource }
-        );
-        console.log(error);
-      }
-
-      try {
-        const myfilesets = await readTextFile("set.json", {
-          dir: BaseDirectory.Resource,
-        });
-        const mysetData = JSON.parse(myfilesets);
-        updateSetData(mysetData);
-      } catch (error) {
-        await writeTextFile(
-          { path: "set.json", contents: JSON.stringify(setData) },
-          { dir: BaseDirectory.Resource }
-        );
-        console.log(error);
-      }
-
-      try {
-        const myfileNotes = await readTextFile("customers.json", {
-          dir: BaseDirectory.Resource,
-        });
-        const mycustomers = JSON.parse(myfileNotes);
-        setcustomers(mycustomers);
-        setFiltercustomers(mycustomers);
-      } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(customers) },
-          { dir: BaseDirectory.Resource }
-        );
-        console.log(error);
-      }
-    };
+  
 
     getNotesFromFile();
   }, []);
 
 
-  // customers
-  const [customers, setcustomers] = useState([]);
-  const [filtercustomers, setFiltercustomers] = useState([]);
-  const [searchText, setSearchText] = useState("");
-
-  function filterData(searchText, userData) {
-    const data = userData.filter((item) =>
-      item?.name.toLowerCase().includes(searchText.toLowerCase())
+  const deletehandler = async (id) => {
+    customers = customers.filter(function (a) {
+      return a.id != id;
+    });
+    console.log(customers);
+    await writeTextFile(
+      { path: "customers.json", contents: JSON.stringify(customers) },
+      { dir: BaseDirectory.Resource }
     );
-    return data;
+    getNotesFromFile();
   }
 
-  const searchData = (searchText, userData) => {
-    if (searchText !== "") {
-      const data = filterData(searchText, userData);
-      setcustomers(data);
-      if (data.length === 0) {
-        console.log("not found any record");
-      }
-    } else {
-      setcustomers(userData);
-    }
-  };
+
+  // customers
+  var [customers, setcustomers] = useState([]);
+  const [editCustomer, setEditCustomer] = useState({});
+
+  const handleEditCustomer = (id) => {
+    let tmp = customers.filter((item)=>item.id === id)
+    setEditCustomer(tmp[0]);
+    modalOpen();
+  }
+
 
   const [isVisible, setIsVisible] = useState(false);
   const modalOpen = () => {
@@ -162,42 +180,43 @@ export default function Customer() {
     }
   };
 
+
   return (
     <>
       <main>
-          <div className="customer-main-sec">
+        <div className="customer-main-sec">
           <div className="customer-list">
-          <table>
-                <thead>
-                  <tr>
-                    <th>CID</th>
-                    <th>Name</th>
-                    <th>Set</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.customer_id}</td>
-                      <td>{data.name}</td>
-                      <td>{data.set}</td>
-                      <td>
-                        <div className="action-btns">
-                        <button>
+            <table>
+              <thead>
+                <tr>
+                  <th>CID</th>
+                  <th>Name</th>
+                  <th>Set</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.customer_id}</td>
+                    <td>{data.name}</td>
+                    <td>{data.set}</td>
+                    <td>
+                      <div className="action-btns">
+                        <button onClick={()=>handleEditCustomer(data.id)}>
                           <img src={edit} alt="" />
-                          </button>
-                          <button>
-                            <img src={delet} alt="" />
-                          </button>
-                        </div>
-                        </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="customer-add-frame">
+                        </button>
+                        <button onClick={()=> deletehandler(data.id)}>
+                          <img src={delet} alt="" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="customer-add-frame">
             <div className="add-customer-popup">
               <div className="add-customer-header">
                 <h4>Add new customer</h4>
@@ -272,7 +291,7 @@ export default function Customer() {
                         />
                       </div>
                     </div>
-  
+
                     <div className="add-suctomer-right">
                       <div className="customer-set">
                         <label htmlFor="set">Set</label>
@@ -388,8 +407,133 @@ export default function Customer() {
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+        <div className={isVisible ? "modal is-visible" : "modal"}>
+          <div
+            className="modal-overlay modal-toggle customer-toggle"
+            onClick={modalOpen}
+          >x</div>
+          <div className="modal-wrapper modal-transition">
+            <div className="modal-header">
+
+              <h2 className="modal-heading" onClick={modalOpen}>Edit customer</h2>
+              <button className="modal-close modal-toggle">
+                       
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-content">
+                <div className="">
+                  <div className="add-customer-popup">
+
+                    <div className="customer-body">
+                      <form onSubmit={updateHandler}>
+                        <div className="add-customer-body">
+                          <div className="add-suctomer-left">
+                            <div className="customer-id">
+                              <label htmlFor="customer">Customer ID</label>
+                              <input
+                                type="number"
+                                step="any"
+                                name="customer_id"
+                                value={editCustomer.customer_id}
+                                placeholder="Enter customer ID"
+                                onChange={editFormHandler}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label htmlFor="customer name">Customer Name</label>
+                              <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter customer name"
+                                value={editCustomer.name}
+                                onChange={editFormHandler}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label htmlFor="customer number">Mobile Number 1</label>
+                              <input
+                                type="number"
+                                step="any"
+                                name="mobile1"
+                                value={editCustomer.mobile1}
+                                placeholder="Enter mobile number"
+                                onChange={editFormHandler}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label htmlFor="customer number">Mobile Number 2</label>
+                              <input
+                                type="number"
+                                step="any"
+                                name="mobile2"
+                                value={editCustomer.mobile2}
+                                placeholder="Enter mobile number"
+                                onChange={editFormHandler}
+                                required
+                              />
+                            </div>
+                            <div className="address">
+                              <label htmlFor="textarea">Address</label>
+                              <textarea
+
+                                name="address"
+                                placeholder="Enter customer address"
+                                cols="8"
+                                value={editCustomer.address}
+                                rows="5"
+                                onChange={editFormHandler}
+                              ></textarea>
+                            </div>
+                            <div>
+                              <label>Limit</label>
+                              <input
+                                type="number"
+                                step="any"
+                                name="limit"
+                                placeholder="Enter limit"
+                                onChange={editFormHandler}
+                                value={editCustomer.limit}
+                                required
+                              />
+                            </div>
+                            <div>
+                              <label htmlFor="set">Set</label>
+                              <select
+                                name="set"
+                                id="set"
+                                value={editCustomer.set}
+                                onChange={onChangeSet}
+                                required
+                              >
+                                <option key={0} value={""}>
+                                  Select Set
+                                </option>
+                                {setData.map((data, index) => (
+                                  <option key={index + 1} value={data.set}>
+                                    {data.set}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="add-button">
+                          <button type="submit"> Update customer </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
       </main>
     </>
   );

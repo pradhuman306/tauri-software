@@ -2,8 +2,8 @@ import { React, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "./assets/logo-flat.svg";
 import search from "./assets/search.svg";
-import {TopBar, ActionList, Icon, Frame, Text, Button,Navigation } from '@shopify/polaris';
-import {ArrowLeftMinor, QuestionMarkMajor} from '@shopify/polaris-icons';
+import { TopBar, ActionList, Icon, Frame, Text, Button, Navigation } from '@shopify/polaris';
+import { ArrowLeftMinor, QuestionMarkMajor } from '@shopify/polaris-icons';
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 
@@ -38,17 +38,22 @@ export default function Navbar() {
   const handleSearchChange = (value) => {
     console.log(customers);
     let contentItems = [];
- if(customers.length){
-  let tmp = customers.filter((item)=>item.name.toLowerCase().includes(value.toLowerCase()));
-  setSearchValue(value);
-  if(tmp.length){
-    tmp.map((item)=>{
-      contentItems.push({content:item.name});
-    })
-  }
-  setIsSearchActive(value.length > 0);
-  setcontentItems(contentItems);
- }
+    if (customers.length) {
+      let tmp = customers.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
+      setSearchValue(value);
+      if (tmp.length) {
+        tmp.map((item) => {
+          contentItems.push({
+            content: item.name, onAction: () => {
+              navigate(`/calculater/${item.customer_id}`);
+              handleSearchResultsDismiss();
+            }
+          });
+        })
+      }
+      setIsSearchActive(value.length > 0);
+      setcontentItems(contentItems);
+    }
   };
 
   const handleNavigationToggle = useCallback(() => {
@@ -73,35 +78,26 @@ export default function Navbar() {
         console.log(error);
       }
       // entries
-   
+
     };
     getdataFromFile();
   }, []);
 
-
-
-
-
-
-
-
   const logo = {
     width: 124,
-    topBarSource: "./assets/logo-flat.svg",
+    topBarSource: "http://localhost:1420/src/assets/logo-flat.svg",
     url: '#',
     accessibilityLabel: 'Bhole',
   };
 
-
-  
   const userMenuMarkup = (
     <TopBar.UserMenu
       actions={[
         {
-          items: [{content: 'Settings', icon: ArrowLeftMinor, onAction:()=>alert('test') }],
+          items: [{ content: 'Settings', icon: ArrowLeftMinor, onAction: () => navigate('/settings') }],
         },
         {
-          items: [{content: 'Logout', onAction:()=>alert('test2') }],
+          items: [{ content: 'Logout', onAction: () => handleClick() }],
         },
       ]}
       name="Bhole"
@@ -128,29 +124,64 @@ export default function Navbar() {
   );
 
   const secondaryMenuMarkup = (
-    <>
-    
-    <TopBar.Menu
-      activatorContent={
+    <ul className="d-flex">
+      <li>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/customer"
+
+            >
+              Customer
+            </Link>
+          }
+        />
+      </li>
+      <li>
+      <TopBar.Menu
+          activatorContent={
         <Link
-                      to="/entry"
-                    
-                    >
-                      Customer
-                    </Link>
-      }
-    />
-    <TopBar.Menu
-    activatorContent={
-      <Link
-      to="/report"
-     
-    >
-      Report
-    </Link>
-    }
-  />
-  </>
+          to="/set"
+        >
+          Set
+        </Link>}
+        />
+      </li>
+      <li>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/report"
+
+            >
+              Report
+            </Link>
+          }
+        />
+      </li>
+      <li>
+      <TopBar.Menu
+          activatorContent={
+        <Link
+          to="/entry"
+        >
+          Entry/edit
+        </Link>}/>
+      </li>
+      <li>
+
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/calculater/:cid"
+
+            >
+              Calculator
+            </Link>
+          }
+        />
+      </li>
+    </ul>
   );
 
   const topBarMarkup = (
@@ -183,7 +214,7 @@ export default function Navbar() {
     } else {
       setIsLoggedIn(true);
     }
-  }, [getusername, getPassword,isLoggedIn]);
+  }, [getusername, getPassword, isLoggedIn]);
 
   const handleClick = () => {
     console.log('logout');
@@ -192,14 +223,14 @@ export default function Navbar() {
     navigate("/login");
   };
   return (
-    <div style={{height: '50px'}}>
-    <Frame topBar={topBarMarkup} logo={logo} />
-  </div>
+    <div style={{ height: '50px' }}>
+      <Frame topBar={topBarMarkup} logo={logo} />
+    </div>
     // <header>
     //   <div className="container">
     //     <div className="header-wrapper">
-  
-    
+
+
     //       {isLoggedIn ? (
     //         <div className="main-header">
     //           <div className="header-menus">

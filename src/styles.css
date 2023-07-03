@@ -725,6 +725,9 @@ transform: translate(-50%, -50%);
 .over-flow{
     overflow-x: hidden;
 }
+.Polaris-Frame__Content{
+    display: none;
+}
 @media print{
     .body-header,
     .print-delet-btn,
