@@ -1,6 +1,8 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
+import { toast } from 'react-toastify';
+
 
 export default function Entry() {
   const [customers, setcustomers] = useState([]);
@@ -127,7 +129,7 @@ export default function Entry() {
         { path: "entries.json", contents: JSON.stringify(entries) },
         { dir: BaseDirectory.Resource }
       );
-      console.log("entries updated");
+      toast.success('Entry updated successfully');
     } else {
     setentries([...entries,...inputFields]);
       await writeTextFile(
@@ -153,16 +155,18 @@ export default function Entry() {
           tp_amount: "",
         },
       ]);
-      console.log("entries saved");
+      toast.success('Entry saved successfully');
     }
     setTimeZone("");
     setTabActive("");
+
   };
 
   const newEntry = async (v) => {
     setTabActive(v);
     if (date == "") {
-      await message("First select date.", { title: "Account", type: "error" });
+     toast.error('Please select date');
+      // await message("First select date.", { title: "Account", type: "error" });
     } else {
       setInputFields([
         {
@@ -186,14 +190,18 @@ export default function Entry() {
   const editEntry = async (v) => {
     setTabActive(v);
     if (date == "" && timezone == "") {
-      await message("First select time and date.", {
-        title: "Account",
-        type: "error",
-      });
+     toast.error('Please select time and date');
+
+      // await message("First select time and date.", {
+      //   title: "Account",
+      //   type: "error",
+      // });
     } else if (date == "") {
-      await message("First select date.", { title: "Account", type: "error" });
+      toast.error('Please select date');
+      // await message("First select date.", { title: "Account", type: "error" });
     } else if (timezone == "") {
-      await message("First select time.", { title: "Account", type: "error" });
+      toast.error('Please select time');
+      // await message("First select time.", { title: "Account", type: "error" });
     } else {
       var startDate = new Date(date + " 00:00:01");
       var endDate = new Date(date + " 23:59:59");

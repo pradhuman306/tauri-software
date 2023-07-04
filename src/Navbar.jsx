@@ -8,7 +8,7 @@ import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 
 export default function Navbar() {
-
+  const location = useLocation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -130,6 +130,7 @@ export default function Navbar() {
           activatorContent={
             <Link
               to="/customer"
+              className={location.pathname==='/customer'?'active':""}
 
             >
               Customer
@@ -142,6 +143,7 @@ export default function Navbar() {
           activatorContent={
         <Link
           to="/set"
+          className={location.pathname==='/set'?'active':""}
         >
           Set
         </Link>}
@@ -152,6 +154,7 @@ export default function Navbar() {
           activatorContent={
             <Link
               to="/report"
+              className={location.pathname==='/report'?'active':""}
 
             >
               Report
@@ -164,6 +167,8 @@ export default function Navbar() {
           activatorContent={
         <Link
           to="/entry"
+          className={location.pathname==='/entry'?'active':""}
+
         >
           Entry/edit
         </Link>}/>
@@ -174,8 +179,11 @@ export default function Navbar() {
           activatorContent={
             <Link
               to="/calculater/:cid"
+              className={location.pathname==='/calculater/:cid'?'active':""}
+        
 
             >
+             
               Calculator
             </Link>
           }
@@ -203,7 +211,7 @@ export default function Navbar() {
 
 
 
-  const location = useLocation();
+
   const getusername = localStorage.getItem("username");
   const getPassword = localStorage.getItem("password");
   const [isLoggedIn, setIsLoggedIn] = useState(false);

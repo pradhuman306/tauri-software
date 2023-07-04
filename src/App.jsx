@@ -16,6 +16,8 @@ import '@shopify/polaris/build/esm/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider, Page, LegacyCard, Button} from '@shopify/polaris';
 import Settings from "./Settings";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
 
 
@@ -35,6 +37,7 @@ const App = () => {
         <AppProvider i18n={enTranslations}>
       <Navbar/>
       <Outlet />
+      <ToastContainer autoClose={2000} position="top-center"  />
       </AppProvider>
     </React.Fragment>
   );
