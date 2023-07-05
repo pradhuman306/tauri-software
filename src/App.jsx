@@ -17,7 +17,7 @@ import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider, Page, LegacyCard, Button} from '@shopify/polaris';
 import Settings from "./Settings";
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
 
 

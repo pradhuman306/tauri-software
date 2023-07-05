@@ -51,4 +51,12 @@
     font-display: swap;
 }
 
+.Polaris-Frame__Content{
+    display: none;
+}
+#addCustBtn,#editCustBtn{
+    display: none;
+}
+
+
 

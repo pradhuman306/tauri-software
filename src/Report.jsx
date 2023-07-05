@@ -162,6 +162,7 @@ export default function Report() {
         var partnership_percent = SUB_TOTAL * newFormData['partnership']/100;
         var TOTAL = SUB_TOTAL-partnership_percent;
         var type = parseInt(TOTAL) > 0 ? 'Positive' : 'Negative';
+if(CID){
         reportList.push({
           'id':CID,
           'date':vDate,
@@ -170,6 +171,7 @@ export default function Report() {
           'credit': (type == 'Positive') ? TOTAL.toFixed(2) : '',
           'debit':(type == 'Negative') ? TOTAL.toFixed(2) : '',
         });
+      }
       } // length condition
 
         } // date loop end

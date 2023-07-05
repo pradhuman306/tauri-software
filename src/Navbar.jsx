@@ -125,19 +125,7 @@ export default function Navbar() {
 
   const secondaryMenuMarkup = (
     <ul className="d-flex">
-      <li>
-        <TopBar.Menu
-          activatorContent={
-            <Link
-              to="/customer"
-              className={location.pathname==='/customer'?'active':""}
-
-            >
-              Customer
-            </Link>
-          }
-        />
-      </li>
+    
       <li>
       <TopBar.Menu
           activatorContent={
@@ -158,6 +146,19 @@ export default function Navbar() {
 
             >
               Report
+            </Link>
+          }
+        />
+      </li>
+      <li>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/customer"
+              className={location.pathname==='/customer'?'active':""}
+
+            >
+              Customer
             </Link>
           }
         />

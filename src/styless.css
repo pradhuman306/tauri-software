@@ -728,6 +728,9 @@ transform: translate(-50%, -50%);
 .Polaris-Frame__Content{
     display: none;
 }
+.d-none {
+    display: none;
+}
 @media print{
     .body-header,
     .print-delet-btn,

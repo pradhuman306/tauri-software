@@ -4,10 +4,17 @@ import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
 import { toast } from 'react-toastify';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon,Select, Frame } from '@shopify/polaris';
+import {
+  EditMajor,
+  DeleteMajor,
+  PlusMinor
+} from '@shopify/polaris-icons';
 
 export default function Customer() {
   const navigate = useNavigate();
-
+  const [active, setActive] = useState(false);
+  const [selectedSet, setSelectedSet] = useState('');
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
     commission: "",
@@ -20,9 +27,11 @@ export default function Customer() {
     tp: "",
     sp: "",
   });
-  const addFormHandler = (event) => {
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
+  const addFormHandler = (value,param) => {
+    console.log(value);
+    console.log(param);
+    const fieldName = param;
+    const fieldValue = value;
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
     setAddFormData(newFormData);
@@ -30,9 +39,9 @@ export default function Customer() {
 
   };
 
-  const editFormHandler = (event) => {
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
+  const editFormHandler = (value,param) => {
+    const fieldName = param;
+    const fieldValue = value;
     const newFormData1 = { ...editCustomer };
     newFormData1[fieldName] = fieldValue;
     setEditCustomer(newFormData1);
@@ -47,12 +56,14 @@ export default function Customer() {
   const updateHandler = (event) => {
     updateCustomer();
     event.preventDefault();
-  
+
     modalOpen('editCustomer');
   };
 
 
   const [setData, updateSetData] = useState([]);
+  const [setOptions, updateSetOptions] = useState([]);
+
 
   const addnewcustomer = async (customers) => {
     setcustomers([...customers]);
@@ -61,6 +72,7 @@ export default function Customer() {
       { dir: BaseDirectory.Resource }
     );
     toast.success('Customer added successfully');
+    setActive(true);
   };
 
   const addNote = async () => {
@@ -81,7 +93,7 @@ export default function Customer() {
     addFormData.date = new Date(Date.now());
     addFormData.id = Date.now();
     addnewcustomer([{ ...addFormData }, ...customers]);
-  
+
   };
 
 
@@ -104,7 +116,8 @@ export default function Customer() {
   };
 
   const onChangeSet = async (e) => {
-    const fdata = setData.filter((item) => item.set === e.target.value);
+    setSelectedSet(e);
+    const fdata = setData.filter((item) => item.set === e);
     const newFormData = { ...addFormData };
     newFormData["commission"] = fdata[0] ? fdata[0]["commission"] : "";
     newFormData["dp"] = fdata[0] ? fdata[0]["dp"] : "";
@@ -117,13 +130,34 @@ export default function Customer() {
     newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
     setAddFormData(newFormData);
   };
+
+  const onChangeSetEdit = async (e) => {
+    setSelectedSet(e);
+    const fdata = setData.filter((item) => item.set === e);
+    const newFormData = { ...editCustomer };
+    newFormData["commission"] = fdata[0] ? fdata[0]["commission"] : "";
+    newFormData["dp"] = fdata[0] ? fdata[0]["dp"] : "";
+    newFormData["jodi"] = fdata[0] ? fdata[0]["jodi"] : "";
+    newFormData["multiple"] = fdata[0] ? fdata[0]["multiple"] : "";
+    newFormData["pana"] = fdata[0] ? fdata[0]["pana"] : "";
+    newFormData["partnership"] = fdata[0] ? fdata[0]["partnership"] : "";
+    newFormData["set"] = fdata[0] ? fdata[0]["set"] : "";
+    newFormData["tp"] = fdata[0] ? fdata[0]["tp"] : "";
+    newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
+    setEditCustomer(newFormData);
+  };
   const getNotesFromFile = async () => {
     try {
       const myfilesets = await readTextFile("set.json", {
         dir: BaseDirectory.Resource,
       });
       const mysetData = JSON.parse(myfilesets);
+      let optionsSet = [{label:"Select set",value:""}];
       updateSetData(mysetData);
+      mysetData.map((data)=>{
+        optionsSet.push({label:data.set,value:data.set})
+      })
+      updateSetOptions(optionsSet);
     } catch (error) {
       await writeTextFile(
         { path: "set.json", contents: JSON.stringify(setData) },
@@ -154,6 +188,7 @@ export default function Customer() {
 
 
   const deletehandler = async (id) => {
+
     customers = customers.filter(function (a) {
       return a.id != id;
     });
@@ -177,8 +212,13 @@ export default function Customer() {
   const handleEditCustomer = (id, param) => {
     let tmp = customers.filter((item) => item.id === id)
     setEditCustomer(tmp[0]);
+    setSelectedSet(tmp[0].set);
     modalOpen(param);
   }
+
+  const toastMarkup = active ? (
+    <Toast content="Customer added successfully" onDismiss={toggleActive} duration={2000} />
+  ) : null;
 
 
   const [isVisible, setIsVisible] = useState({ addCustomer: false, editCustomer: false, deleteCustomer: false });
@@ -193,61 +233,439 @@ export default function Customer() {
       setIsVisible(isVisibleTemp);
     }
   };
+  const resourceName = {
+    singular: 'customer',
+    plural: 'customers',
+  };
 
+  const rowMarkup = customers.map(
+    (
+      { name, customer_id, set, id },
+      index,
+    ) => (
 
+      <IndexTable.Row id={customer_id} key={customer_id} position={index}>
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {customer_id}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{name}</IndexTable.Cell>
+        <IndexTable.Cell>{set}</IndexTable.Cell>
+        <IndexTable.Cell>
+          <Button onClick={() => handleEditCustomer(id, 'editCustomer')}>
+            <Icon
+              source={EditMajor}
+              color="base"
+            />
+          </Button>
+          <Button onClick={() => {
+            modalOpen('deleteCustomer')
+            setDeleteCustomerID(id)
+          }
+          }>
+            <Icon
+              source={DeleteMajor}
+              color="base"
+            />
 
+          </Button>
+        </IndexTable.Cell>
+      </IndexTable.Row>
+
+    ),
+  );
 
   return (
     <>
-      <main>
-        <div className="customer-main-sec">
-      
-          <div className="customer-list">
-            <table>
-              <thead>
-                <tr>
-                  <th>CID</th>
-                  <th>Name</th>
-                  <th>Set</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {customers.map((data, index) => (
-                  <tr key={index}>
-                    <td>{data.customer_id}</td>
-                    <td>{data.name}</td>
-                    <td>{data.set}</td>
-                    <td>
-                      <div className="action-btns">
-                        <button onClick={() => handleEditCustomer(data.id, 'editCustomer')}>
-                          <img src={edit} alt="" />
-                        </button>
-                        <button onClick={() => {
-                          modalOpen('deleteCustomer')
-                          setDeleteCustomerID(data.id)
-                        }
-                        }>
-                          <img src={delet} alt="" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="customer-add-frame">
-          <div className="add-button">
-                    <button type="button" onClick={()=>modalOpen('addCustomer')}> Add customer </button>
-                  </div>
-            {/* <div className="add-customer-popup">
+      <Page fullWidth
+        title="Customers"
+        primaryAction={{ content: 'Add Customer', icon: PlusMinor, onAction: () => modalOpen('addCustomer') }}>
+        <LegacyCard>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={customers.length}
+            headings={[
+              { title: 'Cid' },
+              { title: 'Name' },
+              { title: 'Set' },
+              { title: 'Action' },
+            ]}
+            selectable={false}
+          >
+            {rowMarkup}
+          </IndexTable>
+        </LegacyCard>
+
+
+        {/* Add customer popup */}
+        <Modal
+          // activator={activator}
+          open={isVisible.addCustomer}
+          onClose={() => modalOpen('addCustomer')}
+          title="Add New Customer"
+          primaryAction={{
+            content: 'Add Customer',
+            onAction: () => document.getElementById('addCustBtn').click(),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('addCustomer'),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <Form onSubmit={submitHandler}>
+            <Grid>
+            <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+                <TextField
+                  label="Customer ID"
+                  type="number"
+                  name="customer_id"
+                  placeholder="Enter customer ID"
+                  value={addFormData.customer_id}
+                  onChange={(e)=>addFormHandler(e,'customer_id')}
+                  
+                />
+              
+                <TextField
+                  label="Customer Name"
+                  type="text"
+                  name="name"
+                  placeholder="Enter customer name"
+                  value={addFormData.name}
+                  onChange={(e)=>addFormHandler(e,'name')}
+                  
+                />
+
+                <TextField
+                  label="Mobile Number 1"
+                  type="number"
+                  step="any"
+                  name="mobile1"
+                  placeholder="Enter mobile number"
+                  value={addFormData.mobile1}
+                  onChange={(e)=>addFormHandler(e,'mobile1')}
+                />
+                <TextField
+                  label="Mobile Number 2"
+                  type="number"
+                  step="any"
+                  name="mobile2"
+                  placeholder="Enter mobile number"
+                  value={addFormData.mobile2}
+                  onChange={(e)=>addFormHandler(e,'mobile2')}
+                />
+
+
+                <TextField
+                  label="Address"
+                  name="address"
+                  placeholder="Enter customer address"
+                  value={addFormData.address}
+                  onChange={(e)=>addFormHandler(e,'address')}
+                  multiline={4}
+                />
+              
+                <TextField
+                  label="Limit"
+                  type="number"
+                  step="any"
+                  name="limit"
+                  placeholder="Enter limit"
+                  value={addFormData.limit}
+                  onChange={(e)=>addFormHandler(e,'limit')}
+                />
+                  </Grid.Cell>
+                  <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+                  <Select
+                    label="Set"
+                    name="set"
+                    id="set"
+                    options={setOptions}
+                    value={selectedSet}
+                    onChange={(e)=>onChangeSet(e)}
+                    required
+          />
          
-              <div className="add-customer-header">
-                <h4>Add new customer</h4>
-              </div>
+          <TextField
+            label="Commision"
+            type="number"
+            step="any"
+            name="commission"
+            value={addFormData ? addFormData.commission : ""}
+            onChange={(e)=>addFormHandler(e,'commission')}
+            required
+          />
+     
+          <TextField
+            label="Pana"
+            type="number"
+            step="any"
+            name="pana"
+            value={addFormData ? addFormData.pana : ""}
+            onChange={(e)=>addFormHandler(e,'pana')}
+            required
+          />
+      
+          <TextField
+            label="Partnership"
+            type="number"
+            step="any"
+            name="partnership"
+            value={addFormData ? addFormData.partnership : ""}
+            onChange={(e)=>addFormHandler(e,'partnership')}
+            required
+          />
+    
+       
+          <TextField
+             label="Multiple"
+            type="number"
+            step="any"
+            name="multiple"
+            value={addFormData ? addFormData.multiple : ""}
+            onChange={(e)=>addFormHandler(e,'multiple')}
+            required
+          />
+        
+          <TextField
+          label="SP"
+            type="number"
+            step="any"
+            name="sp"
+            value={addFormData ? addFormData.sp : ""}
+            onChange={(e)=>addFormHandler(e,'sp')}
+            required
+          />
+       
+          <TextField
+          label="DP"
+            type="number"
+            step="any"
+            name="dp"
+            value={addFormData ? addFormData.dp : ""}
+            onChange={(e)=>addFormHandler(e,'dp')}
+            required
+          />
+         
+     
+          <TextField
+              label="JODI"
+            type="number"
+            step="any"
+            name="jodi"
+            value={addFormData ? addFormData.jodi : ""}
+            onChange={(e)=>addFormHandler(e,'jodi')}
+            required
+          />
+    
+          <TextField
+           label="TP"
+            type="number"
+            step="any"
+            name="tp"
+            value={addFormData ? addFormData.tp : ""}
+            onChange={(e)=>addFormHandler(e,'tp')}
+            required
+          />
+ 
+                    </Grid.Cell>
+                  </Grid>
+                <Button id="addCustBtn" submit>Submit</Button>
+
+             
+            </Form>
+
+    
+          </Modal.Section>
+        </Modal>
+
+
+
+        {/* Edit customer popup */}
+        <Modal
+          open={isVisible.editCustomer}
+          onClose={() => modalOpen('editCustomer')}
+          title="Edit Customer"
+          primaryAction={{
+            content: 'Update Customer',
+            onAction: () => document.getElementById('editCustBtn').click(),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('editCustomer'),
+            },
+          ]}
+        >
+          <Modal.Section>
+          <Form onSubmit={updateHandler}>
+            <Grid>
+            <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+                <TextField
+                  label="Customer ID"
+                  type="number"
+                  name="customer_id"
+                  placeholder="Enter customer ID"
+                  value={editCustomer.customer_id}
+                  onChange={(e)=>editFormHandler(e,'customer_id')}
+                  
+                />
+              
+                <TextField
+                  label="Customer Name"
+                  type="text"
+                  name="name"
+                  placeholder="Enter customer name"
+                  value={editCustomer.name}
+                  onChange={(e)=>editFormHandler(e,'name')}
+                  
+                />
+
+                <TextField
+                  label="Mobile Number 1"
+                  type="number"
+                  step="any"
+                  name="mobile1"
+                  placeholder="Enter mobile number"
+                  value={editCustomer.mobile1}
+                  onChange={(e)=>editFormHandler(e,'mobile1')}
+                />
+                <TextField
+                  label="Mobile Number 2"
+                  type="number"
+                  step="any"
+                  name="mobile2"
+                  placeholder="Enter mobile number"
+                  value={editCustomer.mobile2}
+                  onChange={(e)=>editFormHandler(e,'mobile2')}
+                />
+
+
+                <TextField
+                  label="Address"
+                  name="address"
+                  placeholder="Enter customer address"
+                  value={editCustomer.address}
+                  onChange={(e)=>editFormHandler(e,'address')}
+                  multiline={4}
+                />
+              
+                <TextField
+                  label="Limit"
+                  type="number"
+                  step="any"
+                  name="limit"
+                  placeholder="Enter limit"
+                  value={editCustomer.limit}
+                  onChange={(e)=>editFormHandler(e,'limit')}
+                />
+                  </Grid.Cell>
+                  <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
+                  <Select
+                    label="Set"
+                    name="set"
+                    id="set"
+                    options={setOptions}
+                    value={selectedSet}
+                    onChange={(e)=>onChangeSetEdit(e)}
+                    required
+          />
+         
+          <TextField
+            label="Commision"
+            type="number"
+            step="any"
+            name="commission"
+            value={editCustomer ? editCustomer.commission : ""}
+            onChange={(e)=>editFormHandler(e,'commission')}
+            required
+          />
+     
+          <TextField
+            label="Pana"
+            type="number"
+            step="any"
+            name="pana"
+            value={editCustomer ? editCustomer.pana : ""}
+            onChange={(e)=>editFormHandler(e,'pana')}
+            required
+          />
+      
+          <TextField
+            label="Partnership"
+            type="number"
+            step="any"
+            name="partnership"
+            value={editCustomer ? editCustomer.partnership : ""}
+            onChange={(e)=>editFormHandler(e,'partnership')}
+            required
+          />
+    
+       
+          <TextField
+             label="Multiple"
+            type="number"
+            step="any"
+            name="multiple"
+            value={editCustomer ? editCustomer.multiple : ""}
+            onChange={(e)=>editFormHandler(e,'multiple')}
+            required
+          />
+        
+          <TextField
+          label="SP"
+            type="number"
+            step="any"
+            name="sp"
+            value={editCustomer ? editCustomer.sp : ""}
+            onChange={(e)=>editFormHandler(e,'sp')}
+            required
+          />
+       
+          <TextField
+          label="DP"
+            type="number"
+            step="any"
+            name="dp"
+            value={editCustomer ? editCustomer.dp : ""}
+            onChange={(e)=>editFormHandler(e,'dp')}
+            required
+          />
+         
+     
+          <TextField
+              label="JODI"
+            type="number"
+            step="any"
+            name="jodi"
+            value={editCustomer ? editCustomer.jodi : ""}
+            onChange={(e)=>editFormHandler(e,'jodi')}
+            required
+          />
+    
+          <TextField
+           label="TP"
+            type="number"
+            step="any"
+            name="tp"
+            value={editCustomer ? editCustomer.tp : ""}
+            onChange={(e)=>editFormHandler(e,'tp')}
+            required
+          />
+ 
+                    </Grid.Cell>
+                  </Grid>
+                <Button id="editCustBtn" submit>Update</Button>
+
+             
+            </Form>
+            {/* <div className="add-customer-popup">
+
               <div className="customer-body">
-                <form onSubmit={submitHandler}>
+                <form onSubmit={updateHandler}>
                   <div className="add-customer-body">
                     <div className="add-suctomer-left">
                       <div className="customer-id">
@@ -256,8 +674,9 @@ export default function Customer() {
                           type="number"
                           step="any"
                           name="customer_id"
+                          value={editCustomer.customer_id}
                           placeholder="Enter customer ID"
-                          onChange={addFormHandler}
+                          onChange={editFormHandler}
                           required
                         />
                       </div>
@@ -267,7 +686,8 @@ export default function Customer() {
                           type="text"
                           name="name"
                           placeholder="Enter customer name"
-                          onChange={addFormHandler}
+                          value={editCustomer.name}
+                          onChange={editFormHandler}
                           required
                         />
                       </div>
@@ -277,8 +697,9 @@ export default function Customer() {
                           type="number"
                           step="any"
                           name="mobile1"
+                          value={editCustomer.mobile1}
                           placeholder="Enter mobile number"
-                          onChange={addFormHandler}
+                          onChange={editFormHandler}
                           required
                         />
                       </div>
@@ -288,8 +709,9 @@ export default function Customer() {
                           type="number"
                           step="any"
                           name="mobile2"
+                          value={editCustomer.mobile2}
                           placeholder="Enter mobile number"
-                          onChange={addFormHandler}
+                          onChange={editFormHandler}
                           required
                         />
                       </div>
@@ -300,8 +722,9 @@ export default function Customer() {
                           name="address"
                           placeholder="Enter customer address"
                           cols="8"
+                          value={editCustomer.address}
                           rows="5"
-                          onChange={addFormHandler}
+                          onChange={editFormHandler}
                         ></textarea>
                       </div>
                       <div>
@@ -311,19 +734,18 @@ export default function Customer() {
                           step="any"
                           name="limit"
                           placeholder="Enter limit"
-                          onChange={addFormHandler}
+                          onChange={editFormHandler}
+                          value={editCustomer.limit}
                           required
                         />
                       </div>
-                    </div>
-
-                    <div className="add-suctomer-right">
-                      <div className="customer-set">
+                      <div>
                         <label htmlFor="set">Set</label>
                         <select
                           name="set"
                           id="set"
-                          onChange={onChangeSet}
+                          value={editCustomer.set}
+                          onChange={editFormHandler}
                           required
                         >
                           <option key={0} value={""}>
@@ -336,463 +758,54 @@ export default function Customer() {
                           ))}
                         </select>
                       </div>
-                      <div>
-                        <label htmlFor="commission">Commision</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="commission"
-                          value={addFormData ? addFormData.commission : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="pana">Pana</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="pana"
-                          value={addFormData ? addFormData.pana : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="partnership">Partmership</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="partnership"
-                          value={addFormData ? addFormData.partnership : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="multiple">Multiple</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="multiple"
-                          value={addFormData ? addFormData.multiple : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="sp">SP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="sp"
-                          value={addFormData ? addFormData.sp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="dp">DP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="dp"
-                          value={addFormData ? addFormData.dp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="jodi">JODI</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="jodi"
-                          value={addFormData ? addFormData.jodi : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="tp">TP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="tp"
-                          value={addFormData ? addFormData.tp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
                     </div>
                   </div>
                   <div className="add-button">
-                    <button type="submit"> Add customer </button>
+                    <button className="d-none" id="editCustBtn" type="submit"> Update customer </button>
                   </div>
                 </form>
               </div>
             </div> */}
-          </div>
-        </div>
-        <div className={isVisible.addCustomer ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('addCustomer')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
 
-              <h2 className="modal-heading" onClick={() => modalOpen('addCustomer')}>Add customer</h2>
-              <button className="modal-close modal-toggle">
+          </Modal.Section>
+        </Modal>
 
-              </button>
+
+        {/* Delete customer popup */}
+        <Modal
+          // activator={activator}
+          open={isVisible.deleteCustomer}
+          onClose={() => modalOpen('deleteCustomer')}
+          title="Delete Customer"
+          primaryAction={{
+            content: 'Yes',
+            onAction: () => deletehandler(deleteCustomerID),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('deleteCustomer'),
+            },
+          ]}
+        >
+          <Modal.Section>
+
+            <div className="">
+              Are you sure you want to delete this customer!
             </div>
-            <div className="modal-body">
-              <div className="modal-content">
-              <div className="">
-            <div className="add-customer-popup">
-            
-              <div className="customer-body">
-                <form onSubmit={submitHandler}>
-                  <div className="add-customer-body">
-                    <div className="add-suctomer-left">
-                      <div className="customer-id">
-                        <label htmlFor="customer">Customer ID</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="customer_id"
-                          placeholder="Enter customer ID"
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer name">Customer Name</label>
-                        <input
-                          type="text"
-                          name="name"
-                          placeholder="Enter customer name"
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer number">Mobile Number 1</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="mobile1"
-                          placeholder="Enter mobile number"
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer number">Mobile Number 2</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="mobile2"
-                          placeholder="Enter mobile number"
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div className="address">
-                        <label htmlFor="textarea">Address</label>
-                        <textarea
 
-                          name="address"
-                          placeholder="Enter customer address"
-                          cols="8"
-                          rows="5"
-                          onChange={addFormHandler}
-                        ></textarea>
-                      </div>
-                      <div>
-                        <label>Limit</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="limit"
-                          placeholder="Enter limit"
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                    </div>
 
-                    <div className="add-suctomer-right">
-                      <div className="customer-set">
-                        <label htmlFor="set">Set</label>
-                        <select
-                          name="set"
-                          id="set"
-                          onChange={onChangeSet}
-                          required
-                        >
-                          <option key={0} value={""}>
-                            Select Set
-                          </option>
-                          {setData.map((data, index) => (
-                            <option key={index + 1} value={data.set}>
-                              {data.set}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label htmlFor="commission">Commision</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="commission"
-                          value={addFormData ? addFormData.commission : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="pana">Pana</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="pana"
-                          value={addFormData ? addFormData.pana : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="partnership">Partmership</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="partnership"
-                          value={addFormData ? addFormData.partnership : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="multiple">Multiple</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="multiple"
-                          value={addFormData ? addFormData.multiple : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="sp">SP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="sp"
-                          value={addFormData ? addFormData.sp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="dp">DP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="dp"
-                          value={addFormData ? addFormData.dp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="jodi">JODI</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="jodi"
-                          value={addFormData ? addFormData.jodi : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="tp">TP</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="tp"
-                          value={addFormData ? addFormData.tp : ""}
-                          onChange={addFormHandler}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="add-button">
-                    <button type="submit"> Add customer </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={isVisible.editCustomer ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('editCustomer')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
+          </Modal.Section>
+        </Modal>
+        <Frame>
+ 
+          {toastMarkup}
+       
+      </Frame>
+      </Page>
 
-              <h2 className="modal-heading" onClick={() => modalOpen('editCustomer')}>Edit customer</h2>
-              <button className="modal-close modal-toggle">
 
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-content">
-                <div className="">
-                  <div className="add-customer-popup">
 
-                    <div className="customer-body">
-                      <form onSubmit={updateHandler}>
-                        <div className="add-customer-body">
-                          <div className="add-suctomer-left">
-                            <div className="customer-id">
-                              <label htmlFor="customer">Customer ID</label>
-                              <input
-                                type="number"
-                                step="any"
-                                name="customer_id"
-                                value={editCustomer.customer_id}
-                                placeholder="Enter customer ID"
-                                onChange={editFormHandler}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label htmlFor="customer name">Customer Name</label>
-                              <input
-                                type="text"
-                                name="name"
-                                placeholder="Enter customer name"
-                                value={editCustomer.name}
-                                onChange={editFormHandler}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label htmlFor="customer number">Mobile Number 1</label>
-                              <input
-                                type="number"
-                                step="any"
-                                name="mobile1"
-                                value={editCustomer.mobile1}
-                                placeholder="Enter mobile number"
-                                onChange={editFormHandler}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label htmlFor="customer number">Mobile Number 2</label>
-                              <input
-                                type="number"
-                                step="any"
-                                name="mobile2"
-                                value={editCustomer.mobile2}
-                                placeholder="Enter mobile number"
-                                onChange={editFormHandler}
-                                required
-                              />
-                            </div>
-                            <div className="address">
-                              <label htmlFor="textarea">Address</label>
-                              <textarea
-
-                                name="address"
-                                placeholder="Enter customer address"
-                                cols="8"
-                                value={editCustomer.address}
-                                rows="5"
-                                onChange={editFormHandler}
-                              ></textarea>
-                            </div>
-                            <div>
-                              <label>Limit</label>
-                              <input
-                                type="number"
-                                step="any"
-                                name="limit"
-                                placeholder="Enter limit"
-                                onChange={editFormHandler}
-                                value={editCustomer.limit}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label htmlFor="set">Set</label>
-                              <select
-                                name="set"
-                                id="set"
-                                value={editCustomer.set}
-                                onChange={editFormHandler}
-                                required
-                              >
-                                <option key={0} value={""}>
-                                  Select Set
-                                </option>
-                                {setData.map((data, index) => (
-                                  <option key={index + 1} value={data.set}>
-                                    {data.set}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="add-button">
-                          <button type="submit"> Update customer </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={isVisible.deleteCustomer ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('deleteCustomer')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
-
-              <h2 className="modal-heading" onClick={() => modalOpen('deleteCustomer')}>Delete customer</h2>
-              <button className="modal-close modal-toggle">
-
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-content">
-                <div className="">
-                  Are you sure you want to delete this customer!
-                </div>
-                <button onClick={() =>deletehandler(deleteCustomerID)}>Yes</button>
-                <button onClick={() =>modalOpen('deleteCustomer')}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
     </>
   );
 }
