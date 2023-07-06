@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useCallback, useContext, useEffect, useState } from "react";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
@@ -10,11 +10,14 @@ import {
   DeleteMajor,
   PlusMinor
 } from '@shopify/polaris-icons';
+import { MyContext } from "./App";
 
 export default function Customer() {
+  const { message,setMessage } = useContext(MyContext);
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
   const [selectedSet, setSelectedSet] = useState('');
+  const [msg, setMsg] = useState('');
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
     commission: "",
@@ -71,7 +74,8 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
-    toast.success('Customer added successfully');
+    // toast.success('Customer added successfully');
+    setMessage('Customer added successfully');
     setActive(true);
   };
 
@@ -111,7 +115,10 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
-    toast.success('Customer updated successfully');
+    setActive(true);
+    // toast.success('Customer updated successfully');
+    // setMsg('Customer updated successfully');
+    setMessage('Customer updated successfully');
     getNotesFromFile();
   };
 
@@ -198,7 +205,8 @@ export default function Customer() {
       { dir: BaseDirectory.Resource }
     );
     getNotesFromFile();
-    toast.success('Customer deleted successfully');
+
+    setMessage('Customer deleted successfully');
     modalOpen('deleteCustomer');
   }
 
@@ -215,10 +223,12 @@ export default function Customer() {
     setSelectedSet(tmp[0].set);
     modalOpen(param);
   }
-
+  const toggleActive = useCallback(() => setActive((active) => !active), []);
   const toastMarkup = active ? (
-    <Toast content="Customer added successfully" onDismiss={toggleActive} duration={2000} />
+    <Toast content={msg} onDismiss={toggleActive} duration={2000} />
   ) : null;
+
+
 
 
   const [isVisible, setIsVisible] = useState({ addCustomer: false, editCustomer: false, deleteCustomer: false });
@@ -289,7 +299,7 @@ export default function Customer() {
               { title: 'Cid' },
               { title: 'Name' },
               { title: 'Set' },
-              { title: 'Action' },
+              { title: 'Action'},
             ]}
             selectable={false}
           >
@@ -659,8 +669,6 @@ export default function Customer() {
                     </Grid.Cell>
                   </Grid>
                 <Button id="editCustBtn" submit>Update</Button>
-
-             
             </Form>
             {/* <div className="add-customer-popup">
 
@@ -797,11 +805,7 @@ export default function Customer() {
 
           </Modal.Section>
         </Modal>
-        <Frame>
- 
-          {toastMarkup}
-       
-      </Frame>
+     
       </Page>
 
 

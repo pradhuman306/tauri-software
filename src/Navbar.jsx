@@ -2,7 +2,7 @@ import { React, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "./assets/logo-flat.svg";
 import search from "./assets/search.svg";
-import { TopBar, ActionList, Icon, Frame, Text, Button, Navigation } from '@shopify/polaris';
+import { TopBar, ActionList, Icon, Frame, Text, Button, Navigation, HorizontalGrid, List } from '@shopify/polaris';
 import { ArrowLeftMinor, QuestionMarkMajor } from '@shopify/polaris-icons';
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
@@ -124,9 +124,8 @@ export default function Navbar() {
   );
 
   const secondaryMenuMarkup = (
-    <ul className="d-flex">
-    
-      <li>
+    <List>
+      <List.Item>
       <TopBar.Menu
           activatorContent={
         <Link
@@ -136,8 +135,8 @@ export default function Navbar() {
           Set
         </Link>}
         />
-      </li>
-      <li>
+   </List.Item>
+   <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
@@ -149,8 +148,8 @@ export default function Navbar() {
             </Link>
           }
         />
-      </li>
-      <li>
+      </List.Item>
+      <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
@@ -161,9 +160,9 @@ export default function Navbar() {
               Customer
             </Link>
           }
-        />
-      </li>
-      <li>
+        /></List.Item>
+   
+   <List.Item>
       <TopBar.Menu
           activatorContent={
         <Link
@@ -173,9 +172,9 @@ export default function Navbar() {
         >
           Entry/edit
         </Link>}/>
-      </li>
-      <li>
-
+        </List.Item>
+  
+        <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
@@ -189,8 +188,9 @@ export default function Navbar() {
             </Link>
           }
         />
-      </li>
-    </ul>
+         </List.Item>
+   
+</List>
   );
 
   const topBarMarkup = (

@@ -1,11 +1,19 @@
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
 import { toast } from 'react-toastify';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, List, ButtonGroup } from '@shopify/polaris';
+import {
+  EditMajor,
+  DeleteMajor,
+  PlusMinor
+} from '@shopify/polaris-icons';
+import { MyContext } from "./App";
 
 
 export default function Entry() {
   const [customers, setcustomers] = useState([]);
+
   var [entries, setentries] = useState([]);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -54,21 +62,20 @@ export default function Entry() {
   const [tabActive, setTabActive] = useState("");
   const [date, setDate] = useState("");
 
-  const dateChange = async (e) => {
-    setDate(e.target.value);
+  const dateChange = async (value) => {
+    setDate(value);
     setTabActive("");
   };
 
-  const [timezone, setTimeZone] = useState("");
+  const [timezone, setTimeZone] = useState("TO");
   const [inputFields, setInputFields] = useState([]);
 
-  const handleChange = (index, evnt) => {
-    const { name, value } = evnt.target;
+  const handleChange = (value,name,index) => {
     const list = [...inputFields];
     list[index][name] = value;
     if (name == "customer_id") {
       const cdata = customers.filter(
-        (item) => item.customer_id === evnt.target.value
+        (item) => item.customer_id === value
       );
       list[index]["name"] = cdata && cdata[0] ? cdata[0]["name"] : "";
     }
@@ -95,11 +102,16 @@ export default function Entry() {
       },
     ]);
   };
-
-  const onChangesetTimeZone = (tz) => {
+  const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  const onChangesetTimeZone = (tz, index) => {
     setTimeZone(tz);
     setTabActive("");
+    if (activeButtonIndex === index) return;
+    setActiveButtonIndex(index);
+
   };
+
+
 
   const saveEntries = async () => {
     if (tabActive == "edit") {
@@ -131,11 +143,11 @@ export default function Entry() {
       );
       toast.success('Entry updated successfully');
     } else {
-    setentries([...entries,...inputFields]);
+      setentries([...entries, ...inputFields]);
       await writeTextFile(
         {
           path: "entries.json",
-          contents: JSON.stringify([...entries,...inputFields]),
+          contents: JSON.stringify([...entries, ...inputFields]),
         },
         { dir: BaseDirectory.Resource }
       );
@@ -165,7 +177,7 @@ export default function Entry() {
   const newEntry = async (v) => {
     setTabActive(v);
     if (date == "") {
-     toast.error('Please select date');
+      toast.error('Please select date');
       // await message("First select date.", { title: "Account", type: "error" });
     } else {
       setInputFields([
@@ -190,7 +202,7 @@ export default function Entry() {
   const editEntry = async (v) => {
     setTabActive(v);
     if (date == "" && timezone == "") {
-     toast.error('Please select time and date');
+      toast.error('Please select time and date');
 
       // await message("First select time and date.", {
       //   title: "Account",
@@ -216,116 +228,236 @@ export default function Entry() {
   const cancel = async () => {
     console.log("cancel");
   };
+  const resourceName = {
+    singular: 'customer',
+    plural: 'customers',
+  };
+  const resourceNameInput = {
+    singular: 'inputFields',
+    plural: 'inputFields',
+  };
+  
+  const rowMarkup = customers.map(
+    (
+      { id, customer_id, set, name },
+      index,
+    ) => (
+
+      <IndexTable.Row id={id} key={id} position={index}>
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {customer_id}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{name}</IndexTable.Cell>
+        <IndexTable.Cell>{set}</IndexTable.Cell>
+      </IndexTable.Row>
+
+    ),
+  );
+
+  const tableEdit = inputFields.map(
+    (
+      { 
+        id,
+        customer_id,
+        name,
+        amount,
+        pana_amount,
+        khula_amount,
+        sp_amount,
+        dp_amount,
+        jodi_amount,
+        tp_amount },
+      index,
+    ) => (
+
+      <IndexTable.Row id={id} key={id} position={index}>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt,'customer_id', index)}
+            value={customer_id}
+            name="customer_id"
+          />
+        </IndexTable.Cell>
+        <IndexTable.Cell>  <TextField
+          type="text"
+          onChange={(evnt) => handleChange(evnt, 'name',index)}
+          value={name}
+          name="name"
+          readOnly
+        /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt,'amount', index)}
+            value={amount}
+            name="amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
+            value={pana_amount}
+            name="pana_amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt,'khula_amount', index)}
+            value={khula_amount}
+            name="khula_amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
+            value={sp_amount}
+            name="sp_amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt,  'dp_amount', index)}
+            value={dp_amount}
+            name="dp_amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt,'jodi_amount', index)}
+            value={jodi_amount}
+            name="jodi_amount"
+          /></IndexTable.Cell>
+        <IndexTable.Cell>
+          <TextField
+            type="text"
+            onChange={(evnt) => handleChange(evnt, 'tp_amount',index)}
+            value={tp_amount}
+            name="tp_amount"
+          /></IndexTable.Cell>
+
+      </IndexTable.Row>
+
+    ),
+  );
+
+
   return (
     <>
-      <main>
-        <div className="container over-flow">
-        <div>
-          <div className="time-frame">
-            <h4 className="time-frame-heading">Entry/Edit</h4>
-            <header>
-              <ul className="entry-header">
-                <li
-                  className={timezone == "TO" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("TO")}
-                >
-                  TO
-                </li>
-                <li
-                  className={timezone == "TK" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("TK")}
-                >
-                  TK
-                </li>
-                <li
-                  className={timezone == "MO" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("MO")}
-                >
-                  MO
-                </li>
-                <li
-                  className={timezone == "KO" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("KO")}
-                >
-                  KO
-                </li>
-                <li
-                  className={timezone == "MK" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("MK")}
-                >
-                  MK
-                </li>
-                <li
-                  className={timezone == "KK" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("KK")}
-                >
-                  KK
-                </li>
-                <li
-                  className={timezone == "A1" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("A1")}
-                >
-                  A1
-                </li>
-                <li
-                  className={timezone == "MO2" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("MO2")}
-                >
-                  MO2
-                </li>
-                <li
-                  className={timezone == "BO" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("BO")}
-                >
-                  BO
-                </li>
-                <li
-                  className={timezone == "MK2" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("MK2")}
-                >
-                  MK2
-                </li>
-                <li
-                  className={timezone == "BK" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("BK")}
-                >
-                  BK
-                </li>
-                <li
-                  className={timezone == "A2" ? "active" : ""}
-                  onClick={() => onChangesetTimeZone("A2")}
-                >
-                  A2
-                </li>
-              </ul>
-            </header>
-            <div className="customer-list-slide">
-              <a href="javascript:void(0)" onClick={modalOpen} >Customers</a>
-            </div>
-            </div>
-            <div className="content">
-              <div className="content-top">
-              <input
+      <Page fullWidth
+        title="Entry/Edit"
+        primaryAction={{ content: 'View Customer', icon: PlusMinor, onAction: () => modalOpen() }}>
+        <Grid>
+          <Grid.Cell columnSpan={{ xs: 8, sm: 3, md: 3, lg: 6, xl: 6 }}>
+            <ButtonGroup segmented>
+              <Button
+                pressed={activeButtonIndex === 0}
+                onClick={() => onChangesetTimeZone("TO", 0)}
+              >
+                TO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 1}
+                onClick={() => onChangesetTimeZone("TK", 1)}
+              >
+                TK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 2}
+                onClick={() => onChangesetTimeZone("MO", 2)}
+              >
+                MO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 3}
+                onClick={() => onChangesetTimeZone("KO", 3)}
+              >
+                KO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 4}
+                onClick={() => onChangesetTimeZone("MK", 4)}
+              >
+                MK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 5}
+                onClick={() => onChangesetTimeZone("KK", 5)}
+              >
+                KK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 6}
+                onClick={() => onChangesetTimeZone("A1", 6)}
+              >
+                A1
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 7}
+                onClick={() => onChangesetTimeZone("MO2", 7)}
+              >
+                MO2
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 8}
+                onClick={() => onChangesetTimeZone("BO", 8)}
+              >
+                BO
+              </Button>
+
+              <Button
+                pressed={activeButtonIndex === 9}
+                onClick={() => onChangesetTimeZone("MK2", 9)}
+              >
+                MK2
+              </Button>
+
+              <Button
+                pressed={activeButtonIndex === 10}
+                onClick={() => onChangesetTimeZone("BK", 10)}
+              >
+                BK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 11}
+                onClick={() => onChangesetTimeZone("A2", 11)}
+              >
+                A2
+              </Button>
+            </ButtonGroup>
+          </Grid.Cell>
+          <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+            <Grid>
+              <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+                <TextField
                   type="date"
-                  className="form-control"
+                  value={date}
                   onChange={(e) => dateChange(e)}
+
                 />
-                <div className="btn-wrap">
-                  <button
+              </Grid.Cell>
+              <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+                <ButtonGroup>
+                  <Button
                     className={tabActive == "entry" ? "active" : ""}
                     onClick={() => newEntry("entry")}
                   >
                     Entry
-                  </button>
-                  <button
-                    className={tabActive == "edit" ? "active" : ""}
-                    onClick={() => editEntry("edit")}
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
-              {/* <div className="left-wrap">
+                  </Button>
+                  <Button primary className={tabActive == "edit" ? "active" : ""}
+                    onClick={() => editEntry("edit")}>  Edit</Button>
+                </ButtonGroup>
+
+              </Grid.Cell>
+            </Grid>
+          </Grid.Cell>
+        </Grid>
+
+    
+
+                {/* <div className="left-wrap">
                 <input
                   type="date"
                   className="form-control"
@@ -350,189 +482,94 @@ export default function Entry() {
                   <button onClick={cancel}>Cancel</button>
                 </div>
               </div> */}
-              <div className="main-table-contant">
-
-              <div className="center-wrap">
-                {timezone != "" && tabActive != "" ? (
-                  <>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>CID</th>
-                          <th>Name</th>
-                          <th>Amount</th>
-                          <th>Pana_amount</th>
-                          <th>Khula_amount</th>
-                          <th>SP_amount</th>
-                          <th>DP_amount</th>
-                          <th>JODI_amount</th>
-                          <th>TP_amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {inputFields.map((data, index) => {
-                          const {
-                            customer_id,
-                            name,
-                            amount,
-                            pana_amount,
-                            khula_amount,
-                            sp_amount,
-                            dp_amount,
-                            jodi_amount,
-                            tp_amount,
-                          } = data;
-                          return (
-                            <tr key={index}>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={customer_id}
-                                  name="customer_id"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={name}
-                                  name="name"
-                                  readOnly
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={amount}
-                                  name="amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={pana_amount}
-                                  name="pana_amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={khula_amount}
-                                  name="khula_amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={sp_amount}
-                                  name="sp_amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={dp_amount}
-                                  name="dp_amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={jodi_amount}
-                                  name="jodi_amount"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  onChange={(evnt) => handleChange(index, evnt)}
-                                  value={tp_amount}
-                                  name="tp_amount"
-                                />
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                    <div>
-                    {timezone != "" && tabActive != "" && tabActive == "entry" ? (
-                      <button
-                        className="btn btn-outline-success "
-                        onClick={addInputField}
-                      >
-                        Add New
-                      </button>
+             
+                    {timezone != "" && tabActive != "" ? (
+                      <>
+                          <LegacyCard>
+          <IndexTable
+            resourceName={resourceNameInput}
+            itemCount={inputFields.length}
+            headings={[
+              { title: 'CID' },
+              { title: 'Name' },
+              { title: 'Amount' },
+              { title: 'Pana_amount' },
+              { title: 'Khula_amount' },
+              { title: 'SP_amount'},
+              { title: 'DP_amount'},
+              { title: 'JODI_amount'},
+              { title: 'TP_amount'},
+            ]}
+            selectable={false}
+          >
+            {tableEdit}
+          </IndexTable>
+        </LegacyCard>
+                      
+                          {timezone != "" && tabActive != "" && tabActive == "entry" ? (
+                            <Button
+                             primary
+                              onClick={()=>addInputField()}
+                            >
+                              Add New
+                            </Button>
+                          ) : (
+                            ""
+                          )}
+                       
+                      </>
                     ) : (
                       ""
                     )}
-                    </div>
-                  </>
-                ) : (
-                  ""
-                )}
-                </div>
-                <div className="save-cancel-btn">
-                      <button className="save-btn" onClick={saveEntries}>
-                        Save
-                      </button>
-                      <button className="cancel-btn secondary-btn">
-                        Cancel
-                      </button>
-                    </div>
-              
-              </div>
-              
-            </div>
-          </div>
-            <div className={isVisible ? "modal is-visible" : "modal"}>
-            <div
-              className="modal-overlay modal-toggle customer-toggle"
-              onClick={modalOpen}
-            >x</div>
-            <div className="modal-wrapper modal-transition customer-list-modal">
-              <div className="modal-header">
-                
-                <h2 className="modal-heading"  onClick={modalOpen}>Customers</h2>
-                <button className="modal-close modal-toggle">
+             
                   
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="modal-content">
-                <div className="customer-list-popup">
-          <table>
-                <thead>
-                  <tr>
-                    <th>CID</th>
-                    <th>Name</th>
-                    <th>Set</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.customer_id}</td>
-                      <td>{data.name}</td>
-                      <td>{data.set}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+                    <ButtonGroup>
+                  <Button
+                    className={tabActive == "entry" ? "active" : ""}
+                    onClick={()=>saveEntries()}
+                  >
+                    Save
+                  </Button>
+                  <Button primary
+                  >  Cancel</Button>
+                </ButtonGroup>
+              
+        
+            {/* View customer popup */}
+            <Modal
+              // activator={activator}
+              open={isVisible}
+              onClose={() => modalOpen()}
+              title="Customers"
+              secondaryActions={[
+                {
+                  content: 'Cancel',
+                  onAction: () => modalOpen(),
+                },
+              ]}
+            >
+              <Modal.Section>
+
+                <LegacyCard>
+                  <IndexTable
+                    resourceName={resourceName}
+                    itemCount={customers.length}
+                    headings={[
+                      { title: 'CID' },
+                      { title: 'Name' },
+                      { title: 'Set' },
+                    ]}
+                    selectable={false}
+                  >
+                    {rowMarkup}
+                  </IndexTable>
+                </LegacyCard>
+
+
+              </Modal.Section>
+            </Modal>
+        
+      </Page>
     </>
   );
 }

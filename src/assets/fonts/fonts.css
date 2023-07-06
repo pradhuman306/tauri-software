@@ -54,7 +54,7 @@
 .Polaris-Frame__Content{
     display: none;
 }
-#addCustBtn,#editCustBtn{
+#addCustBtn,#editCustBtn,#addSetBtn,#editSetBtn{
     display: none;
 }
 

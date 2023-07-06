@@ -4,6 +4,12 @@ import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
 import { toast } from 'react-toastify';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon,Select, Frame } from '@shopify/polaris';
+import {
+  EditMajor,
+  DeleteMajor,
+  PlusMinor
+} from '@shopify/polaris-icons';
 
 
 export default function Set() {
@@ -12,9 +18,9 @@ export default function Set() {
   const [addFormData, setAddFormData] = useState({});
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
-  const addFormHandler = (event) => {
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
+  const addFormHandler = (value,param) => {
+    const fieldName = param;
+    const fieldValue = value;
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
     setAddFormData(newFormData);
@@ -34,9 +40,9 @@ export default function Set() {
     modalOpen('addSet');
   };
 
-  const editFormHandler = (event) => {
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
+  const editFormHandler = (value,param) => {
+    const fieldName = param;
+    const fieldValue = value;
     const newFormData1 = { ...editSet };
     newFormData1[fieldName] = fieldValue;
     setEditSet(newFormData1);
@@ -56,13 +62,11 @@ export default function Set() {
       { path: "set.json", contents: JSON.stringify(tmp) },
       { dir: BaseDirectory.Resource }
     );
-    toast.success('Set updated successfully');
     getdataFromFile();
   };
   const updateHandler = (event) => {
     updateSet();
     event.preventDefault();
-  
     modalOpen('editSet');
   };
 
@@ -99,7 +103,6 @@ export default function Set() {
       { dir: BaseDirectory.Resource }
     );
     getdataFromFile();
-    toast.success('Set deleted successfully');
     modalOpen('deleteSet');
   }
 
@@ -143,450 +146,356 @@ export default function Set() {
     getdataFromFile();
   }, []);
 
+  const resourceName = {
+    singular: 'setData',
+    plural: 'setDatas',
+  };
+
+  const rowMarkup = setData.map(
+    (
+      { id,set, commission, pana, sp, dp,partnership,multiple,jodi,tp },
+      index,
+    ) => (
+
+      <IndexTable.Row id={id} key={id} position={index}>
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {set}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{commission}</IndexTable.Cell>
+        <IndexTable.Cell>{pana}</IndexTable.Cell>
+        <IndexTable.Cell>{partnership}</IndexTable.Cell>
+        <IndexTable.Cell>{multiple}</IndexTable.Cell>
+        <IndexTable.Cell>{sp}</IndexTable.Cell>
+        <IndexTable.Cell>{dp}</IndexTable.Cell>
+        <IndexTable.Cell>{jodi}</IndexTable.Cell>
+        <IndexTable.Cell>{tp}</IndexTable.Cell>
+        <IndexTable.Cell>
+          <Button onClick={() => handleEditSet(id, 'editSet')}>
+            <Icon
+              source={EditMajor}
+              color="base"
+            />
+          </Button>
+          <Button onClick={() => {
+            modalOpen('deleteSet')
+            setDeleteSetID(id)
+          }
+          }>
+            <Icon
+              source={DeleteMajor}
+              color="base"
+            />
+
+          </Button>
+        </IndexTable.Cell>
+      </IndexTable.Row>
+
+    ),
+  );
+
+
+
   return (
     <>
-      <main>
-        <div className="container">
-        <div className="customer-main-sec">
-          <div className="set-list">
-          <div className="add-button">
-                  <button type="button" onClick={()=> modalOpen('addSet')}>Add New Set</button>
-                </div>
-          <table>
-                <thead>
-                  <tr>
-                    <th style={{minWidth:70+'px'}}>Set</th>
-                    <th style={{minWidth:120+'px'}}>Commision</th>
-                    <th style={{minWidth:80+'px'}}>Pana</th>
-                    <th style={{minWidth:140+'px'}}>Partmership</th>
-                    <th style={{minWidth:120+'px'}}>Multiple</th>
-                    <th style={{minWidth:80+'px'}}>SP</th>
-                    <th style={{minWidth:80+'px'}}>DP</th>
-                    <th style={{minWidth:80+'px'}}>JODI</th>
-                    <th style={{minWidth:80+'px'}}>TP</th>
-                    <th style={{minWidth:100+'px'}}>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {setData.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.set}</td>
-                      <td>{data.commisiom}</td>   
-                      <td>{data.pana}</td>     
-                      <td>{data.partmership}</td>
-                      <td>{data.multiple}</td>
-                      <td>{data.sp}</td>        
-                      <td>{data.dp}</td>
-                      <td>{data.jodi}</td>
-                      <td>{data.TP}</td> 
-                      <td>
-                        <div className="action-btns">
-                        <button onClick={() => handleEditSet(data.id, 'editSet')}>
-                          <img src={edit} alt="" />
-                          </button>
-                          <button onClick={() => {
-                          modalOpen('deleteSet')
-                          setDeleteSetID(data.id)
-                        }
-                        }>
-                            <img src={delet} alt="" />
-                          </button>
-                        </div>
-                        </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {/* <div className="set-add-frame">
-            <div className="add-set-popup">
-            <div className="add-set-header">
-              <h4>Add new Set</h4>
+     
+                <Page fullWidth
+        title="Set"
+        primaryAction={{ content: 'Add New Set', icon: PlusMinor, onAction: () => modalOpen('addSet') }}>
+                <LegacyCard>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={setData.length}
+            headings={[
+              { title: 'Set' },
+              { title: 'Commission' },
+              { title: 'Pana' },
+              { title: 'Partnership' },
+              { title: 'Multiple' },
+              { title: 'SP'},
+              { title: 'DP'},
+              { title: 'JODI'},
+              { title: 'TP'},
+              { title: 'Action'},
+            ]}
+            selectable={false}
+          >
+            {rowMarkup}
+          </IndexTable>
+        </LegacyCard>
+
+         
+
+    {/* Add set popup */}
+    <Modal
+          // activator={activator}
+          open={isVisible.addSet}
+          onClose={() => modalOpen('addSet')}
+          title="Add New Set"
+          primaryAction={{
+            content: 'Add Set',
+            onAction: () => document.getElementById('addSetBtn').click(),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('addSet'),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <Form onSubmit={submitHandler}>
+            <TextField
+             label="Set"
+                        type="number"
+                        step="any"
+                        name="set"
+                        value={addFormData ? addFormData.set : ""}
+                        onChange={(e)=>addFormHandler(e,'set')}
+                        required
+                      />
+          <TextField
+            label="Commision"
+            type="number"
+            step="any"
+            name="commission"
+            value={addFormData ? addFormData.commission : ""}
+            onChange={(e)=>addFormHandler(e,'commission')}
+            required
+          />
+     
+          <TextField
+            label="Pana"
+            type="number"
+            step="any"
+            name="pana"
+            value={addFormData ? addFormData.pana : ""}
+            onChange={(e)=>addFormHandler(e,'pana')}
+            required
+          />
+      
+          <TextField
+            label="Partnership"
+            type="number"
+            step="any"
+            name="partnership"
+            value={addFormData ? addFormData.partnership : ""}
+            onChange={(e)=>addFormHandler(e,'partnership')}
+            required
+          />
+    
+       
+          <TextField
+             label="Multiple"
+            type="number"
+            step="any"
+            name="multiple"
+            value={addFormData ? addFormData.multiple : ""}
+            onChange={(e)=>addFormHandler(e,'multiple')}
+            required
+          />
+        
+          <TextField
+          label="SP"
+            type="number"
+            step="any"
+            name="sp"
+            value={addFormData ? addFormData.sp : ""}
+            onChange={(e)=>addFormHandler(e,'sp')}
+            required
+          />
+       
+          <TextField
+          label="DP"
+            type="number"
+            step="any"
+            name="dp"
+            value={addFormData ? addFormData.dp : ""}
+            onChange={(e)=>addFormHandler(e,'dp')}
+            required
+          />
+         
+     
+          <TextField
+              label="JODI"
+            type="number"
+            step="any"
+            name="jodi"
+            value={addFormData ? addFormData.jodi : ""}
+            onChange={(e)=>addFormHandler(e,'jodi')}
+            required
+          />
+    
+          <TextField
+           label="TP"
+            type="number"
+            step="any"
+            name="tp"
+            value={addFormData ? addFormData.tp : ""}
+            onChange={(e)=>addFormHandler(e,'tp')}
+            required
+          />
+ 
+                   
+                <Button id="addSetBtn" submit>Submit</Button>
+
              
-            </div>
-            <div className="customer-body">
-              <form onSubmit={submitHandler}>
-              <div className="add-suctomer-right">
-                    <div className="customer-set">
-                      <label htmlFor="set">Set</label>
-                      <input
+            </Form>
+
+    
+          </Modal.Section>
+        </Modal>
+
+   {/* Edit set popup */}
+   <Modal
+          open={isVisible.editSet}
+          onClose={() => modalOpen('editSet')}
+          title="Edit Set"
+          primaryAction={{
+            content: 'Update Set',
+            onAction: () => document.getElementById('editSetBtn').click(),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('editSet'),
+            },
+          ]}
+        >
+          <Modal.Section>
+          <Form onSubmit={updateHandler}>
+            <TextField
+             label="Set"
                         type="number"
                         step="any"
                         name="set"
-                        onChange={addFormHandler}
+                        value={editSet ? editSet.set : ""}
+                        onChange={(e)=>editFormHandler(e,'set')}
                         required
                       />
-                    </div>
-                    <div>
-                      <label htmlFor="commission">Commision</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="commission"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="pana">Pana</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="pana"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="partnership">Partmership</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="partnership"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="multiple">Multiple</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="multiple"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="sp">SP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="sp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="dp">DP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="dp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="jodi">JODI</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="jodi"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="tp">TP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="tp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                  </div>
-                <div className="add-button">
-                  <button type="submit">Add Set</button>
-                </div>
-              </form>
-            </div>
-          </div>
-            </div> */}
-          </div>
-          <div className={isVisible.addSet ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('addSet')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
+          <TextField
+            label="Commision"
+            type="number"
+            step="any"
+            name="commission"
+            value={editSet ? editSet.commission : ""}
+            onChange={(e)=>editFormHandler(e,'commission')}
+            required
+          />
+     
+          <TextField
+            label="Pana"
+            type="number"
+            step="any"
+            name="pana"
+            value={editSet ? editSet.pana : ""}
+            onChange={(e)=>editFormHandler(e,'pana')}
+            required
+          />
+      
+          <TextField
+            label="Partnership"
+            type="number"
+            step="any"
+            name="partnership"
+            value={editSet ? editSet.partnership : ""}
+            onChange={(e)=>editFormHandler(e,'partnership')}
+            required
+          />
+    
+       
+          <TextField
+             label="Multiple"
+            type="number"
+            step="any"
+            name="multiple"
+            value={editSet ? editSet.multiple : ""}
+            onChange={(e)=>editFormHandler(e,'multiple')}
+            required
+          />
+        
+          <TextField
+          label="SP"
+            type="number"
+            step="any"
+            name="sp"
+            value={editSet ? editSet.sp : ""}
+            onChange={(e)=>editFormHandler(e,'sp')}
+            required
+          />
+       
+          <TextField
+          label="DP"
+            type="number"
+            step="any"
+            name="dp"
+            value={editSet ? editSet.dp : ""}
+            onChange={(e)=>editFormHandler(e,'dp')}
+            required
+          />
+         
+     
+          <TextField
+              label="JODI"
+            type="number"
+            step="any"
+            name="jodi"
+            value={editSet ? editSet.jodi : ""}
+            onChange={(e)=>editFormHandler(e,'jodi')}
+            required
+          />
+    
+          <TextField
+           label="TP"
+            type="number"
+            step="any"
+            name="tp"
+            value={editSet ? editSet.tp : ""}
+            onChange={(e)=>editFormHandler(e,'tp')}
+            required
+          />
+ 
+                   
+                <Button id="editSetBtn" submit>Submit</Button>
 
-              <h2 className="modal-heading" onClick={() => modalOpen('addSet')}>Add Set</h2>
-              <button className="modal-close modal-toggle">
+             
+            </Form>
+            
 
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-content">
-              <div className="">
-              <div className="add-set-popup">
-           
-            <div className="customer-body">
-              <form onSubmit={submitHandler}>
-              <div className="add-suctomer-right">
-                    <div className="customer-set">
-                      <label htmlFor="set">Set</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="set"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="commission">Commision</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="commission"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="pana">Pana</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="pana"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="partnership">Partmership</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="partnership"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="multiple">Multiple</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="multiple"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="sp">SP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="sp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="dp">DP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="dp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="jodi">JODI</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="jodi"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="tp">TP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="tp"
-                        onChange={addFormHandler}
-                        required
-                      />
-                    </div>
-                  </div>
-                <div className="add-button">
-                  <button type="submit">Add Set</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={isVisible.editSet ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('editSet')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
+          </Modal.Section>
+        </Modal>
 
-              <h2 className="modal-heading" onClick={() => modalOpen('editSet')}>Update Set</h2>
-              <button className="modal-close modal-toggle">
 
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-content">
-              <div className="">
-              <div className="add-set-popup">
-           
-            <div className="customer-body">
-              <form onSubmit={updateHandler}>
-              <div className="add-suctomer-right">
-                    <div className="customer-set">
-                      <label htmlFor="set">Set</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="set"
-                        value={editSet.set}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="commission">Commision</label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={editSet.commission}
-                        name="commission"
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="pana">Pana</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="pana"
-                        value={editSet.pana}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="partnership">Partmership</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="partnership"
-                        value={editSet.partnership}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="multiple">Multiple</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="multiple"
-                        value={editSet.multiple}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="sp">SP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="sp"
-                        value={editSet.sp}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="dp">DP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        name="dp"
-                        value={editSet.dp}
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="jodi">JODI</label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={editSet.jodi}
-                        name="jodi"
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="tp">TP</label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={editSet.tp}
-                        name="tp"
-                        onChange={editFormHandler}
-                        required
-                      />
-                    </div>
-                  </div>
-                <div className="add-button">
-                  <button type="submit">Update Set</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={isVisible.deleteSet ? "modal is-visible" : "modal"}>
-          <div
-            className="modal-overlay modal-toggle customer-toggle"
-            onClick={() => modalOpen('deleteSet')}
-          >x</div>
-          <div className="modal-wrapper modal-transition">
-            <div className="modal-header">
+         {/* Delete set popup */}
+         <Modal
+          // activator={activator}
+          open={isVisible.deleteSet}
+          onClose={() => modalOpen('deleteSet')}
+          title="Delete Set"
+          primaryAction={{
+            content: 'Yes',
+            onAction: () => deletehandler(deleteSetID),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('deleteSet'),
+            },
+          ]}
+        >
+          <Modal.Section>
 
-              <h2 className="modal-heading" onClick={() => modalOpen('deleteSet')}>Delete Set</h2>
-              <button className="modal-close modal-toggle">
+            <div className="">
+              Are you sure you want to delete this set!
+            </div>
 
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="modal-content">
-                <div className="">
-                  Are you sure you want to delete this set!
-                </div>
-                <button onClick={() =>deletehandler(deleteSetID)}>Yes</button>
-                <button onClick={() =>modalOpen('deleteSet')}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-      </main>
+
+          </Modal.Section>
+        </Modal>
+   
+     
+     </Page>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useCallback, useState } from "react";
 import { Outlet, createBrowserRouter, useNavigate } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import Login from "./Login";
@@ -14,14 +14,16 @@ import Entry from "./Entry";
 import Navbar from "./Navbar";
 import '@shopify/polaris/build/esm/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
-import {AppProvider, Page, LegacyCard, Button} from '@shopify/polaris';
+import {AppProvider,Toast, Page, LegacyCard, Button, Frame} from '@shopify/polaris';
 import Settings from "./Settings";
 import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
+export const MyContext = createContext();
 const App = () => {
-
-
-  
+ 
+const [message,setMessage]=useState("");
+const [errorMessage,setErrorMessage]=useState("");
+const toggleActive = useCallback(() => setMessage(''), []);
   const navigate = useNavigate();
     appWindow.onCloseRequested(async (event) => {
       // if (!confirmed) {
@@ -35,9 +37,15 @@ const App = () => {
   return (
     <React.Fragment>
         <AppProvider i18n={enTranslations}>
+        <MyContext.Provider value={{ message, setMessage }}>
       <Navbar/>
       <Outlet />
       <ToastContainer autoClose={2000} position="top-center"  />
+      <Frame>
+        {message?<Toast content={message} error={false} onDismiss={toggleActive}  duration={2000} />:""}
+        {errorMessage?<Toast content={errorMessage} erroronDismiss={toggleActive}  duration={2000} />:""}
+        </Frame>
+        </MyContext.Provider>
       </AppProvider>
     </React.Fragment>
   );
