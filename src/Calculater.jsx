@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Grid, Page, TextField, Select, List, LegacyCard, IndexTable, Button } from "@shopify/polaris";
 
 export default function Calculater() {
@@ -9,6 +9,7 @@ export default function Calculater() {
   const [entries, setentries] = useState([]);
   const params = useParams();
   const date = new Date();
+  const nav = useNavigate();
   useEffect(() => {
     const getNotesFromFile = async () => {
       try {
@@ -218,7 +219,30 @@ export default function Calculater() {
   };
 
 
-
+const close = () => {
+  onChangeSet(0);
+  setDayData({
+    amount: 0,
+    khula_amount: 0,
+    pana_amount: 0,
+    sp_amount: 0,
+    dp_amount: 0,
+    jodi_amount: 0,
+    tp_amount: 0,
+  });
+  setNightData({
+    amount: 0,
+    khula_amount: 0,
+    pana_amount: 0,
+    sp_amount: 0,
+    dp_amount: 0,
+    jodi_amount: 0,
+    tp_amount: 0,
+  });
+  setDisplayData([]);
+  setMainTotal(0);
+  setDate(0);
+}
   useEffect(() => {
     calculations(selectedCId, selectedDate);
   }, [addFormData]);
@@ -326,7 +350,7 @@ export default function Calculater() {
                 
             </Grid.Cell>
           </Grid>
-          <Button primary>Cancel/Close</Button>
+          <Button onClick={()=>close()} primary>Cancel/Close</Button>
     
       </Page>
     </>

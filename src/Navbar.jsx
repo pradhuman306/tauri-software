@@ -125,7 +125,22 @@ export default function Navbar() {
 
   const secondaryMenuMarkup = (
     <List>
-      <List.Item>
+        <List.Item>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/calculater/:cid"
+              className={location.pathname==='/calculater/:cid'?'active':""}
+        
+
+            >
+             
+              Calculator
+            </Link>
+          }
+        />
+         </List.Item>
+         <List.Item>
       <TopBar.Menu
           activatorContent={
         <Link
@@ -149,6 +164,7 @@ export default function Navbar() {
           }
         />
       </List.Item>
+        
       <List.Item>
         <TopBar.Menu
           activatorContent={
@@ -161,8 +177,7 @@ export default function Navbar() {
             </Link>
           }
         /></List.Item>
-   
-   <List.Item>
+         <List.Item>
       <TopBar.Menu
           activatorContent={
         <Link
@@ -173,7 +188,6 @@ export default function Navbar() {
           Entry/edit
         </Link>}/>
         </List.Item>
-  
         <List.Item>
         <TopBar.Menu
           activatorContent={
@@ -189,8 +203,7 @@ export default function Navbar() {
           }
         />
          </List.Item>
-   
-</List>
+  </List>
   );
 
   const topBarMarkup = (

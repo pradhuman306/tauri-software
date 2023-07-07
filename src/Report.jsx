@@ -1,6 +1,8 @@
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
+import { Button, Page, TextField, Text, IndexTable, LegacyCard, ButtonGroup, Modal } from "@shopify/polaris";
+import { MyContext } from "./App";
 
 export default function Report() {
   const [entries, setentries] = useState([]);
@@ -8,41 +10,44 @@ export default function Report() {
   const [customers, setcustomers] = useState([]);
   const [reportData, setreportData] = useState([]);
   const [tabActive, setTabActive] = useState(false);
+  const { setErrorMessage,setMessage } = useContext(MyContext);
+  const [remainingEntries,setRemainingEntries] = useState([]);
 
+  const getNotesFromFile = async () => {
+    try {
+      const myfileNotes = await readTextFile("entries.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mycustomers = JSON.parse(myfileNotes);
+      setentries(mycustomers);
+      setfilterentries(mycustomers);
+    } catch (error) {
+      await writeTextFile(
+        { path: "entries.json", contents: JSON.stringify(entries) },
+        { dir: BaseDirectory.Resource }
+      );
+      getNotesFromFile();
+      console.log(error);
+    }
+
+    //customers 
+    try {
+      const myfiledata = await readTextFile("customers.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mycust = JSON.parse(myfiledata);
+      setcustomers(mycust);
+    } catch (error) {
+      await writeTextFile(
+        { path: "customers.json", contents: JSON.stringify(customers) },
+        { dir: BaseDirectory.Resource }
+      );
+      console.log(error);
+    }
+
+  };
   useEffect(() => {
-    const getNotesFromFile = async () => {
-      try {
-        const myfileNotes = await readTextFile("entries.json", {
-          dir: BaseDirectory.Resource,
-        });
-        const mycustomers = JSON.parse(myfileNotes);
-        setentries(mycustomers);
-        setfilterentries(mycustomers);
-      } catch (error) {
-        await writeTextFile(
-          { path: "entries.json", contents: JSON.stringify(entries) },
-          { dir: BaseDirectory.Resource }
-        );
-        getNotesFromFile();
-        console.log(error);
-      }
-
-      //customers 
-      try {
-        const myfiledata = await readTextFile("customers.json", {
-          dir: BaseDirectory.Resource,
-        });
-        const mycust = JSON.parse(myfiledata);
-        setcustomers(mycust);
-      } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(customers) },
-          { dir: BaseDirectory.Resource }
-        );
-        console.log(error);
-      }
-
-    };
+   
     getNotesFromFile();
   }, []);
 
@@ -51,7 +56,6 @@ export default function Report() {
 
   const searchData = () => {
     if (start != "" && end != "") {
-      setTabActive(true);
       var startDate = new Date(start + " 00:00:01");
       var endDate = new Date(end + " 23:59:59");
       var datevise = [];
@@ -70,10 +74,17 @@ export default function Report() {
           aDate >= startDate && aDate <= endDate
         );
       });
-
+      const updatedFilterEntries = filterentries.filter(function (entry) {
+        // Check if the entry is not present in the filteredData array
+        return !filteredData.includes(entry);
+      });
+      setRemainingEntries(updatedFilterEntries);
       if(filteredData.length === 0){
-      message("Not found any record.", { title: "Account", type: "error" });
+        setErrorMessage("No record found");
+        setreportData([]);
         return false;
+      }else{
+        setTabActive(true);
       }
       // id loop
       var reportList = [];
@@ -187,88 +198,141 @@ if(CID){
       setTabActive(false);
       setreportData([]);
       setentries(filterentries);
+      setErrorMessage("Please select date");
     }
   };
+  
 
-
-  const onchangeHandler = (e) => {
-    if(e.target.name == 'start'){
-      setStart(e.target.value);
+  const onchangeHandler = (value,param) => {
+    if(param == 'start'){
+      setStart(value);
     }else{
-      setEnd(e.target.value);
+      setEnd(value);
     }
   }
-
+const deleteEntries = async () => {
+  await writeTextFile(
+    { path: "entries.json", contents: JSON.stringify(remainingEntries) },
+    { dir: BaseDirectory.Resource }
+  );
+  getNotesFromFile();
+  // searchData();
+ modalOpen('deleteReport');
+ setTabActive(false);
+  setMessage("Entries deleted successfully");
+}
   const clear = (e) => {
     setStart("");
     setEnd("");
     setTabActive(false);
   }
 
+  const [isVisible, setIsVisible] = useState({ deleteReport: false });
+  const modalOpen = (id) => {
+    let isVisibleTemp = { ...isVisible };
+    if (isVisibleTemp[id]) {
+      isVisibleTemp[id] = false;
+      setIsVisible(isVisibleTemp);
+    } else {
+      isVisibleTemp[id] = true;
+      setIsVisible(isVisibleTemp);
+    }
+
+
+  };
   const printReport = (e) => {
     window.print();
   }
+  const resourceName = {
+    singular: 'Report Data',
+    plural: 'Report Data',
+  };
+  const rowMarkup = reportData.map(
+    (
+      { id, date, name, credit, debit },
+      index,
+    ) => (
 
+      <IndexTable.Row id={id} key={id} position={index}>
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {id}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{date}</IndexTable.Cell>
+        <IndexTable.Cell>{name}</IndexTable.Cell>
+        <IndexTable.Cell>{credit}</IndexTable.Cell>
+        <IndexTable.Cell>{debit}</IndexTable.Cell>
+      </IndexTable.Row>
+
+    ),
+  );
   return (
     <>
-      <main>
-        <div className="container">
-          <div className="report-wrapper">
-            <div className="body-header">
-            <div className="report-header">
-              <h4>Report</h4>
-            </div>
-            <div className="report-date-select">
-              <input type="date" name="start" value={start} onChange={onchangeHandler} />
-              <p className="select-range ">to</p>
-              <input type="date" name="end" value={end} onChange={onchangeHandler}/>
-              <button
+       <Page fullWidth
+        title="Report"
+     >
+   <TextField type="date" name="start" value={start} onChange={(e)=>onchangeHandler(e,'start')} />
+              <Text>to</Text>
+              <TextField type="date" name="end" value={end} onChange={(e)=>onchangeHandler(e,'end')}/>
+              <Button primary
                 onClick={(e) => {
                   searchData();
                 }}
-              >Search</button>
+              >Search</Button>
+             {tabActive ?  
+             <>
+             <LegacyCard>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={customers.length}
+            headings={[
+              { title: 'CID' },
+              { title: 'Date' },
+              { title: 'Name' },
+              { title: 'Credit'},
+              { title: 'Debit'},
+
+            ]}
+            selectable={false}
+          >
+            {rowMarkup}
+          </IndexTable>
+        </LegacyCard>
+        <ButtonGroup>
+        <Button onClick={(e) => window.print()} primary>Print</Button>
+          <Button onClick={(e) => modalOpen('deleteReport')}>Delete</Button>
+        </ButtonGroup>
+      
+        </>:""}
+              {/* Delete set popup */}
+        <Modal
+          // activator={activator}
+          open={isVisible.deleteReport}
+          onClose={() => modalOpen('deleteReport')}
+          title="Delete Entries"
+          primaryAction={{
+            content: 'Yes',
+            onAction: () => deleteEntries(),
+          }}
+          secondaryActions={[
+            {
+              content: 'Cancel',
+              onAction: () => modalOpen('deleteReport'),
+            },
+          ]}
+        >
+          <Modal.Section>
+
+            <div className="">
+              Are you sure you want to delete this entries!
             </div>
-            </div>
-            {tabActive ? 
-            <div>
-<div className="report-body">
-              <br />
-              <br />
-              <div>
-              <button onClick={(e) => printReport(e)}>Print</button>
-              </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>CID</th>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Credit</th>
-                    <th>Debit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reportData.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.id}</td>
-                      <td>{data.date}</td>
-                      <td>{data.name}</td>
-                      <td>{data.credit}</td>
-                      <td>{data.debit}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="print-delet-btn">
-            <button onClick={(e) => window.print()}>Print</button>
-              <button className="secondary-btn">Delete</button>
-            </div>
-              </div>
-            :''}
-          </div>
-        </div>
-      </main>
+
+
+          </Modal.Section>
+        </Modal>
+        </Page>
+ 
     </>
   );
 }

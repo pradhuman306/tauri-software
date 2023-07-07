@@ -1,7 +1,6 @@
 import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
-import { toast } from 'react-toastify';
 import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, List, ButtonGroup } from '@shopify/polaris';
 import {
   EditMajor,
@@ -12,10 +11,10 @@ import { MyContext } from "./App";
 
 
 export default function Entry() {
+  const {setErrorMessage,setMessage} = useContext(MyContext);
   const [customers, setcustomers] = useState([]);
-
   var [entries, setentries] = useState([]);
-
+  
   const [isVisible, setIsVisible] = useState(false);
   const modalOpen = () => {
     if (isVisible) {
@@ -141,45 +140,54 @@ export default function Entry() {
         { path: "entries.json", contents: JSON.stringify(entries) },
         { dir: BaseDirectory.Resource }
       );
-      toast.success('Entry updated successfully');
+      setMessage('Entry updated successfully');
     } else {
-      setentries([...entries, ...inputFields]);
-      await writeTextFile(
-        {
-          path: "entries.json",
-          contents: JSON.stringify([...entries, ...inputFields]),
-        },
-        { dir: BaseDirectory.Resource }
-      );
-      setInputFields([
-        {
-          id: Date.now(),
-          timezone: "",
-          date: date,
-          customer_id: "",
-          name: "",
-          amount: "",
-          pana_amount: "",
-          khula_amount: "",
-          sp_amount: "",
-          dp_amount: "",
-          jodi_amount: "",
-          tp_amount: "",
-        },
-      ]);
-      toast.success('Entry saved successfully');
+      let tmp = inputFields.filter((item)=>item.customer_id != "");
+      if(tmp.length){
+        setentries([...entries, ...tmp]);
+        await writeTextFile(
+          {
+            path: "entries.json",
+            contents: JSON.stringify([...entries, ...tmp]),
+          },
+          { dir: BaseDirectory.Resource }
+        );
+        setInputFields([
+          {
+            id: Date.now(),
+            timezone: "",
+            date: date,
+            customer_id: "",
+            name: "",
+            amount: "",
+            pana_amount: "",
+            khula_amount: "",
+            sp_amount: "",
+            dp_amount: "",
+            jodi_amount: "",
+            tp_amount: "",
+          },
+        ]);
+        setMessage('Entry saved successfully');
+        onChangesetTimeZone("TO", 0);
+        setTabActive("");
+     
+      }else{
+        setErrorMessage("Please enter cid");
+      }
+    
     }
-    setTimeZone("");
-    setTabActive("");
+ 
 
   };
 
   const newEntry = async (v) => {
-    setTabActive(v);
+  
     if (date == "") {
-      toast.error('Please select date');
+      setErrorMessage('Please select date');
       // await message("First select date.", { title: "Account", type: "error" });
     } else {
+      setTabActive(v);
       setInputFields([
         {
           id: Date.now(),
@@ -200,21 +208,22 @@ export default function Entry() {
   };
 
   const editEntry = async (v) => {
-    setTabActive(v);
+  
     if (date == "" && timezone == "") {
-      toast.error('Please select time and date');
-
+      // setErrorMessage('Please select time and date');
+      setErrorMessage("Please select time and date");
       // await message("First select time and date.", {
       //   title: "Account",
       //   type: "error",
       // });
     } else if (date == "") {
-      toast.error('Please select date');
+      setErrorMessage('Please select date');
       // await message("First select date.", { title: "Account", type: "error" });
     } else if (timezone == "") {
-      toast.error('Please select time');
+      setErrorMessage('Please select time');
       // await message("First select time.", { title: "Account", type: "error" });
     } else {
+      setTabActive(v);
       var startDate = new Date(date + " 00:00:01");
       var endDate = new Date(date + " 23:59:59");
       const filteredData = entries.filter(function (a) {
@@ -226,15 +235,17 @@ export default function Entry() {
   };
 
   const cancel = async () => {
-    console.log("cancel");
+    onChangesetTimeZone("TO", 0);
+        setTabActive("");
+        setDate("");
   };
   const resourceName = {
     singular: 'customer',
     plural: 'customers',
   };
   const resourceNameInput = {
-    singular: 'inputFields',
-    plural: 'inputFields',
+    singular: 'entry',
+    plural: 'entries',
   };
   
   const rowMarkup = customers.map(
@@ -516,23 +527,24 @@ export default function Entry() {
                           ) : (
                             ""
                           )}
-                       
+                           <ButtonGroup>
+                            {inputFields.length? <Button
+                    className={tabActive == "entry" ? "active" : ""}
+                    onClick={()=>saveEntries()}
+                  >
+                    Save
+                  </Button>:""}
+                 
+                  <Button primary  onClick={()=>cancel()}
+                  >  Cancel</Button>
+                </ButtonGroup>
                       </>
                     ) : (
                       ""
                     )}
              
                   
-                    <ButtonGroup>
-                  <Button
-                    className={tabActive == "entry" ? "active" : ""}
-                    onClick={()=>saveEntries()}
-                  >
-                    Save
-                  </Button>
-                  <Button primary
-                  >  Cancel</Button>
-                </ButtonGroup>
+                
               
         
             {/* View customer popup */}

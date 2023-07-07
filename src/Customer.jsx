@@ -3,7 +3,6 @@ import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
-import { toast } from 'react-toastify';
 import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon,Select, Frame } from '@shopify/polaris';
 import {
   EditMajor,
@@ -14,6 +13,11 @@ import { MyContext } from "./App";
 
 export default function Customer() {
   const { message,setMessage } = useContext(MyContext);
+  const [validationError,setValidationError] = useState({
+    cid:false,
+    name:false,
+    set:false
+  });
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
   const [selectedSet, setSelectedSet] = useState('');
@@ -31,8 +35,17 @@ export default function Customer() {
     sp: "",
   });
   const addFormHandler = (value,param) => {
-    console.log(value);
-    console.log(param);
+    let validationErr = {...validationError};
+   if(value && param == 'customer_id'){
+    validationErr.cid = false;
+   }
+   if(value && param == 'name'){
+    validationErr.name = false;
+   }
+   if(value && param == 'set'){
+    validationErr.set = false;
+   }
+   setValidationError(validationErr);
     const fieldName = param;
     const fieldValue = value;
     const newFormData = { ...addFormData };
@@ -43,6 +56,17 @@ export default function Customer() {
   };
 
   const editFormHandler = (value,param) => {
+    let validationErr = {...validationError};
+    if(value && param == 'customer_id'){
+     validationErr.cid = false;
+    }
+    if(value && param == 'name'){
+     validationErr.name = false;
+    }
+    if(value && param == 'set'){
+     validationErr.set = false;
+    }
+    setValidationError(validationErr);
     const fieldName = param;
     const fieldValue = value;
     const newFormData1 = { ...editCustomer };
@@ -52,15 +76,68 @@ export default function Customer() {
 
   const submitHandler = (event) => {
     event.preventDefault();
+    let validationErr = {...validationError};
+   
+    let isSubmit = true;
+    if(!addFormData.customer_id){
+      validationErr.cid = "Please enter customer ID";
+      isSubmit = false;
+    }else{
+      validationErr.cid = false;
+    }
+    if(!addFormData.set){
+      validationErr.set = "Please select set";
+      isSubmit = false;
+    }else{
+      validationErr.set = false;
+    }
+    if(!addFormData.name){
+      validationErr.name = "Please enter customer name";
+      isSubmit = false;
+    }else{
+      validationErr.name = false;
+    }
+  if(isSubmit){
     addNote();
     navigate("/entry");
     modalOpen('addCustomer');
+  }
+  setValidationError(validationErr);
+   
+   
+ 
   };
   const updateHandler = (event) => {
-    updateCustomer();
     event.preventDefault();
+    let validationErr = {...validationError};
+   
+    let isSubmit = true;
+    if(!editCustomer.customer_id){
+      validationErr.cid = "Please enter customer ID";
+      isSubmit = false;
+    }else{
+      validationErr.cid = false;
+    }
+    if(!editCustomer.set){
+      validationErr.set = "Please select set";
+      isSubmit = false;
+    }else{
+      validationErr.set = false;
+    }
+    if(!editCustomer.name){
+      validationErr.name = "Please enter customer name";
+      isSubmit = false;
+    }else{
+      validationErr.name = false;
+    }
+    if(isSubmit){
+      updateCustomer();
+      modalOpen('editCustomer');
+    }
+   
+    setValidationError(validationErr);
 
-    modalOpen('editCustomer');
+  
   };
 
 
@@ -74,7 +151,6 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
-    // toast.success('Customer added successfully');
     setMessage('Customer added successfully');
     setActive(true);
   };
@@ -116,14 +192,20 @@ export default function Customer() {
       { dir: BaseDirectory.Resource }
     );
     setActive(true);
-    // toast.success('Customer updated successfully');
-    // setMsg('Customer updated successfully');
+   
     setMessage('Customer updated successfully');
     getNotesFromFile();
   };
 
   const onChangeSet = async (e) => {
     setSelectedSet(e);
+    let validateErr = {...validationError};
+    if(e != ''){
+      validateErr.set = false;
+    }else{
+      validateErr.set = 'Please select set';
+    }
+    setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
     const newFormData = { ...addFormData };
     newFormData["commission"] = fdata[0] ? fdata[0]["commission"] : "";
@@ -140,6 +222,13 @@ export default function Customer() {
 
   const onChangeSetEdit = async (e) => {
     setSelectedSet(e);
+    let validateErr = {...validationError};
+    if(e != ''){
+      validateErr.set = false;
+    }else{
+      validateErr.set = 'Please select set';
+    }
+    setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
     const newFormData = { ...editCustomer };
     newFormData["commission"] = fdata[0] ? fdata[0]["commission"] : "";
@@ -234,7 +323,9 @@ export default function Customer() {
   const [isVisible, setIsVisible] = useState({ addCustomer: false, editCustomer: false, deleteCustomer: false });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
-
+    if(id=='addCustomer'){
+          setSelectedSet("");
+    }
     if (isVisibleTemp[id]) {
       isVisibleTemp[id] = false;
       setIsVisible(isVisibleTemp);
@@ -242,6 +333,8 @@ export default function Customer() {
       isVisibleTemp[id] = true;
       setIsVisible(isVisibleTemp);
     }
+    setValidationError({});
+
   };
   const resourceName = {
     singular: 'customer',
@@ -335,6 +428,8 @@ export default function Customer() {
                   name="customer_id"
                   placeholder="Enter customer ID"
                   value={addFormData.customer_id}
+                  error={validationError.cid}
+                  requiredIndicator={true}
                   onChange={(e)=>addFormHandler(e,'customer_id')}
                   
                 />
@@ -345,6 +440,8 @@ export default function Customer() {
                   name="name"
                   placeholder="Enter customer name"
                   value={addFormData.name}
+                  error={validationError.name}
+                  requiredIndicator={true}
                   onChange={(e)=>addFormHandler(e,'name')}
                   
                 />
@@ -392,9 +489,11 @@ export default function Customer() {
                   <Select
                     label="Set"
                     name="set"
+                    error={validationError.set}
                     id="set"
                     options={setOptions}
                     value={selectedSet}
+                    requiredIndicator={true}
                     onChange={(e)=>onChangeSet(e)}
                     required
           />
@@ -519,6 +618,8 @@ export default function Customer() {
                   type="number"
                   name="customer_id"
                   placeholder="Enter customer ID"
+                  error={validationError.cid}
+                  requiredIndicator={true}
                   value={editCustomer.customer_id}
                   onChange={(e)=>editFormHandler(e,'customer_id')}
                   
@@ -530,6 +631,8 @@ export default function Customer() {
                   name="name"
                   placeholder="Enter customer name"
                   value={editCustomer.name}
+                  error={validationError.name}
+                  requiredIndicator={true}
                   onChange={(e)=>editFormHandler(e,'name')}
                   
                 />
@@ -580,6 +683,8 @@ export default function Customer() {
                     id="set"
                     options={setOptions}
                     value={selectedSet}
+                    error={validationError.set}
+                    requiredIndicator={true}
                     onChange={(e)=>onChangeSetEdit(e)}
                     required
           />
