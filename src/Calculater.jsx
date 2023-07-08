@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Grid, Page, TextField, Select, List, LegacyCard, IndexTable, Button } from "@shopify/polaris";
+import { Card, Grid, Page, TextField, Select, List, LegacyCard, IndexTable, Button, DataTable } from "@shopify/polaris";
 
 export default function Calculater() {
   const [customers, setcustomers] = useState([]);
@@ -81,7 +81,7 @@ export default function Calculater() {
 
   const [selectedCId, setCID] = useState("");
   const [selectedDate, setDate] = useState("");
-  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1','Total-1', 'MO', 'BO', 'MK', 'BK', 'A2','Total-2','Final Total','Total Amount']);
+  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1', 'Total-1', 'MO', 'BO', 'MK', 'BK', 'A2', 'Total-2', 'Final Total', 'Total Amount']);
   const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
 
   const [DayData, setDayData] = useState({
@@ -219,30 +219,30 @@ export default function Calculater() {
   };
 
 
-const close = () => {
-  onChangeSet(0);
-  setDayData({
-    amount: 0,
-    khula_amount: 0,
-    pana_amount: 0,
-    sp_amount: 0,
-    dp_amount: 0,
-    jodi_amount: 0,
-    tp_amount: 0,
-  });
-  setNightData({
-    amount: 0,
-    khula_amount: 0,
-    pana_amount: 0,
-    sp_amount: 0,
-    dp_amount: 0,
-    jodi_amount: 0,
-    tp_amount: 0,
-  });
-  setDisplayData([]);
-  setMainTotal(0);
-  setDate(0);
-}
+  const close = () => {
+    onChangeSet(0);
+    setDayData({
+      amount: 0,
+      khula_amount: 0,
+      pana_amount: 0,
+      sp_amount: 0,
+      dp_amount: 0,
+      jodi_amount: 0,
+      tp_amount: 0,
+    });
+    setNightData({
+      amount: 0,
+      khula_amount: 0,
+      pana_amount: 0,
+      sp_amount: 0,
+      dp_amount: 0,
+      jodi_amount: 0,
+      tp_amount: 0,
+    });
+    setDisplayData([]);
+    setMainTotal(0);
+    setDate(0);
+  }
   useEffect(() => {
     calculations(selectedCId, selectedDate);
   }, [addFormData]);
@@ -259,15 +259,15 @@ const close = () => {
     ) => (
 
       <IndexTable.Row id={index} key={index} position={index}>
-          <IndexTable.Cell>{zone}</IndexTable.Cell>
-          {zone === 'Total Amount'?<IndexTable.Cell> <TextField type="text" step="any" value={mainTotal} readOnly /></IndexTable.Cell>:""}
-         
-        {zone != 'Total Amount'&&amountDetails.map((amountKey) => (
+        <IndexTable.Cell>{zone}</IndexTable.Cell>
+        {zone === 'Total Amount' ? <IndexTable.Cell> <TextField type="text" step="any" value={mainTotal} readOnly /></IndexTable.Cell> : ""}
+
+        {zone != 'Total Amount' && amountDetails.map((amountKey) => (
           <IndexTable.Cell>
-            {zone === 'Total-1'? <TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />: zone === 'Total-2'? <TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly />:zone === 'Final Total'? <TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey]+DayData[amountKey]} readOnly />:<TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />}
-            
+            {zone === 'Total-1' ? <TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly /> : zone === 'Total-2' ? <TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly /> : zone === 'Final Total' ? <TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly /> : <TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />}
+
           </IndexTable.Cell>
-          
+
         ))}
 
 
@@ -276,82 +276,157 @@ const close = () => {
     ),
   );
 
-
+  const rows = [
+    [ <TextField type="number" step="any" name="set" value={addFormData.set} readOnly />, '$875.00', 124689, 140, '$122,500.00'],
+    ['Mauve Cashmere Scarf', '$230.00', 124533, 83, '$19,090.00'],
+    [
+      'Navy Merino Wool Blazer with khaki chinos and yellow belt',
+      '$445.00',
+      124518,
+      32,
+      '$14,240.00',
+    ],
+  ];
 
   return (
     <>
+      <div className="customerHeader">
+        <Page
+          fullWidth
+          className="customerHeader"
+          title={
+            <div className="row">
+              <div className="col">
+                <Select
+                  label="Customer Name"
+                  name="name"
+                  id="name"
+                  options={customersOptions}
+                  value={selectedCId}
+                  onChange={(e) => onChangeSet(e)}
 
+                />
+              </div>
+            </div>
+          }
+          primaryAction={
+            <div className="row">
+              <div className="col">
+                <TextField
+                  label="Date"
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => inputHandler(e, 'date')}
+
+                />
+              </div>
+            </div>
+          }
+
+        >
+
+
+        </Page>
+      </div>
       <Page fullWidth>
 
-              <Grid>
-                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                  <Select
-                    label="Customer Name"
-                    name="name"
-                    id="name"
-                    options={customersOptions}
-                    value={selectedCId}
-                    onChange={(e) => onChangeSet(e)}
 
-                  />
-                </Grid.Cell>
-                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
-                  <TextField
-                    label="Date"
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => inputHandler(e, 'date')}
 
-                  />
-                </Grid.Cell>
-              </Grid>
+        <Grid>
+          <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
 
-            
-          <Grid>
-            <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
-           
-              <List type="none">
-                <List.Item><TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly /> </List.Item>
-                <List.Item><TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly /></List.Item>
-                <List.Item><TextField label="Multiple" type="number" step="any" name="multiple" value={addFormData.multiple} readOnly /></List.Item>
-                <List.Item><TextField label="SP" type="number" step="any" name="sp" value={addFormData.sp} readOnly /></List.Item>
-                <List.Item><TextField label="DP" type="number" step="any" name="dp" value={addFormData.dp} readOnly /></List.Item>
-                <List.Item><TextField label="Jodi" type="number" step="any" name="jodi" value={addFormData.jodi} readOnly /></List.Item>
-                <List.Item><TextField label="TP" type="number" step="any" name="tp" value={addFormData.tp} readOnly /></List.Item>
-                <List.Item><TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly /></List.Item>
-                <List.Item><TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly /></List.Item>
-              </List>
-            </Grid.Cell>
+            <Card>
+              <div className="row">
+                <div className="col">
+                  <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="Multiple" type="number" step="any" name="multiple" value={addFormData.multiple} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="SP" type="number" step="any" name="sp" value={addFormData.sp} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="DP" type="number" step="any" name="dp" value={addFormData.dp} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="Jodi" type="number" step="any" name="jodi" value={addFormData.jodi} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="TP" type="number" step="any" name="tp" value={addFormData.tp} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly />
+                </div>
+                <div className="col">
+                  <TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
+                </div>
+              </div>
+            </Card>
+          </Grid.Cell>
 
 
 
-            <Grid.Cell columnSpan={{ xs: 10, sm: 10, md: 10, lg: 10, xl: 10 }}>
-        
-                <LegacyCard>
-          <IndexTable
-            resourceName={resourceName}
-            itemCount={timeZoneAll.length}
-            headings={[
-              { title: '' },
-              { title: 'Amount' },
-              { title: 'Pana-Amount' },
-              { title: 'Kh' },
-              { title: 'SP-Amount' },
-              { title: 'DP-Amount	'},
-              { title: 'J-Amount'},
-              { title: 'TP-Amount'},
+          <Grid.Cell columnSpan={{ xs: 10, sm: 10, md: 10, lg: 10, xl: 10 }}>
+
+            <LegacyCard>
+              <IndexTable
+                resourceName={resourceName}
+                itemCount={timeZoneAll.length}
+                headings={[
+                  { title: '' },
+                  { title: 'Amount' },
+                  { title: 'Pana-Amount' },
+                  { title: 'Kh' },
+                  { title: 'SP-Amount' },
+                  { title: 'DP-Amount	' },
+                  { title: 'J-Amount' },
+                  { title: 'TP-Amount' },
+                ]}
+                selectable={false}
+              >
+                {rowMarkup}
+              </IndexTable>
+            </LegacyCard>
+
+
+          </Grid.Cell>
+        </Grid>
+        <Button onClick={() => close()} primary>Cancel/Close</Button>
+
+      </Page>
+      <Page fullWidth>
+        <LegacyCard>
+          <DataTable
+           showTotalsInFooter
+            columnContentTypes={[
+              'text',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
             ]}
-            selectable={false}
-          >
-            {rowMarkup}
-          </IndexTable>
+            headings={[
+              'Amount',
+              'Price',
+              'SKU Number',
+              'Net quantity',
+              'Net sales',
+            ]}
+            rows={rows}
+            totals={['', '', '', '', '$155,830.00']}
+            hasZebraStripingOnData
+            increasedTableDensity
+            defaultSortDirection="descending"
+            totalsName={{
+              singular: 'Total net sales',
+              plural: 'Total net sales',
+            }}
+          />
         </LegacyCard>
-                 
-                
-            </Grid.Cell>
-          </Grid>
-          <Button onClick={()=>close()} primary>Cancel/Close</Button>
-    
       </Page>
     </>
   );

@@ -57,6 +57,126 @@
 #addCustBtn,#editCustBtn,#addSetBtn,#editSetBtn{
     display: none;
 }
+.Polaris-TopBar__SecondaryMenu{
+    list-style: none;
+}
+.Polaris-TopBar__SecondaryMenu ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+.Polaris-TopBar__SecondaryMenu .Polaris-List--spacingLoose .Polaris-List__Item {
+    margin-bottom: 0;
+}
+.Polaris-TopBar-Menu__Activator:hover {
+    background-color: transparent;
+}
+
+li.Polaris-List__Item a {
+    color: #232323;
+    min-width: 2.25rem;
+    padding: var(--p-space-1) var(--p-space-2);
+    border: 0;
+    cursor: pointer;
+    transition: background-color var(--p-motion-duration-100);
+    margin-right: var(--p-space-2);
+    border-radius: var(--p-border-radius-1);
+    text-decoration: none;
+}
+.Polaris-TopBar__SecondaryMenu .Polaris-TopBar-Menu__Activator{
+    min-width: unset;
+    margin: 0;
+    padding: 0;
+
+}
+li.Polaris-List__Item a:hover, li.Polaris-List__Item a.active{
+    background-color: var(--pc-top-bar-background-lighter, var(--p-color-bg-hover));
+}
 
 
+.Polaris-TopBar-SearchField__Input {
+    font-family: 'Inter';
+}
 
+.Polaris-Labelled__LabelWrapper {
+    width: 150px;
+}
+.col > div {
+    display: flex;
+    align-items: center;
+}
+.col {
+    margin-bottom: 15px;
+}
+.Polaris-Connected,.Polaris-Select {
+    width: 210px;
+}
+.Polaris-LegacyCard {
+    margin-bottom: 10px;
+}
+.Polaris-IndexTable__TableCell button.Polaris-Button+ button.Polaris-Button {
+    margin-left: 10px;
+}
+.Polaris-IndexTable__TableCell button.Polaris-Button {
+    padding: 0;
+}
+.customerHeader .Polaris-Box {
+    padding: 0;
+}
+.customerHeader .col {
+    margin-bottom: 0;
+}
+.customerHeader {
+    background: #fff;
+    padding: 20px 0 13px;
+    border-bottom: 1px solid #ebebec;
+}
+.customerHeader .Polaris-Label label {
+    font-size: 14px;
+    font-weight: normal;
+}
+.customerHeader .Polaris-Labelled__LabelWrapper {
+    width: auto;
+    margin-right: 10px;
+}
+select{
+    padding: 0 12px;
+}
+input[type="date"] {
+    position: relative;
+  }
+  
+  /* create a new arrow, because we are going to mess up the native one
+  see "List of symbols" below if you want another, you could also try to add a font-awesome icon.. */
+  input[type="date"]:after {
+    content: "\1F4C5";
+  }
+  
+  /* change color of symbol on hover */
+  input[type="date"]:hover:after {
+    color: #bf1400;
+  }
+  
+  /* make the native arrow invisible and stretch it over the whole field so you can click anywhere in the input field to trigger the native datepicker*/
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    color: transparent;
+    background: transparent;
+  }
+  
+  /* adjust increase/decrease button */
+  input[type="date"]::-webkit-inner-spin-button {
+    z-index: 1;
+  }
+  
+  /* adjust clear button */
+  input[type="date"]::-webkit-clear-button {
+    z-index: 1;
+  }

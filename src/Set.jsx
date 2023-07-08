@@ -18,13 +18,13 @@ export default function Set() {
   const [addFormData, setAddFormData] = useState({});
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
-  const [validationError,setValidationError] = useState({
-    set:false,
+  const [validationError, setValidationError] = useState({
+    set: false,
   });
   const addFormHandler = (value, param) => {
-    let validationErr = {...validationError};
-    if(value && param == 'set'){
-     validationErr.set = false;
+    let validationErr = { ...validationError };
+    if (value && param == 'set') {
+      validationErr.set = false;
     }
     setValidationError(validationErr);
     const fieldName = param;
@@ -42,29 +42,29 @@ export default function Set() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    let validationErr = {...validationError};
+    let validationErr = { ...validationError };
     let isSubmit = true;
-    if(!addFormData.set){
+    if (!addFormData.set) {
       validationErr.set = "Please enter set";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.set = false;
     }
-    if(isSubmit){
+    if (isSubmit) {
       addNote();
       navigate("/customer");
       setMessage('Set added successfully');
       modalOpen('addSet');
     }
-  setValidationError(validationErr);
+    setValidationError(validationErr);
 
- 
+
   };
 
   const editFormHandler = (value, param) => {
-    let validationErr = {...validationError};
-    if(value && param == 'set'){
-     validationErr.set = false;
+    let validationErr = { ...validationError };
+    if (value && param == 'set') {
+      validationErr.set = false;
     }
     setValidationError(validationErr);
 
@@ -96,15 +96,15 @@ export default function Set() {
 
   const updateHandler = (event) => {
     event.preventDefault();
-    let validationErr = {...validationError};
+    let validationErr = { ...validationError };
     let isSubmit = true;
-    if(!editSet.set){
+    if (!editSet.set) {
       validationErr.set = "Please enter set";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.set = false;
     }
-    if(isSubmit){
+    if (isSubmit) {
       updateSet();
       modalOpen('editSet');
     }
@@ -244,8 +244,8 @@ export default function Set() {
   return (
     <>
 
-      <Page fullWidth
-        title="Set"
+      <Page
+        title="Customer Set"
         primaryAction={{ content: 'Add New Set', icon: PlusMinor, onAction: () => modalOpen('addSet') }}>
         <LegacyCard>
           <IndexTable
@@ -273,6 +273,7 @@ export default function Set() {
 
         {/* Add set popup */}
         <Modal
+          small
           // activator={activator}
           open={isVisible.addSet}
           onClose={() => modalOpen('addSet')}
@@ -290,6 +291,8 @@ export default function Set() {
         >
           <Modal.Section>
             <Form onSubmit={submitHandler}>
+              <div className="row">
+                <div className="col">
               <TextField
                 label="Set"
                 type="number"
@@ -300,8 +303,10 @@ export default function Set() {
                 requiredIndicator={true}
                 onChange={(e) => addFormHandler(e, 'set')}
                 required
-                // error={setError}
+              // error={setError}
               />
+              </div>
+              <div className="col">
               <TextField
                 label="Commision"
                 type="number"
@@ -311,7 +316,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'commission')}
                 required
               />
-
+ </div>
+              <div className="col">
               <TextField
                 label="Pana"
                 type="number"
@@ -321,7 +327,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'pana')}
                 required
               />
-
+ </div>
+              <div className="col">
               <TextField
                 label="Partnership"
                 type="number"
@@ -331,7 +338,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'partnership')}
                 required
               />
-
+ </div>
+              <div className="col">
 
               <TextField
                 label="Multiple"
@@ -342,7 +350,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'multiple')}
                 required
               />
-
+ </div>
+              <div className="col">
               <TextField
                 label="SP"
                 type="number"
@@ -352,7 +361,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'sp')}
                 required
               />
-
+ </div>
+              <div className="col">
               <TextField
                 label="DP"
                 type="number"
@@ -362,7 +372,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'dp')}
                 required
               />
-
+ </div>
+              <div className="col">
 
               <TextField
                 label="JODI"
@@ -373,7 +384,8 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'jodi')}
                 required
               />
-
+ </div>
+              <div className="col">
               <TextField
                 label="TP"
                 type="number"
@@ -383,7 +395,7 @@ export default function Set() {
                 onChange={(e) => addFormHandler(e, 'tp')}
                 required
               />
-
+</div></div>
 
               <Button id="addSetBtn" submit>Submit</Button>
 
@@ -396,6 +408,7 @@ export default function Set() {
 
         {/* Edit set popup */}
         <Modal
+          small
           open={isVisible.editSet}
           onClose={() => modalOpen('editSet')}
           title="Edit Set"
@@ -412,100 +425,111 @@ export default function Set() {
         >
           <Modal.Section>
             <Form onSubmit={updateHandler}>
-              <TextField
-                label="Set"
-                type="number"
-                step="any"
-                name="set"
-                value={editSet ? editSet.set : ""}
-                error={validationError.set}
-                requiredIndicator={true}
-                onChange={(e) => editFormHandler(e, 'set')}
-                required
-              />
-              <TextField
-                label="Commision"
-                type="number"
-                step="any"
-                name="commission"
-                value={editSet ? editSet.commission : ""}
-                onChange={(e) => editFormHandler(e, 'commission')}
-                required
-              />
+              <div className="row">
+                <div className="col">
+                  <TextField
+                    label="Set"
+                    type="number"
+                    step="any"
+                    name="set"
+                    value={editSet ? editSet.set : ""}
+                    error={validationError.set}
+                    requiredIndicator={true}
+                    onChange={(e) => editFormHandler(e, 'set')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Commision"
+                    type="number"
+                    step="any"
+                    name="commission"
+                    value={editSet ? editSet.commission : ""}
+                    onChange={(e) => editFormHandler(e, 'commission')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Pana"
+                    type="number"
+                    step="any"
+                    name="pana"
+                    value={editSet ? editSet.pana : ""}
+                    onChange={(e) => editFormHandler(e, 'pana')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Partnership"
+                    type="number"
+                    step="any"
+                    name="partnership"
+                    value={editSet ? editSet.partnership : ""}
+                    onChange={(e) => editFormHandler(e, 'partnership')}
+                    required
+                  />
+                </div>
+                <div className="col">
 
-              <TextField
-                label="Pana"
-                type="number"
-                step="any"
-                name="pana"
-                value={editSet ? editSet.pana : ""}
-                onChange={(e) => editFormHandler(e, 'pana')}
-                required
-              />
+                  <TextField
+                    label="Multiple"
+                    type="number"
+                    step="any"
+                    name="multiple"
+                    value={editSet ? editSet.multiple : ""}
+                    onChange={(e) => editFormHandler(e, 'multiple')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="SP"
+                    type="number"
+                    step="any"
+                    name="sp"
+                    value={editSet ? editSet.sp : ""}
+                    onChange={(e) => editFormHandler(e, 'sp')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="DP"
+                    type="number"
+                    step="any"
+                    name="dp"
+                    value={editSet ? editSet.dp : ""}
+                    onChange={(e) => editFormHandler(e, 'dp')}
+                    required
+                  />
+                </div>
+                <div className="col">
 
-              <TextField
-                label="Partnership"
-                type="number"
-                step="any"
-                name="partnership"
-                value={editSet ? editSet.partnership : ""}
-                onChange={(e) => editFormHandler(e, 'partnership')}
-                required
-              />
-
-
-              <TextField
-                label="Multiple"
-                type="number"
-                step="any"
-                name="multiple"
-                value={editSet ? editSet.multiple : ""}
-                onChange={(e) => editFormHandler(e, 'multiple')}
-                required
-              />
-
-              <TextField
-                label="SP"
-                type="number"
-                step="any"
-                name="sp"
-                value={editSet ? editSet.sp : ""}
-                onChange={(e) => editFormHandler(e, 'sp')}
-                required
-              />
-
-              <TextField
-                label="DP"
-                type="number"
-                step="any"
-                name="dp"
-                value={editSet ? editSet.dp : ""}
-                onChange={(e) => editFormHandler(e, 'dp')}
-                required
-              />
-
-
-              <TextField
-                label="JODI"
-                type="number"
-                step="any"
-                name="jodi"
-                value={editSet ? editSet.jodi : ""}
-                onChange={(e) => editFormHandler(e, 'jodi')}
-                required
-              />
-
-              <TextField
-                label="TP"
-                type="number"
-                step="any"
-                name="tp"
-                value={editSet ? editSet.tp : ""}
-                onChange={(e) => editFormHandler(e, 'tp')}
-                required
-              />
-
-
+                  <TextField
+                    label="JODI"
+                    type="number"
+                    step="any"
+                    name="jodi"
+                    value={editSet ? editSet.jodi : ""}
+                    onChange={(e) => editFormHandler(e, 'jodi')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="TP"
+                    type="number"
+                    step="any"
+                    name="tp"
+                    value={editSet ? editSet.tp : ""}
+                    onChange={(e) => editFormHandler(e, 'tp')}
+                    required
+                  />
+                </div>
+              </div>
               <Button id="editSetBtn" submit>Submit</Button>
 
 
@@ -518,6 +542,7 @@ export default function Set() {
 
         {/* Delete set popup */}
         <Modal
+          small
           // activator={activator}
           open={isVisible.deleteSet}
           onClose={() => modalOpen('deleteSet')}

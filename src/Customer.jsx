@@ -3,7 +3,7 @@ import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon,Select, Frame } from '@shopify/polaris';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame } from '@shopify/polaris';
 import {
   EditMajor,
   DeleteMajor,
@@ -12,11 +12,11 @@ import {
 import { MyContext } from "./App";
 
 export default function Customer() {
-  const { message,setMessage } = useContext(MyContext);
-  const [validationError,setValidationError] = useState({
-    cid:false,
-    name:false,
-    set:false
+  const { message, setMessage } = useContext(MyContext);
+  const [validationError, setValidationError] = useState({
+    cid: false,
+    name: false,
+    set: false
   });
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
@@ -34,18 +34,18 @@ export default function Customer() {
     tp: "",
     sp: "",
   });
-  const addFormHandler = (value,param) => {
-    let validationErr = {...validationError};
-   if(value && param == 'customer_id'){
-    validationErr.cid = false;
-   }
-   if(value && param == 'name'){
-    validationErr.name = false;
-   }
-   if(value && param == 'set'){
-    validationErr.set = false;
-   }
-   setValidationError(validationErr);
+  const addFormHandler = (value, param) => {
+    let validationErr = { ...validationError };
+    if (value && param == 'customer_id') {
+      validationErr.cid = false;
+    }
+    if (value && param == 'name') {
+      validationErr.name = false;
+    }
+    if (value && param == 'set') {
+      validationErr.set = false;
+    }
+    setValidationError(validationErr);
     const fieldName = param;
     const fieldValue = value;
     const newFormData = { ...addFormData };
@@ -55,16 +55,16 @@ export default function Customer() {
 
   };
 
-  const editFormHandler = (value,param) => {
-    let validationErr = {...validationError};
-    if(value && param == 'customer_id'){
-     validationErr.cid = false;
+  const editFormHandler = (value, param) => {
+    let validationErr = { ...validationError };
+    if (value && param == 'customer_id') {
+      validationErr.cid = false;
     }
-    if(value && param == 'name'){
-     validationErr.name = false;
+    if (value && param == 'name') {
+      validationErr.name = false;
     }
-    if(value && param == 'set'){
-     validationErr.set = false;
+    if (value && param == 'set') {
+      validationErr.set = false;
     }
     setValidationError(validationErr);
     const fieldName = param;
@@ -76,68 +76,68 @@ export default function Customer() {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    let validationErr = {...validationError};
-   
+    let validationErr = { ...validationError };
+
     let isSubmit = true;
-    if(!addFormData.customer_id){
-      validationErr.cid = "Please enter customer ID";
+    if (!addFormData.customer_id) {
+      // validationErr.cid = "Please enter customer ID";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.cid = false;
     }
-    if(!addFormData.set){
-      validationErr.set = "Please select set";
+    if (!addFormData.set) {
+      // validationErr.set = "Please select set";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.set = false;
     }
-    if(!addFormData.name){
-      validationErr.name = "Please enter customer name";
+    if (!addFormData.name) {
+      // validationErr.name = "Please enter customer name";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.name = false;
     }
-  if(isSubmit){
-    addNote();
-    navigate("/entry");
-    modalOpen('addCustomer');
-  }
-  setValidationError(validationErr);
-   
-   
- 
+    if (isSubmit) {
+      addNote();
+      navigate("/entry");
+      modalOpen('addCustomer');
+    }
+    setValidationError(validationErr);
+
+
+
   };
   const updateHandler = (event) => {
     event.preventDefault();
-    let validationErr = {...validationError};
-   
+    let validationErr = { ...validationError };
+
     let isSubmit = true;
-    if(!editCustomer.customer_id){
-      validationErr.cid = "Please enter customer ID";
+    if (!editCustomer.customer_id) {
+      // validationErr.cid = "Please enter customer ID";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.cid = false;
     }
-    if(!editCustomer.set){
-      validationErr.set = "Please select set";
+    if (!editCustomer.set) {
+      // validationErr.set = "Please select set";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.set = false;
     }
-    if(!editCustomer.name){
-      validationErr.name = "Please enter customer name";
+    if (!editCustomer.name) {
+      // validationErr.name = "Please enter customer name";
       isSubmit = false;
-    }else{
+    } else {
       validationErr.name = false;
     }
-    if(isSubmit){
+    if (isSubmit) {
       updateCustomer();
       modalOpen('editCustomer');
     }
-   
+
     setValidationError(validationErr);
 
-  
+
   };
 
 
@@ -192,17 +192,17 @@ export default function Customer() {
       { dir: BaseDirectory.Resource }
     );
     setActive(true);
-   
+
     setMessage('Customer updated successfully');
     getNotesFromFile();
   };
 
   const onChangeSet = async (e) => {
     setSelectedSet(e);
-    let validateErr = {...validationError};
-    if(e != ''){
+    let validateErr = { ...validationError };
+    if (e != '') {
       validateErr.set = false;
-    }else{
+    } else {
       validateErr.set = 'Please select set';
     }
     setValidationError(validateErr);
@@ -222,10 +222,10 @@ export default function Customer() {
 
   const onChangeSetEdit = async (e) => {
     setSelectedSet(e);
-    let validateErr = {...validationError};
-    if(e != ''){
+    let validateErr = { ...validationError };
+    if (e != '') {
       validateErr.set = false;
-    }else{
+    } else {
       validateErr.set = 'Please select set';
     }
     setValidationError(validateErr);
@@ -248,10 +248,10 @@ export default function Customer() {
         dir: BaseDirectory.Resource,
       });
       const mysetData = JSON.parse(myfilesets);
-      let optionsSet = [{label:"Select set",value:""}];
+      let optionsSet = [{ label: "Select set", value: "" }];
       updateSetData(mysetData);
-      mysetData.map((data)=>{
-        optionsSet.push({label:data.set,value:data.set})
+      mysetData.map((data) => {
+        optionsSet.push({ label: data.set, value: data.set })
       })
       updateSetOptions(optionsSet);
     } catch (error) {
@@ -323,8 +323,8 @@ export default function Customer() {
   const [isVisible, setIsVisible] = useState({ addCustomer: false, editCustomer: false, deleteCustomer: false });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
-    if(id=='addCustomer'){
-          setSelectedSet("");
+    if (id == 'addCustomer') {
+      setSelectedSet("");
     }
     if (isVisibleTemp[id]) {
       isVisibleTemp[id] = false;
@@ -381,7 +381,8 @@ export default function Customer() {
 
   return (
     <>
-      <Page fullWidth
+      <Page
+
         title="Customers"
         primaryAction={{ content: 'Add Customer', icon: PlusMinor, onAction: () => modalOpen('addCustomer') }}>
         <LegacyCard>
@@ -392,9 +393,10 @@ export default function Customer() {
               { title: 'Cid' },
               { title: 'Name' },
               { title: 'Set' },
-              { title: 'Action'},
+              { title: 'Action' },
             ]}
             selectable={false}
+
           >
             {rowMarkup}
           </IndexTable>
@@ -420,174 +422,197 @@ export default function Customer() {
         >
           <Modal.Section>
             <Form onSubmit={submitHandler}>
-            <Grid>
-            <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
-                <TextField
-                  label="Customer ID"
-                  type="number"
-                  name="customer_id"
-                  placeholder="Enter customer ID"
-                  value={addFormData.customer_id}
-                  error={validationError.cid}
-                  requiredIndicator={true}
-                  onChange={(e)=>addFormHandler(e,'customer_id')}
-                  
-                />
-              
-                <TextField
-                  label="Customer Name"
-                  type="text"
-                  name="name"
-                  placeholder="Enter customer name"
-                  value={addFormData.name}
-                  error={validationError.name}
-                  requiredIndicator={true}
-                  onChange={(e)=>addFormHandler(e,'name')}
-                  
-                />
+              <Grid>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                  <div className="row">
+                    <div className="col">
+                      <TextField
+                        label="Customer ID"
+                        type="number"
+                        name="customer_id"
+                        placeholder="Enter customer ID"
+                        value={addFormData.customer_id}
+                        error={validationError.cid}
+                        requiredIndicator={true}
+                        onChange={(e) => addFormHandler(e, 'customer_id')}
 
-                <TextField
-                  label="Mobile Number 1"
-                  type="number"
-                  step="any"
-                  name="mobile1"
-                  placeholder="Enter mobile number"
-                  value={addFormData.mobile1}
-                  onChange={(e)=>addFormHandler(e,'mobile1')}
-                />
-                <TextField
-                  label="Mobile Number 2"
-                  type="number"
-                  step="any"
-                  name="mobile2"
-                  placeholder="Enter mobile number"
-                  value={addFormData.mobile2}
-                  onChange={(e)=>addFormHandler(e,'mobile2')}
-                />
+                      />
+
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Customer Name"
+                        type="text"
+                        name="name"
+                        placeholder="Enter customer name"
+                        value={addFormData.name}
+                        error={validationError.name}
+                        requiredIndicator={true}
+                        onChange={(e) => addFormHandler(e, 'name')}
+
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Mobile Number 1"
+                        type="number"
+                        step="any"
+                        name="mobile1"
+                        placeholder="Enter mobile number"
+                        value={addFormData.mobile1}
+                        onChange={(e) => addFormHandler(e, 'mobile1')}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Mobile Number 2"
+                        type="number"
+                        step="any"
+                        name="mobile2"
+                        placeholder="Enter mobile number"
+                        value={addFormData.mobile2}
+                        onChange={(e) => addFormHandler(e, 'mobile2')}
+                      />
+
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Address"
+                        name="address"
+                        placeholder="Enter customer address"
+                        value={addFormData.address}
+                        onChange={(e) => addFormHandler(e, 'address')}
+                        multiline={4}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Limit"
+                        type="number"
+                        step="any"
+                        name="limit"
+                        placeholder="Enter limit"
+                        value={addFormData.limit}
+                        onChange={(e) => addFormHandler(e, 'limit')}
+                      />
+                    </div>
+                  </div>
+                </Grid.Cell>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                  <div className="row">
+                    <div className="col">
+                      <Select
+                        label="Set"
+                        name="set"
+                        error={validationError.set}
+                        id="set"
+                        options={setOptions}
+                        value={selectedSet}
+                        requiredIndicator={true}
+                        onChange={(e) => onChangeSet(e)}
+                        required
+                      />
+                    </div>
+
+                    <div className="col">
+                      <TextField
+                        label="Commision"
+                        type="number"
+                        step="any"
+                        name="commission"
+                        value={addFormData ? addFormData.commission : ""}
+                        onChange={(e) => addFormHandler(e, 'commission')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Pana"
+                        type="number"
+                        step="any"
+                        name="pana"
+                        value={addFormData ? addFormData.pana : ""}
+                        onChange={(e) => addFormHandler(e, 'pana')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Partnership"
+                        type="number"
+                        step="any"
+                        name="partnership"
+                        value={addFormData ? addFormData.partnership : ""}
+                        onChange={(e) => addFormHandler(e, 'partnership')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Multiple"
+                        type="number"
+                        step="any"
+                        name="multiple"
+                        value={addFormData ? addFormData.multiple : ""}
+                        onChange={(e) => addFormHandler(e, 'multiple')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="SP"
+                        type="number"
+                        step="any"
+                        name="sp"
+                        value={addFormData ? addFormData.sp : ""}
+                        onChange={(e) => addFormHandler(e, 'sp')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="DP"
+                        type="number"
+                        step="any"
+                        name="dp"
+                        value={addFormData ? addFormData.dp : ""}
+                        onChange={(e) => addFormHandler(e, 'dp')}
+                        required
+                      />
+
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="JODI"
+                        type="number"
+                        step="any"
+                        name="jodi"
+                        value={addFormData ? addFormData.jodi : ""}
+                        onChange={(e) => addFormHandler(e, 'jodi')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="TP"
+                        type="number"
+                        step="any"
+                        name="tp"
+                        value={addFormData ? addFormData.tp : ""}
+                        onChange={(e) => addFormHandler(e, 'tp')}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                </Grid.Cell>
+              </Grid>
+              <Button id="addCustBtn" submit>Submit</Button>
 
 
-                <TextField
-                  label="Address"
-                  name="address"
-                  placeholder="Enter customer address"
-                  value={addFormData.address}
-                  onChange={(e)=>addFormHandler(e,'address')}
-                  multiline={4}
-                />
-              
-                <TextField
-                  label="Limit"
-                  type="number"
-                  step="any"
-                  name="limit"
-                  placeholder="Enter limit"
-                  value={addFormData.limit}
-                  onChange={(e)=>addFormHandler(e,'limit')}
-                />
-                  </Grid.Cell>
-                  <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
-                  <Select
-                    label="Set"
-                    name="set"
-                    error={validationError.set}
-                    id="set"
-                    options={setOptions}
-                    value={selectedSet}
-                    requiredIndicator={true}
-                    onChange={(e)=>onChangeSet(e)}
-                    required
-          />
-         
-          <TextField
-            label="Commision"
-            type="number"
-            step="any"
-            name="commission"
-            value={addFormData ? addFormData.commission : ""}
-            onChange={(e)=>addFormHandler(e,'commission')}
-            required
-          />
-     
-          <TextField
-            label="Pana"
-            type="number"
-            step="any"
-            name="pana"
-            value={addFormData ? addFormData.pana : ""}
-            onChange={(e)=>addFormHandler(e,'pana')}
-            required
-          />
-      
-          <TextField
-            label="Partnership"
-            type="number"
-            step="any"
-            name="partnership"
-            value={addFormData ? addFormData.partnership : ""}
-            onChange={(e)=>addFormHandler(e,'partnership')}
-            required
-          />
-    
-       
-          <TextField
-             label="Multiple"
-            type="number"
-            step="any"
-            name="multiple"
-            value={addFormData ? addFormData.multiple : ""}
-            onChange={(e)=>addFormHandler(e,'multiple')}
-            required
-          />
-        
-          <TextField
-          label="SP"
-            type="number"
-            step="any"
-            name="sp"
-            value={addFormData ? addFormData.sp : ""}
-            onChange={(e)=>addFormHandler(e,'sp')}
-            required
-          />
-       
-          <TextField
-          label="DP"
-            type="number"
-            step="any"
-            name="dp"
-            value={addFormData ? addFormData.dp : ""}
-            onChange={(e)=>addFormHandler(e,'dp')}
-            required
-          />
-         
-     
-          <TextField
-              label="JODI"
-            type="number"
-            step="any"
-            name="jodi"
-            value={addFormData ? addFormData.jodi : ""}
-            onChange={(e)=>addFormHandler(e,'jodi')}
-            required
-          />
-    
-          <TextField
-           label="TP"
-            type="number"
-            step="any"
-            name="tp"
-            value={addFormData ? addFormData.tp : ""}
-            onChange={(e)=>addFormHandler(e,'tp')}
-            required
-          />
- 
-                    </Grid.Cell>
-                  </Grid>
-                <Button id="addCustBtn" submit>Submit</Button>
-
-             
             </Form>
 
-    
+
           </Modal.Section>
         </Modal>
 
@@ -610,282 +635,201 @@ export default function Customer() {
           ]}
         >
           <Modal.Section>
-          <Form onSubmit={updateHandler}>
-            <Grid>
-            <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
-                <TextField
-                  label="Customer ID"
-                  type="number"
-                  name="customer_id"
-                  placeholder="Enter customer ID"
-                  error={validationError.cid}
-                  requiredIndicator={true}
-                  value={editCustomer.customer_id}
-                  onChange={(e)=>editFormHandler(e,'customer_id')}
-                  
-                />
-              
-                <TextField
-                  label="Customer Name"
-                  type="text"
-                  name="name"
-                  placeholder="Enter customer name"
-                  value={editCustomer.name}
-                  error={validationError.name}
-                  requiredIndicator={true}
-                  onChange={(e)=>editFormHandler(e,'name')}
-                  
-                />
+            <Form onSubmit={updateHandler}>
+              <Grid>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                  <div className="row">
+                    <div className="col">
+                      <TextField
+                        label="Customer ID"
+                        type="number"
+                        name="customer_id"
+                        placeholder="Enter customer ID"
+                        error={validationError.cid}
+                        requiredIndicator={true}
+                        value={editCustomer.customer_id}
+                        onChange={(e) => editFormHandler(e, 'customer_id')}
 
-                <TextField
-                  label="Mobile Number 1"
-                  type="number"
-                  step="any"
-                  name="mobile1"
-                  placeholder="Enter mobile number"
-                  value={editCustomer.mobile1}
-                  onChange={(e)=>editFormHandler(e,'mobile1')}
-                />
-                <TextField
-                  label="Mobile Number 2"
-                  type="number"
-                  step="any"
-                  name="mobile2"
-                  placeholder="Enter mobile number"
-                  value={editCustomer.mobile2}
-                  onChange={(e)=>editFormHandler(e,'mobile2')}
-                />
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Customer Name"
+                        type="text"
+                        name="name"
+                        placeholder="Enter customer name"
+                        value={editCustomer.name}
+                        error={validationError.name}
+                        requiredIndicator={true}
+                        onChange={(e) => editFormHandler(e, 'name')}
+
+                      />
+                    </div>
+                    <div className="col">
 
 
-                <TextField
-                  label="Address"
-                  name="address"
-                  placeholder="Enter customer address"
-                  value={editCustomer.address}
-                  onChange={(e)=>editFormHandler(e,'address')}
-                  multiline={4}
-                />
-              
-                <TextField
-                  label="Limit"
-                  type="number"
-                  step="any"
-                  name="limit"
-                  placeholder="Enter limit"
-                  value={editCustomer.limit}
-                  onChange={(e)=>editFormHandler(e,'limit')}
-                />
-                  </Grid.Cell>
-                  <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6, xl: 6}}>
-                  <Select
-                    label="Set"
-                    name="set"
-                    id="set"
-                    options={setOptions}
-                    value={selectedSet}
-                    error={validationError.set}
-                    requiredIndicator={true}
-                    onChange={(e)=>onChangeSetEdit(e)}
-                    required
-          />
-         
-          <TextField
-            label="Commision"
-            type="number"
-            step="any"
-            name="commission"
-            value={editCustomer ? editCustomer.commission : ""}
-            onChange={(e)=>editFormHandler(e,'commission')}
-            required
-          />
-     
-          <TextField
-            label="Pana"
-            type="number"
-            step="any"
-            name="pana"
-            value={editCustomer ? editCustomer.pana : ""}
-            onChange={(e)=>editFormHandler(e,'pana')}
-            required
-          />
-      
-          <TextField
-            label="Partnership"
-            type="number"
-            step="any"
-            name="partnership"
-            value={editCustomer ? editCustomer.partnership : ""}
-            onChange={(e)=>editFormHandler(e,'partnership')}
-            required
-          />
-    
-       
-          <TextField
-             label="Multiple"
-            type="number"
-            step="any"
-            name="multiple"
-            value={editCustomer ? editCustomer.multiple : ""}
-            onChange={(e)=>editFormHandler(e,'multiple')}
-            required
-          />
-        
-          <TextField
-          label="SP"
-            type="number"
-            step="any"
-            name="sp"
-            value={editCustomer ? editCustomer.sp : ""}
-            onChange={(e)=>editFormHandler(e,'sp')}
-            required
-          />
-       
-          <TextField
-          label="DP"
-            type="number"
-            step="any"
-            name="dp"
-            value={editCustomer ? editCustomer.dp : ""}
-            onChange={(e)=>editFormHandler(e,'dp')}
-            required
-          />
-         
-     
-          <TextField
-              label="JODI"
-            type="number"
-            step="any"
-            name="jodi"
-            value={editCustomer ? editCustomer.jodi : ""}
-            onChange={(e)=>editFormHandler(e,'jodi')}
-            required
-          />
-    
-          <TextField
-           label="TP"
-            type="number"
-            step="any"
-            name="tp"
-            value={editCustomer ? editCustomer.tp : ""}
-            onChange={(e)=>editFormHandler(e,'tp')}
-            required
-          />
- 
-                    </Grid.Cell>
-                  </Grid>
-                <Button id="editCustBtn" submit>Update</Button>
-            </Form>
-            {/* <div className="add-customer-popup">
+                      <TextField
+                        label="Mobile Number 1"
+                        type="number"
+                        step="any"
+                        name="mobile1"
+                        placeholder="Enter mobile number"
+                        value={editCustomer.mobile1}
+                        onChange={(e) => editFormHandler(e, 'mobile1')}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Mobile Number 2"
+                        type="number"
+                        step="any"
+                        name="mobile2"
+                        placeholder="Enter mobile number"
+                        value={editCustomer.mobile2}
+                        onChange={(e) => editFormHandler(e, 'mobile2')}
+                      />
+                    </div>
+                    <div className="col">
 
-              <div className="customer-body">
-                <form onSubmit={updateHandler}>
-                  <div className="add-customer-body">
-                    <div className="add-suctomer-left">
-                      <div className="customer-id">
-                        <label htmlFor="customer">Customer ID</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="customer_id"
-                          value={editCustomer.customer_id}
-                          placeholder="Enter customer ID"
-                          onChange={editFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer name">Customer Name</label>
-                        <input
-                          type="text"
-                          name="name"
-                          placeholder="Enter customer name"
-                          value={editCustomer.name}
-                          onChange={editFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer number">Mobile Number 1</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="mobile1"
-                          value={editCustomer.mobile1}
-                          placeholder="Enter mobile number"
-                          onChange={editFormHandler}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="customer number">Mobile Number 2</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="mobile2"
-                          value={editCustomer.mobile2}
-                          placeholder="Enter mobile number"
-                          onChange={editFormHandler}
-                          required
-                        />
-                      </div>
-                      <div className="address">
-                        <label htmlFor="textarea">Address</label>
-                        <textarea
-
-                          name="address"
-                          placeholder="Enter customer address"
-                          cols="8"
-                          value={editCustomer.address}
-                          rows="5"
-                          onChange={editFormHandler}
-                        ></textarea>
-                      </div>
-                      <div>
-                        <label>Limit</label>
-                        <input
-                          type="number"
-                          step="any"
-                          name="limit"
-                          placeholder="Enter limit"
-                          onChange={editFormHandler}
-                          value={editCustomer.limit}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="set">Set</label>
-                        <select
-                          name="set"
-                          id="set"
-                          value={editCustomer.set}
-                          onChange={editFormHandler}
-                          required
-                        >
-                          <option key={0} value={""}>
-                            Select Set
-                          </option>
-                          {setData.map((data, index) => (
-                            <option key={index + 1} value={data.set}>
-                              {data.set}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      <TextField
+                        label="Address"
+                        name="address"
+                        placeholder="Enter customer address"
+                        value={editCustomer.address}
+                        onChange={(e) => editFormHandler(e, 'address')}
+                        multiline={4}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Limit"
+                        type="number"
+                        step="any"
+                        name="limit"
+                        placeholder="Enter limit"
+                        value={editCustomer.limit}
+                        onChange={(e) => editFormHandler(e, 'limit')}
+                      />
                     </div>
                   </div>
-                  <div className="add-button">
-                    <button className="d-none" id="editCustBtn" type="submit"> Update customer </button>
-                  </div>
-                </form>
-              </div>
-            </div> */}
+                </Grid.Cell>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
+                  <div className="row">
 
+                    <div className="col">
+                      <Select
+                        label="Set"
+                        name="set"
+                        id="set"
+                        options={setOptions}
+                        value={selectedSet}
+                        error={validationError.set}
+                        requiredIndicator={true}
+                        onChange={(e) => onChangeSetEdit(e)}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Commision"
+                        type="number"
+                        step="any"
+                        name="commission"
+                        value={editCustomer ? editCustomer.commission : ""}
+                        onChange={(e) => editFormHandler(e, 'commission')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Pana"
+                        type="number"
+                        step="any"
+                        name="pana"
+                        value={editCustomer ? editCustomer.pana : ""}
+                        onChange={(e) => editFormHandler(e, 'pana')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Partnership"
+                        type="number"
+                        step="any"
+                        name="partnership"
+                        value={editCustomer ? editCustomer.partnership : ""}
+                        onChange={(e) => editFormHandler(e, 'partnership')}
+                        required
+                      />
+
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Multiple"
+                        type="number"
+                        step="any"
+                        name="multiple"
+                        value={editCustomer ? editCustomer.multiple : ""}
+                        onChange={(e) => editFormHandler(e, 'multiple')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="SP"
+                        type="number"
+                        step="any"
+                        name="sp"
+                        value={editCustomer ? editCustomer.sp : ""}
+                        onChange={(e) => editFormHandler(e, 'sp')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="DP"
+                        type="number"
+                        step="any"
+                        name="dp"
+                        value={editCustomer ? editCustomer.dp : ""}
+                        onChange={(e) => editFormHandler(e, 'dp')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+
+                      <TextField
+                        label="JODI"
+                        type="number"
+                        step="any"
+                        name="jodi"
+                        value={editCustomer ? editCustomer.jodi : ""}
+                        onChange={(e) => editFormHandler(e, 'jodi')}
+                        required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="TP"
+                        type="number"
+                        step="any"
+                        name="tp"
+                        value={editCustomer ? editCustomer.tp : ""}
+                        onChange={(e) => editFormHandler(e, 'tp')}
+                        required
+                      />
+                    </div></div>
+                </Grid.Cell>
+              </Grid>
+              <Button id="editCustBtn" submit>Update</Button>
+            </Form>
           </Modal.Section>
         </Modal>
 
 
         {/* Delete customer popup */}
         <Modal
+        small
           // activator={activator}
           open={isVisible.deleteCustomer}
           onClose={() => modalOpen('deleteCustomer')}
@@ -910,7 +854,7 @@ export default function Customer() {
 
           </Modal.Section>
         </Modal>
-     
+
       </Page>
 
 

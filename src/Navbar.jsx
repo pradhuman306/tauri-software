@@ -118,28 +118,25 @@ export default function Navbar() {
     <TopBar.SearchField
       onChange={handleSearchChange}
       value={searchValue}
-      placeholder="Search"
+      placeholder="Customer / SID... "
       showFocusBorder
     />
   );
 
   const secondaryMenuMarkup = (
-    <List>
-        <List.Item>
+    <List className="mainLink">
+ <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
-              to="/calculater/:cid"
-              className={location.pathname==='/calculater/:cid'?'active':""}
-        
+              to="/customer"
+              className={location.pathname==='/customer'?'active':""}
 
             >
-             
-              Calculator
+              Customer
             </Link>
           }
-        />
-         </List.Item>
+        /></List.Item>
          <List.Item>
       <TopBar.Menu
           activatorContent={
@@ -165,18 +162,7 @@ export default function Navbar() {
         />
       </List.Item>
         
-      <List.Item>
-        <TopBar.Menu
-          activatorContent={
-            <Link
-              to="/customer"
-              className={location.pathname==='/customer'?'active':""}
-
-            >
-              Customer
-            </Link>
-          }
-        /></List.Item>
+     
          <List.Item>
       <TopBar.Menu
           activatorContent={
