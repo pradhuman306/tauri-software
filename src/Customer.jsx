@@ -3,7 +3,7 @@ import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame } from '@shopify/polaris';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, DataTable } from '@shopify/polaris';
 import {
   EditMajor,
   DeleteMajor,
@@ -336,48 +336,74 @@ export default function Customer() {
     setValidationError({});
 
   };
-  const resourceName = {
-    singular: 'customer',
-    plural: 'customers',
-  };
+  // const resourceName = {
+  //   singular: 'customer',
+  //   plural: 'customers',
+  // };
 
-  const rowMarkup = customers.map(
-    (
-      { name, customer_id, set, id },
-      index,
-    ) => (
+  // const rowMarkup = customers.map(
+  //   (
+  //     { name, customer_id, set, id },
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={customer_id} key={customer_id} position={index}>
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {customer_id}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{name}</IndexTable.Cell>
-        <IndexTable.Cell>{set}</IndexTable.Cell>
-        <IndexTable.Cell>
-          <Button onClick={() => handleEditCustomer(id, 'editCustomer')}>
-            <Icon
-              source={EditMajor}
-              color="base"
-            />
-          </Button>
-          <Button onClick={() => {
-            modalOpen('deleteCustomer')
-            setDeleteCustomerID(id)
-          }
-          }>
-            <Icon
-              source={DeleteMajor}
-              color="base"
-            />
+  //     <IndexTable.Row id={customer_id} key={customer_id} position={index}>
+  //       <IndexTable.Cell>
+  //         <Text variant="bodyMd" fontWeight="bold" as="span">
+  //           {customer_id}
+  //         </Text>
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{name}</IndexTable.Cell>
+  //       <IndexTable.Cell>{set}</IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <Button onClick={() => handleEditCustomer(id, 'editCustomer')}>
+  //           <Icon
+  //             source={EditMajor}
+  //             color="base"
+  //           />
+  //         </Button>
+  //         <Button onClick={() => {
+  //           modalOpen('deleteCustomer')
+  //           setDeleteCustomerID(id)
+  //         }
+  //         }>
+  //           <Icon
+  //             source={DeleteMajor}
+  //             color="base"
+  //           />
 
-          </Button>
-        </IndexTable.Cell>
-      </IndexTable.Row>
+  //         </Button>
+  //       </IndexTable.Cell>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
+
+
+  const rows = [];
+
+  customers.map((customer, index) => {
+    let newArray = [];
+    newArray.push(customer.customer_id, customer.name, customer.set, <><Button onClick={() => handleEditCustomer(customer.id, 'editCustomer')}>
+      <Icon
+        source={EditMajor}
+        color="base"
+      />
+    </Button>
+      <Button onClick={() => {
+        modalOpen('deleteCustomer')
+        setDeleteCustomerID(customer.id)
+      }
+      }>
+        <Icon
+          source={DeleteMajor}
+          color="base"
+        />
+
+      </Button></>);
+    rows.push(newArray);
+  })
+
 
   return (
     <>
@@ -385,7 +411,7 @@ export default function Customer() {
 
         title="Customers"
         primaryAction={{ content: 'Add Customer', icon: PlusMinor, onAction: () => modalOpen('addCustomer') }}>
-        <LegacyCard>
+        {/* <LegacyCard>
           <IndexTable
             resourceName={resourceName}
             itemCount={customers.length}
@@ -400,8 +426,28 @@ export default function Customer() {
           >
             {rowMarkup}
           </IndexTable>
+        </LegacyCard> */}
+        <LegacyCard>
+          <DataTable
+            
+            columnContentTypes={[
+              'numeric',
+              'text',
+              'numeric',
+              'text',
+            ]}
+            headings={[
+              'Cid',
+              'Name',
+              'Set',
+              'Action'
+            ]}
+            rows={rows}
+            hasZebraStripingOnData
+            increasedTableDensity
+            defaultSortDirection="descending"
+          />
         </LegacyCard>
-
 
         {/* Add customer popup */}
         <Modal
@@ -829,7 +875,7 @@ export default function Customer() {
 
         {/* Delete customer popup */}
         <Modal
-        small
+          small
           // activator={activator}
           open={isVisible.deleteCustomer}
           onClose={() => modalOpen('deleteCustomer')}

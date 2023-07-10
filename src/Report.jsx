@@ -1,7 +1,7 @@
 import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
-import { Button, Page, TextField, Text, IndexTable, LegacyCard, ButtonGroup, Modal } from "@shopify/polaris";
+import { Button, Page, TextField, Text, IndexTable, LegacyCard, ButtonGroup, Modal, DataTable } from "@shopify/polaris";
 import { MyContext } from "./App";
 
 export default function Report() {
@@ -243,30 +243,39 @@ export default function Report() {
   const printReport = (e) => {
     window.print();
   }
-  const resourceName = {
-    singular: 'Report Data',
-    plural: 'Report Data',
-  };
-  const rowMarkup = reportData.map(
-    (
-      { id, date, name, credit, debit },
-      index,
-    ) => (
+  // const resourceName = {
+  //   singular: 'Report Data',
+  //   plural: 'Report Data',
+  // };
+  // const rowMarkup = reportData.map(
+  //   (
+  //     { id, date, name, credit, debit },
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {id}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{name}</IndexTable.Cell>
-        <IndexTable.Cell>{credit}</IndexTable.Cell>
-        <IndexTable.Cell>{debit}</IndexTable.Cell>
-      </IndexTable.Row>
+  //     <IndexTable.Row id={id} key={id} position={index}>
+  //       <IndexTable.Cell>
+  //         <Text variant="bodyMd" fontWeight="bold" as="span">
+  //           {id}
+  //         </Text>
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{date}</IndexTable.Cell>
+  //       <IndexTable.Cell>{name}</IndexTable.Cell>
+  //       <IndexTable.Cell>{credit}</IndexTable.Cell>
+  //       <IndexTable.Cell>{debit}</IndexTable.Cell>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
+
+  const rows = [];
+  reportData.map((data, index) => {
+    let newArray = [];
+    newArray.push(data.date, data.name, data.credit, data.debit);
+    rows.push(newArray);
+  })
+
+
   return (
     <>
       <Page
@@ -291,7 +300,7 @@ export default function Report() {
 
         {tabActive ?
           <>
-            <LegacyCard>
+            {/* <LegacyCard>
               <IndexTable
                 resourceName={resourceName}
                 itemCount={customers.length}
@@ -307,7 +316,29 @@ export default function Report() {
               >
                 {rowMarkup}
               </IndexTable>
+            </LegacyCard> */}
+
+            <LegacyCard>
+              <DataTable
+                columnContentTypes={[
+                  'text',
+                  'text',
+                  'numeric',
+                  'numeric'
+                ]}
+                headings={[
+                  'Date',
+                  'Name',
+                  'Credit',
+                  'Debit'
+                ]}
+                rows={rows}
+                hasZebraStripingOnData
+                increasedTableDensity
+                defaultSortDirection="descending"
+              />
             </LegacyCard>
+
             <ButtonGroup>
               <Button onClick={(e) => window.print()} primary>Print</Button>
               <Button onClick={(e) => modalOpen('deleteReport')}>Delete</Button>
@@ -316,7 +347,7 @@ export default function Report() {
           </> : ""}
         {/* Delete set popup */}
         <Modal
-        small
+          small
           // activator={activator}
           open={isVisible.deleteReport}
           onClose={() => modalOpen('deleteReport')}

@@ -1,7 +1,7 @@
 import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, List, ButtonGroup } from '@shopify/polaris';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, List, ButtonGroup, DataTable } from '@shopify/polaris';
 import {
   EditMajor,
   DeleteMajor,
@@ -239,120 +239,190 @@ export default function Entry() {
     setTabActive("");
     setDate("");
   };
-  const resourceName = {
-    singular: 'customer',
-    plural: 'customers',
-  };
-  const resourceNameInput = {
-    singular: 'entry',
-    plural: 'entries',
-  };
+  // const resourceName = {
+  //   singular: 'customer',
+  //   plural: 'customers',
+  // };
+  // const resourceNameInput = {
+  //   singular: 'entry',
+  //   plural: 'entries',
+  // };
 
-  const rowMarkup = customers.map(
-    (
-      { id, customer_id, set, name },
-      index,
-    ) => (
+  // const rowMarkup = customers.map(
+  //   (
+  //     { id, customer_id, set, name },
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {customer_id}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{name}</IndexTable.Cell>
-        <IndexTable.Cell>{set}</IndexTable.Cell>
-      </IndexTable.Row>
+  //     <IndexTable.Row id={id} key={id} position={index}>
+  //       <IndexTable.Cell>
+  //         <Text variant="bodyMd" fontWeight="bold" as="span">
+  //           {customer_id}
+  //         </Text>
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{name}</IndexTable.Cell>
+  //       <IndexTable.Cell>{set}</IndexTable.Cell>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
 
-  const tableEdit = inputFields.map(
-    (
-      {
-        id,
-        customer_id,
-        name,
-        amount,
-        pana_amount,
-        khula_amount,
-        sp_amount,
-        dp_amount,
-        jodi_amount,
-        tp_amount },
-      index,
-    ) => (
+  // const tableEdit = inputFields.map(
+  //   (
+  //     {
+  //       id,
+  //       customer_id,
+  //       name,
+  //       amount,
+  //       pana_amount,
+  //       khula_amount,
+  //       sp_amount,
+  //       dp_amount,
+  //       jodi_amount,
+  //       tp_amount },
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'customer_id', index)}
-            value={customer_id}
-            name="customer_id"
-          />
-        </IndexTable.Cell>
-        <IndexTable.Cell>  <TextField
-          type="text"
-          onChange={(evnt) => handleChange(evnt, 'name', index)}
-          value={name}
-          name="name"
-          readOnly
-        /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'amount', index)}
-            value={amount}
-            name="amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
-            value={pana_amount}
-            name="pana_amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'khula_amount', index)}
-            value={khula_amount}
-            name="khula_amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
-            value={sp_amount}
-            name="sp_amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'dp_amount', index)}
-            value={dp_amount}
-            name="dp_amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'jodi_amount', index)}
-            value={jodi_amount}
-            name="jodi_amount"
-          /></IndexTable.Cell>
-        <IndexTable.Cell>
-          <TextField
-            type="text"
-            onChange={(evnt) => handleChange(evnt, 'tp_amount', index)}
-            value={tp_amount}
-            name="tp_amount"
-          /></IndexTable.Cell>
+  //     <IndexTable.Row id={id} key={id} position={index}>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'customer_id', index)}
+  //           value={customer_id}
+  //           name="customer_id"
+  //         />
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>  <TextField
+  //         type="text"
+  //         onChange={(evnt) => handleChange(evnt, 'name', index)}
+  //         value={name}
+  //         name="name"
+  //         readOnly
+  //       /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'amount', index)}
+  //           value={amount}
+  //           name="amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
+  //           value={pana_amount}
+  //           name="pana_amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'khula_amount', index)}
+  //           value={khula_amount}
+  //           name="khula_amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
+  //           value={sp_amount}
+  //           name="sp_amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'dp_amount', index)}
+  //           value={dp_amount}
+  //           name="dp_amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'jodi_amount', index)}
+  //           value={jodi_amount}
+  //           name="jodi_amount"
+  //         /></IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <TextField
+  //           type="text"
+  //           onChange={(evnt) => handleChange(evnt, 'tp_amount', index)}
+  //           value={tp_amount}
+  //           name="tp_amount"
+  //         /></IndexTable.Cell>
 
-      </IndexTable.Row>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
+
+
+  const rowsTable = [];
+  inputFields.map((inFields, index) => {
+    let newArray = [];
+    newArray.push(<TextField
+      type="text"
+      onChange={(evnt) => handleChange(evnt, 'customer_id', index)}
+      value={inFields.customer_id}
+      name="customer_id"
+    />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'name', index)}
+        value={inFields.name}
+        name="name"
+        readOnly
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'amount', index)}
+        value={inFields.amount}
+        name="amount"
+      />, <TextField
+      type="text"
+      onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
+      value={inFields.pana_amount}
+      name="pana_amount"
+    />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'khula_amount', index)}
+        value={inFields.khula_amount}
+        name="khula_amount"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
+        value={inFields.sp_amount}
+        name="sp_amount"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'dp_amount', index)}
+        value={inFields.dp_amount}
+        name="dp_amount"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'jodi_amount', index)}
+        value={inFields.jodi_amount}
+        name="jodi_amount"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, 'tp_amount', index)}
+        value={inFields.tp_amount}
+        name="tp_amount"
+      />);
+    rowsTable.push(newArray);
+  })
+
+
+
+  const rowsCustomer = [];
+  customers.map((customer, index) => {
+    let newArray = [];
+    newArray.push(customer.customer_id, customer.set, customer.name);
+    rowsCustomer.push(newArray);
+  })
 
 
   return (
@@ -376,7 +446,7 @@ export default function Entry() {
         >
           <Modal.Section>
 
-            <LegacyCard>
+            {/* <LegacyCard>
               <IndexTable
                 resourceName={resourceName}
                 itemCount={customers.length}
@@ -389,6 +459,24 @@ export default function Entry() {
               >
                 {rowMarkup}
               </IndexTable>
+            </LegacyCard> */}
+            <LegacyCard>
+              <DataTable
+                columnContentTypes={[
+                  'numeric',
+                  'text',
+                  'numeric'
+                ]}
+                headings={[
+                  'Cid',
+                  'Name',
+                  'Set',
+                ]}
+                rows={rowsCustomer}
+                hasZebraStripingOnData
+                increasedTableDensity
+                defaultSortDirection="descending"
+              />
             </LegacyCard>
 
 
@@ -499,7 +587,7 @@ export default function Entry() {
       >
         {timezone != "" && tabActive != "" ? (
           <>
-            <LegacyCard>
+            {/* <LegacyCard>
               <IndexTable
                 resourceName={resourceNameInput}
                 itemCount={inputFields.length}
@@ -518,6 +606,37 @@ export default function Entry() {
               >
                 {tableEdit}
               </IndexTable>
+            </LegacyCard> */}
+
+            <LegacyCard>
+              <DataTable
+                columnContentTypes={[
+                  'numeric',
+                  'text',
+                  'numeric',
+                  'numeric',
+                  'numeric',
+                  'numeric',
+                  'numeric',
+                  'numeric',
+                  'numeric'
+                ]}
+                headings={[
+                  'CID',
+                  'Name',
+                  'Amount',
+                  'Pana_amount',
+                  'Khula_amount',
+                  'SP_amount',
+                  'DP_amount',
+                  'JODI_amount',
+                  'TP_amount'
+                ]}
+                rows={rowsTable}
+                hasZebraStripingOnData
+                increasedTableDensity
+                defaultSortDirection="descending"
+              />
             </LegacyCard>
 
             {timezone != "" && tabActive != "" && tabActive == "entry" ? (

@@ -81,7 +81,7 @@ export default function Calculater() {
 
   const [selectedCId, setCID] = useState("");
   const [selectedDate, setDate] = useState("");
-  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1', 'Total-1', 'MO', 'BO', 'MK', 'BK', 'A2', 'Total-2', 'Final Total', 'Total Amount']);
+  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1', 'Total-1', 'MO', 'BO', 'MK', 'BK', 'A2', 'Total-2', 'Final Total']);
   const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
 
   const [DayData, setDayData] = useState({
@@ -248,45 +248,62 @@ export default function Calculater() {
   }, [addFormData]);
 
 
-  const resourceName = {
-    singular: 'timeZoneAll',
-    plural: 'timeZoneAlls',
-  };
-  const rowMarkup = timeZoneAll.map(
-    (
-      zone,
-      index,
-    ) => (
+  // const resourceName = {
+  //   singular: 'timeZoneAll',
+  //   plural: 'timeZoneAlls',
+  // };
+  // const rowMarkup = timeZoneAll.map(
+  //   (
+  //     zone,
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={index} key={index} position={index}>
-        <IndexTable.Cell>{zone}</IndexTable.Cell>
-        {zone === 'Total Amount' ? <IndexTable.Cell> <TextField type="text" step="any" value={mainTotal} readOnly /></IndexTable.Cell> : ""}
+  //     <IndexTable.Row id={index} key={index} position={index}>
+  //       <IndexTable.Cell>{zone}</IndexTable.Cell>
+  //       {zone === 'Total Amount' ? <IndexTable.Cell> <TextField type="text" step="any" value={mainTotal} readOnly /></IndexTable.Cell> : ""}
 
-        {zone != 'Total Amount' && amountDetails.map((amountKey) => (
-          <IndexTable.Cell>
-            {zone === 'Total-1' ? <TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly /> : zone === 'Total-2' ? <TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly /> : zone === 'Final Total' ? <TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly /> : <TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />}
+  //       {zone != 'Total Amount' && amountDetails.map((amountKey) => (
+  //         <IndexTable.Cell>
+  //           {zone === 'Total-1' ? <TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly /> : zone === 'Total-2' ? <TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly /> : zone === 'Final Total' ? <TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly /> : <TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />}
 
-          </IndexTable.Cell>
+  //         </IndexTable.Cell>
 
-        ))}
+  //       ))}
 
 
-      </IndexTable.Row>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
 
-  const rows = [
-    [ <TextField type="number" step="any" name="set" value={addFormData.set} readOnly />, '$875.00', 124689, 140, '$122,500.00'],
-    ['Mauve Cashmere Scarf', '$230.00', 124533, 83, '$19,090.00'],
-    [
-      'Navy Merino Wool Blazer with khaki chinos and yellow belt',
-      '$445.00',
-      124518,
-      32,
-      '$14,240.00',
-    ],
-  ];
+  const rows = [];
+
+  timeZoneAll.map((zone, index) => {
+    let newArray = [];
+    newArray.push(zone);
+    // if (zone === 'Total Amount') {
+    //   newArray.push(<TextField type="text" step="any" value={mainTotal} readOnly />);
+    // }
+    if (zone != 'Total Amount') {
+      amountDetails.map((amountKey) => {
+        if (zone === 'Total-1') {
+          newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
+        }
+        else if (zone === 'Total-2') {
+          newArray.push(<TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly />);
+        }
+        else if(zone === 'Final Total'){
+          newArray.push(<TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly />);
+        }else {
+          newArray.push(<TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />);
+        }
+   
+      })
+    }
+    rows.push(newArray);
+  })
+
+
 
   return (
     <>
@@ -371,8 +388,41 @@ export default function Calculater() {
 
 
           <Grid.Cell columnSpan={{ xs: 10, sm: 10, md: 10, lg: 10, xl: 10 }}>
-
-            <LegacyCard>
+          <LegacyCard>
+          <DataTable
+            showTotalsInFooter
+            columnContentTypes={[
+              'text',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric'
+            ]}
+            headings={[
+              '',
+              'Amount',
+              'Pana-Amount',
+              'Kh',
+              'SP-Amount',
+              'DP-Amount',
+              'J-Amount',
+              'TP-Amount'
+            ]}
+            rows={rows}
+            totals={['', mainTotal, '', '', '', '', '', '']}
+            hasZebraStripingOnData
+            increasedTableDensity
+            defaultSortDirection="descending"
+            totalsName={{
+              singular: 'Total Amount',
+              plural: 'Total Amount',
+            }}
+          />
+        </LegacyCard>
+            {/* <LegacyCard>
               <IndexTable
                 resourceName={resourceName}
                 itemCount={timeZoneAll.length}
@@ -390,7 +440,7 @@ export default function Calculater() {
               >
                 {rowMarkup}
               </IndexTable>
-            </LegacyCard>
+            </LegacyCard> */}
 
 
           </Grid.Cell>
@@ -398,36 +448,7 @@ export default function Calculater() {
         <Button onClick={() => close()} primary>Cancel/Close</Button>
 
       </Page>
-      <Page fullWidth>
-        <LegacyCard>
-          <DataTable
-           showTotalsInFooter
-            columnContentTypes={[
-              'text',
-              'numeric',
-              'numeric',
-              'numeric',
-              'numeric',
-            ]}
-            headings={[
-              'Amount',
-              'Price',
-              'SKU Number',
-              'Net quantity',
-              'Net sales',
-            ]}
-            rows={rows}
-            totals={['', '', '', '', '$155,830.00']}
-            hasZebraStripingOnData
-            increasedTableDensity
-            defaultSortDirection="descending"
-            totalsName={{
-              singular: 'Total net sales',
-              plural: 'Total net sales',
-            }}
-          />
-        </LegacyCard>
-      </Page>
+    
     </>
   );
 }

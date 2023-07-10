@@ -3,7 +3,7 @@ import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
 import delet from './assets/delet.svg';
 import edit from './assets/edit.svg';
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame } from '@shopify/polaris';
+import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, DataTable } from '@shopify/polaris';
 import {
   EditMajor,
   DeleteMajor,
@@ -190,56 +190,78 @@ export default function Set() {
     getdataFromFile();
   }, []);
 
-  const resourceName = {
-    singular: 'setData',
-    plural: 'setDatas',
-  };
+  // const resourceName = {
+  //   singular: 'setData',
+  //   plural: 'setDatas',
+  // };
 
-  const rowMarkup = setData.map(
-    (
-      { id, set, commission, pana, sp, dp, partnership, multiple, jodi, tp },
-      index,
-    ) => (
+  // const rowMarkup = setData.map(
+  //   (
+  //     { id, set, commission, pana, sp, dp, partnership, multiple, jodi, tp },
+  //     index,
+  //   ) => (
 
-      <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {set}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{commission}</IndexTable.Cell>
-        <IndexTable.Cell>{pana}</IndexTable.Cell>
-        <IndexTable.Cell>{partnership}</IndexTable.Cell>
-        <IndexTable.Cell>{multiple}</IndexTable.Cell>
-        <IndexTable.Cell>{sp}</IndexTable.Cell>
-        <IndexTable.Cell>{dp}</IndexTable.Cell>
-        <IndexTable.Cell>{jodi}</IndexTable.Cell>
-        <IndexTable.Cell>{tp}</IndexTable.Cell>
-        <IndexTable.Cell>
-          <Button onClick={() => handleEditSet(id, 'editSet')}>
-            <Icon
-              source={EditMajor}
-              color="base"
-            />
-          </Button>
-          <Button onClick={() => {
-            modalOpen('deleteSet')
-            setDeleteSetID(id)
-          }
-          }>
-            <Icon
-              source={DeleteMajor}
-              color="base"
-            />
+  //     <IndexTable.Row id={id} key={id} position={index}>
+  //       <IndexTable.Cell>
+  //         <Text variant="bodyMd" fontWeight="bold" as="span">
+  //           {set}
+  //         </Text>
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{commission}</IndexTable.Cell>
+  //       <IndexTable.Cell>{pana}</IndexTable.Cell>
+  //       <IndexTable.Cell>{partnership}</IndexTable.Cell>
+  //       <IndexTable.Cell>{multiple}</IndexTable.Cell>
+  //       <IndexTable.Cell>{sp}</IndexTable.Cell>
+  //       <IndexTable.Cell>{dp}</IndexTable.Cell>
+  //       <IndexTable.Cell>{jodi}</IndexTable.Cell>
+  //       <IndexTable.Cell>{tp}</IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <Button onClick={() => handleEditSet(id, 'editSet')}>
+  //           <Icon
+  //             source={EditMajor}
+  //             color="base"
+  //           />
+  //         </Button>
+  //         <Button onClick={() => {
+  //           modalOpen('deleteSet')
+  //           setDeleteSetID(id)
+  //         }
+  //         }>
+  //           <Icon
+  //             source={DeleteMajor}
+  //             color="base"
+  //           />
 
-          </Button>
-        </IndexTable.Cell>
-      </IndexTable.Row>
+  //         </Button>
+  //       </IndexTable.Cell>
+  //     </IndexTable.Row>
 
-    ),
-  );
+  //   ),
+  // );
 
+  const rows = [];
 
+  setData.map((data, index) => {
+    let newArray = [];
+    newArray.push(data.set, data.commission, data.pana, data.partnership, data.multiple, data.sp, data.dp, data.jodi, data.tp, <><Button onClick={() => handleEditSet(data.id, 'editSet')}>
+      <Icon
+        source={EditMajor}
+        color="base"
+      />
+    </Button>
+      <Button onClick={() => {
+        modalOpen('deleteSet')
+        setDeleteSetID(data.id)
+      }
+      }>
+        <Icon
+          source={DeleteMajor}
+          color="base"
+        />
+
+      </Button></>);
+    rows.push(newArray);
+  })
 
   return (
     <>
@@ -247,7 +269,7 @@ export default function Set() {
       <Page
         title="Customer Set"
         primaryAction={{ content: 'Add New Set', icon: PlusMinor, onAction: () => modalOpen('addSet') }}>
-        <LegacyCard>
+        {/* <LegacyCard>
           <IndexTable
             resourceName={resourceName}
             itemCount={setData.length}
@@ -267,8 +289,39 @@ export default function Set() {
           >
             {rowMarkup}
           </IndexTable>
+        </LegacyCard> */}
+        <LegacyCard>
+          <DataTable
+            columnContentTypes={[
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'numeric',
+              'text'
+            ]}
+            headings={[
+              'Set',
+              'Commission',
+              'Pana',
+              'Partnership',
+              'Multiple',
+              'SP',
+              'DP',
+              'JODI',
+              'TP',
+              'Action',
+            ]}
+            rows={rows}
+            hasZebraStripingOnData
+            increasedTableDensity
+            defaultSortDirection="descending"
+          />
         </LegacyCard>
-
 
 
         {/* Add set popup */}
@@ -293,109 +346,109 @@ export default function Set() {
             <Form onSubmit={submitHandler}>
               <div className="row">
                 <div className="col">
-              <TextField
-                label="Set"
-                type="number"
-                step="any"
-                name="set"
-                value={addFormData ? addFormData.set : ""}
-                error={validationError.set}
-                requiredIndicator={true}
-                onChange={(e) => addFormHandler(e, 'set')}
-                required
-              // error={setError}
-              />
-              </div>
-              <div className="col">
-              <TextField
-                label="Commision"
-                type="number"
-                step="any"
-                name="commission"
-                value={addFormData ? addFormData.commission : ""}
-                onChange={(e) => addFormHandler(e, 'commission')}
-                required
-              />
- </div>
-              <div className="col">
-              <TextField
-                label="Pana"
-                type="number"
-                step="any"
-                name="pana"
-                value={addFormData ? addFormData.pana : ""}
-                onChange={(e) => addFormHandler(e, 'pana')}
-                required
-              />
- </div>
-              <div className="col">
-              <TextField
-                label="Partnership"
-                type="number"
-                step="any"
-                name="partnership"
-                value={addFormData ? addFormData.partnership : ""}
-                onChange={(e) => addFormHandler(e, 'partnership')}
-                required
-              />
- </div>
-              <div className="col">
+                  <TextField
+                    label="Set"
+                    type="number"
+                    step="any"
+                    name="set"
+                    value={addFormData ? addFormData.set : ""}
+                    error={validationError.set}
+                    requiredIndicator={true}
+                    onChange={(e) => addFormHandler(e, 'set')}
+                    required
+                  // error={setError}
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Commision"
+                    type="number"
+                    step="any"
+                    name="commission"
+                    value={addFormData ? addFormData.commission : ""}
+                    onChange={(e) => addFormHandler(e, 'commission')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Pana"
+                    type="number"
+                    step="any"
+                    name="pana"
+                    value={addFormData ? addFormData.pana : ""}
+                    onChange={(e) => addFormHandler(e, 'pana')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Partnership"
+                    type="number"
+                    step="any"
+                    name="partnership"
+                    value={addFormData ? addFormData.partnership : ""}
+                    onChange={(e) => addFormHandler(e, 'partnership')}
+                    required
+                  />
+                </div>
+                <div className="col">
 
-              <TextField
-                label="Multiple"
-                type="number"
-                step="any"
-                name="multiple"
-                value={addFormData ? addFormData.multiple : ""}
-                onChange={(e) => addFormHandler(e, 'multiple')}
-                required
-              />
- </div>
-              <div className="col">
-              <TextField
-                label="SP"
-                type="number"
-                step="any"
-                name="sp"
-                value={addFormData ? addFormData.sp : ""}
-                onChange={(e) => addFormHandler(e, 'sp')}
-                required
-              />
- </div>
-              <div className="col">
-              <TextField
-                label="DP"
-                type="number"
-                step="any"
-                name="dp"
-                value={addFormData ? addFormData.dp : ""}
-                onChange={(e) => addFormHandler(e, 'dp')}
-                required
-              />
- </div>
-              <div className="col">
+                  <TextField
+                    label="Multiple"
+                    type="number"
+                    step="any"
+                    name="multiple"
+                    value={addFormData ? addFormData.multiple : ""}
+                    onChange={(e) => addFormHandler(e, 'multiple')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="SP"
+                    type="number"
+                    step="any"
+                    name="sp"
+                    value={addFormData ? addFormData.sp : ""}
+                    onChange={(e) => addFormHandler(e, 'sp')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="DP"
+                    type="number"
+                    step="any"
+                    name="dp"
+                    value={addFormData ? addFormData.dp : ""}
+                    onChange={(e) => addFormHandler(e, 'dp')}
+                    required
+                  />
+                </div>
+                <div className="col">
 
-              <TextField
-                label="JODI"
-                type="number"
-                step="any"
-                name="jodi"
-                value={addFormData ? addFormData.jodi : ""}
-                onChange={(e) => addFormHandler(e, 'jodi')}
-                required
-              />
- </div>
-              <div className="col">
-              <TextField
-                label="TP"
-                type="number"
-                step="any"
-                name="tp"
-                value={addFormData ? addFormData.tp : ""}
-                onChange={(e) => addFormHandler(e, 'tp')}
-                required
-              />
-</div></div>
+                  <TextField
+                    label="JODI"
+                    type="number"
+                    step="any"
+                    name="jodi"
+                    value={addFormData ? addFormData.jodi : ""}
+                    onChange={(e) => addFormHandler(e, 'jodi')}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="TP"
+                    type="number"
+                    step="any"
+                    name="tp"
+                    value={addFormData ? addFormData.tp : ""}
+                    onChange={(e) => addFormHandler(e, 'tp')}
+                    required
+                  />
+                </div></div>
 
               <Button id="addSetBtn" submit>Submit</Button>
 
