@@ -1,72 +1,92 @@
-import { React, useState } from "react";
+import { React, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import flaglogo from './assets/logo-flat.svg'
 import logo from './assets/logo.svg'
+import { AppProvider, Button, Form, Frame, Text, TextField, Toast } from "@shopify/polaris";
+import enTranslations from "@shopify/polaris/locales/en.json";
 
 export default function Login() {
   const [err, setErr] = useState("");
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({username:"",password:""});
+  const handleChange = (val,param) =>{
+    let newUserData = {...userData};
+    newUserData[param] = val;
+    setUserData(newUserData);
+  }
+  const toggleErrorActive = useCallback(() => setErr(''), []);
+
+
+
 
   const handleSubmit = (event) => {
+    console.log(userData);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const username = data.get("username");
-    const password = data.get("password");
-    if (username === "px" && password === "12345") {
+    if (userData.username === "px" && userData.password === "12345") {
       localStorage.setItem("username", "px");
       localStorage.setItem("password", "12345");
       navigate("/");
       setErr("");
     } else {
-      setErr("Invalid credentials");
+      setErr("Invalid credentials!");
     }
   };
 
   return (
     <>
+    <AppProvider i18n={enTranslations}>
       <main>
-        <div className="login-page">
-          <div className="login-wrapper">
-            <div className="login-contant">
-              <div className="logo-login">
-                <img src={flaglogo} alt="logo" />
+        <div className="login-wrapper">
+          <div className="login-top">
+            <figure>
+              <img src={flaglogo} alt="logo" />
+            </figure>
+          </div>
+          <div className="login-mid">
+            <div className="login-mid-up card">
+              <div className="login-mid-heading">
+              <Text variant="headingLg" as="h3">Welcome back to here!</Text>
+              <Text>Please enter details for login</Text>
               </div>
-              <div className="login-form">
-                <h2 className="login-heading">Welcome to Bhole</h2>
-                <p className="sub-tittle">Please enter your details for login.</p>
-
-                <form className="login-form" onSubmit={handleSubmit}>
-                  <div className="login">
-                    <div>
-                      <label htmlFor="usernane">Username</label>
-                      <input placeholder="Enter your username" type="text" name="username" />
-                    </div>
-                    <div className="password-block">
-                      <label htmlFor="password">Password</label>
-                      <input
-                        placeholder="Enter your password"
-                        type="password"
-                        name="password"
-                      />
-                    </div>
-                    <div>
-                      <button className="signin-btn" type="submit">Login</button>
-                    </div>
+              <Form className="login-Form" onSubmit={handleSubmit}>
+                <div className="login-form-wrapper">
+                  <div className="form-group">
+                    <TextField
+                  label="Username"
+                  name="username"
+                  type="text"
+                  value={userData.username}  onChange={(value)=>handleChange(value,'username')}
+                />
                   </div>
-                  {err != "" ? <span className="error">{err}</span> : ""}
-                </form>
-              </div>
-              <div className="copyright">
-                <p className="small-tittle">© 2023 Bhole Software | All right reserved</p>
-              </div>
+                  <div className="form-group">
+                     <TextField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  onChange={(value)=>handleChange(value,'password')}
+                        value={userData.password} 
+                />
+                  </div>
+                  <div className="form-group">
+                    <Button submit primary fullWidth>Login</Button>
+                  </div>
+                </div>
+           
+              </Form>
             </div>
-            <div className="login-logo">
-              <img src={logo} alt="logo" />
-              <p className="small-tittle">Built <span>❤</span> By Nextige Soft Solution</p>
-            </div>
+            <div className="login-mid-down">
+            <p>© 2023 Bhole  |  All rights reserved.</p>
+          </div>
+          </div>
+          <div className="login-down">
+            <p>Crafted with <span>❤️</span> by Nextige Soft Solution</p>
           </div>
         </div>
       </main>
+      <Frame>
+        {err?<Toast content={err} error onDismiss={toggleErrorActive}  duration={2000} />:""}
+        </Frame>
+      </AppProvider>
     </>
   );
 }

@@ -1,14 +1,21 @@
 import { React, useCallback, useContext, useEffect, useState } from "react";
 import { writeTextFile, readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { useNavigate } from "react-router-dom";
-import delet from './assets/delet.svg';
-import edit from './assets/edit.svg';
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, DataTable } from '@shopify/polaris';
 import {
-  EditMajor,
-  DeleteMajor,
-  PlusMinor
-} from '@shopify/polaris-icons';
+  Modal,
+  Button,
+  Toast,
+  Form,
+  TextField,
+  Page,
+  LegacyCard,
+  Grid,
+  Icon,
+  Select,
+  DataTable,
+  ButtonGroup,
+} from "@shopify/polaris";
+import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Customer() {
@@ -16,12 +23,12 @@ export default function Customer() {
   const [validationError, setValidationError] = useState({
     cid: false,
     name: false,
-    set: false
+    set: false,
   });
   const navigate = useNavigate();
   const [active, setActive] = useState(false);
-  const [selectedSet, setSelectedSet] = useState('');
-  const [msg, setMsg] = useState('');
+  const [selectedSet, setSelectedSet] = useState("");
+  const [msg, setMsg] = useState("");
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
     commission: "",
@@ -36,13 +43,13 @@ export default function Customer() {
   });
   const addFormHandler = (value, param) => {
     let validationErr = { ...validationError };
-    if (value && param == 'customer_id') {
+    if (value && param == "customer_id") {
       validationErr.cid = false;
     }
-    if (value && param == 'name') {
+    if (value && param == "name") {
       validationErr.name = false;
     }
-    if (value && param == 'set') {
+    if (value && param == "set") {
       validationErr.set = false;
     }
     setValidationError(validationErr);
@@ -51,19 +58,17 @@ export default function Customer() {
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
     setAddFormData(newFormData);
-
-
   };
 
   const editFormHandler = (value, param) => {
     let validationErr = { ...validationError };
-    if (value && param == 'customer_id') {
+    if (value && param == "customer_id") {
       validationErr.cid = false;
     }
-    if (value && param == 'name') {
+    if (value && param == "name") {
       validationErr.name = false;
     }
-    if (value && param == 'set') {
+    if (value && param == "set") {
       validationErr.set = false;
     }
     setValidationError(validationErr);
@@ -100,12 +105,9 @@ export default function Customer() {
     if (isSubmit) {
       addNote();
       navigate("/entry");
-      modalOpen('addCustomer');
+      modalOpen("addCustomer");
     }
     setValidationError(validationErr);
-
-
-
   };
   const updateHandler = (event) => {
     event.preventDefault();
@@ -132,18 +134,14 @@ export default function Customer() {
     }
     if (isSubmit) {
       updateCustomer();
-      modalOpen('editCustomer');
+      modalOpen("editCustomer");
     }
 
     setValidationError(validationErr);
-
-
   };
-
 
   const [setData, updateSetData] = useState([]);
   const [setOptions, updateSetOptions] = useState([]);
-
 
   const addnewcustomer = async (customers) => {
     setcustomers([...customers]);
@@ -151,7 +149,7 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
-    setMessage('Customer added successfully');
+    setMessage("Customer added successfully");
     setActive(true);
   };
 
@@ -173,15 +171,13 @@ export default function Customer() {
     addFormData.date = new Date(Date.now());
     addFormData.id = Date.now();
     addnewcustomer([{ ...addFormData }, ...customers]);
-
   };
-
 
   const updateCustomer = async () => {
     customers = customers.map((obj) => {
       if (obj.id == editCustomer.id) {
         return {
-          ...editCustomer
+          ...editCustomer,
         };
       }
       //else return the object
@@ -193,17 +189,17 @@ export default function Customer() {
     );
     setActive(true);
 
-    setMessage('Customer updated successfully');
+    setMessage("Customer updated successfully");
     getNotesFromFile();
   };
 
   const onChangeSet = async (e) => {
     setSelectedSet(e);
     let validateErr = { ...validationError };
-    if (e != '') {
+    if (e != "") {
       validateErr.set = false;
     } else {
-      validateErr.set = 'Please select set';
+      validateErr.set = "Please select set";
     }
     setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
@@ -223,10 +219,10 @@ export default function Customer() {
   const onChangeSetEdit = async (e) => {
     setSelectedSet(e);
     let validateErr = { ...validationError };
-    if (e != '') {
+    if (e != "") {
       validateErr.set = false;
     } else {
-      validateErr.set = 'Please select set';
+      validateErr.set = "Please select set";
     }
     setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
@@ -251,8 +247,8 @@ export default function Customer() {
       let optionsSet = [{ label: "Select set", value: "" }];
       updateSetData(mysetData);
       mysetData.map((data) => {
-        optionsSet.push({ label: data.set, value: data.set })
-      })
+        optionsSet.push({ label: data.set, value: data.set });
+      });
       updateSetOptions(optionsSet);
     } catch (error) {
       await writeTextFile(
@@ -277,14 +273,10 @@ export default function Customer() {
     }
   };
   useEffect(() => {
-
-
     getNotesFromFile();
   }, []);
 
-
   const deletehandler = async (id) => {
-
     customers = customers.filter(function (a) {
       return a.id != id;
     });
@@ -295,35 +287,34 @@ export default function Customer() {
     );
     getNotesFromFile();
 
-    setMessage('Customer deleted successfully');
-    modalOpen('deleteCustomer');
-  }
-
+    setMessage("Customer deleted successfully");
+    modalOpen("deleteCustomer");
+  };
 
   // customers
   var [customers, setcustomers] = useState([]);
   const [editCustomer, setEditCustomer] = useState({});
   const [deleteCustomerID, setDeleteCustomerID] = useState("");
 
-
   const handleEditCustomer = (id, param) => {
-    let tmp = customers.filter((item) => item.id === id)
+    let tmp = customers.filter((item) => item.id === id);
     setEditCustomer(tmp[0]);
     setSelectedSet(tmp[0].set);
     modalOpen(param);
-  }
+  };
   const toggleActive = useCallback(() => setActive((active) => !active), []);
   const toastMarkup = active ? (
     <Toast content={msg} onDismiss={toggleActive} duration={2000} />
   ) : null;
 
-
-
-
-  const [isVisible, setIsVisible] = useState({ addCustomer: false, editCustomer: false, deleteCustomer: false });
+  const [isVisible, setIsVisible] = useState({
+    addCustomer: false,
+    editCustomer: false,
+    deleteCustomer: false,
+  });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
-    if (id == 'addCustomer') {
+    if (id == "addCustomer") {
       setSelectedSet("");
     }
     if (isVisibleTemp[id]) {
@@ -334,83 +325,46 @@ export default function Customer() {
       setIsVisible(isVisibleTemp);
     }
     setValidationError({});
-
   };
-  // const resourceName = {
-  //   singular: 'customer',
-  //   plural: 'customers',
-  // };
-
-  // const rowMarkup = customers.map(
-  //   (
-  //     { name, customer_id, set, id },
-  //     index,
-  //   ) => (
-
-  //     <IndexTable.Row id={customer_id} key={customer_id} position={index}>
-  //       <IndexTable.Cell>
-  //         <Text variant="bodyMd" fontWeight="bold" as="span">
-  //           {customer_id}
-  //         </Text>
-  //       </IndexTable.Cell>
-  //       <IndexTable.Cell>{name}</IndexTable.Cell>
-  //       <IndexTable.Cell>{set}</IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <Button onClick={() => handleEditCustomer(id, 'editCustomer')}>
-  //           <Icon
-  //             source={EditMajor}
-  //             color="base"
-  //           />
-  //         </Button>
-  //         <Button onClick={() => {
-  //           modalOpen('deleteCustomer')
-  //           setDeleteCustomerID(id)
-  //         }
-  //         }>
-  //           <Icon
-  //             source={DeleteMajor}
-  //             color="base"
-  //           />
-
-  //         </Button>
-  //       </IndexTable.Cell>
-  //     </IndexTable.Row>
-
-  //   ),
-  // );
-
-
   const rows = [];
-
   customers.map((customer, index) => {
     let newArray = [];
-    newArray.push(customer.customer_id, customer.name, customer.set, <><Button onClick={() => handleEditCustomer(customer.id, 'editCustomer')}>
-      <Icon
-        source={EditMajor}
-        color="base"
-      />
-    </Button>
-      <Button onClick={() => {
-        modalOpen('deleteCustomer')
-        setDeleteCustomerID(customer.id)
-      }
-      }>
-        <Icon
-          source={DeleteMajor}
-          color="base"
-        />
-
-      </Button></>);
+    newArray.push(
+      customer.customer_id,
+      customer.name,
+      customer.set,
+      <ButtonGroup>
+        <Button
+          size="micro"
+          onClick={() => handleEditCustomer(customer.id, "editCustomer")}
+        >
+          <Icon source={EditMinor} color="base" />
+        </Button>
+        <Button
+          size="micro"
+          destructive
+          outline
+          onClick={() => {
+            modalOpen("deleteCustomer");
+            setDeleteCustomerID(customer.id);
+          }}
+        >
+          <Icon source={DeleteMinor} color="base" />
+        </Button>
+      </ButtonGroup>
+    );
     rows.push(newArray);
-  })
-
-
+  });
   return (
     <>
       <Page
-
         title="Customers"
-        primaryAction={{ content: 'Add Customer', icon: PlusMinor, onAction: () => modalOpen('addCustomer') }}>
+        primaryAction={{
+          content: "Add Customer",
+          icon: PlusMinor,
+          onAction: () => modalOpen("addCustomer"),
+        }}
+      >
         {/* <LegacyCard>
           <IndexTable
             resourceName={resourceName}
@@ -429,19 +383,8 @@ export default function Customer() {
         </LegacyCard> */}
         <LegacyCard>
           <DataTable
-            
-            columnContentTypes={[
-              'numeric',
-              'text',
-              'numeric',
-              'text',
-            ]}
-            headings={[
-              'Cid',
-              'Name',
-              'Set',
-              'Action'
-            ]}
+            columnContentTypes={["text", "text", "text", "text"]}
+            headings={["Cid", "Name", "Set", "Action"]}
             rows={rows}
             hasZebraStripingOnData
             increasedTableDensity
@@ -453,16 +396,16 @@ export default function Customer() {
         <Modal
           // activator={activator}
           open={isVisible.addCustomer}
-          onClose={() => modalOpen('addCustomer')}
+          onClose={() => modalOpen("addCustomer")}
           title="Add New Customer"
           primaryAction={{
-            content: 'Add Customer',
-            onAction: () => document.getElementById('addCustBtn').click(),
+            content: "Add Customer",
+            onAction: () => document.getElementById("addCustBtn").click(),
           }}
           secondaryActions={[
             {
-              content: 'Cancel',
-              onAction: () => modalOpen('addCustomer'),
+              content: "Cancel",
+              onAction: () => modalOpen("addCustomer"),
             },
           ]}
         >
@@ -480,10 +423,8 @@ export default function Customer() {
                         value={addFormData.customer_id}
                         error={validationError.cid}
                         requiredIndicator={true}
-                        onChange={(e) => addFormHandler(e, 'customer_id')}
-
+                        onChange={(e) => addFormHandler(e, "customer_id")}
                       />
-
                     </div>
                     <div className="col">
                       <TextField
@@ -494,8 +435,7 @@ export default function Customer() {
                         value={addFormData.name}
                         error={validationError.name}
                         requiredIndicator={true}
-                        onChange={(e) => addFormHandler(e, 'name')}
-
+                        onChange={(e) => addFormHandler(e, "name")}
                       />
                     </div>
                     <div className="col">
@@ -506,7 +446,7 @@ export default function Customer() {
                         name="mobile1"
                         placeholder="Enter mobile number"
                         value={addFormData.mobile1}
-                        onChange={(e) => addFormHandler(e, 'mobile1')}
+                        onChange={(e) => addFormHandler(e, "mobile1")}
                       />
                     </div>
                     <div className="col">
@@ -517,9 +457,8 @@ export default function Customer() {
                         name="mobile2"
                         placeholder="Enter mobile number"
                         value={addFormData.mobile2}
-                        onChange={(e) => addFormHandler(e, 'mobile2')}
+                        onChange={(e) => addFormHandler(e, "mobile2")}
                       />
-
                     </div>
                     <div className="col">
                       <TextField
@@ -527,7 +466,7 @@ export default function Customer() {
                         name="address"
                         placeholder="Enter customer address"
                         value={addFormData.address}
-                        onChange={(e) => addFormHandler(e, 'address')}
+                        onChange={(e) => addFormHandler(e, "address")}
                         multiline={4}
                       />
                     </div>
@@ -539,7 +478,7 @@ export default function Customer() {
                         name="limit"
                         placeholder="Enter limit"
                         value={addFormData.limit}
-                        onChange={(e) => addFormHandler(e, 'limit')}
+                        onChange={(e) => addFormHandler(e, "limit")}
                       />
                     </div>
                   </div>
@@ -567,7 +506,7 @@ export default function Customer() {
                         step="any"
                         name="commission"
                         value={addFormData ? addFormData.commission : ""}
-                        onChange={(e) => addFormHandler(e, 'commission')}
+                        onChange={(e) => addFormHandler(e, "commission")}
                         required
                       />
                     </div>
@@ -578,7 +517,7 @@ export default function Customer() {
                         step="any"
                         name="pana"
                         value={addFormData ? addFormData.pana : ""}
-                        onChange={(e) => addFormHandler(e, 'pana')}
+                        onChange={(e) => addFormHandler(e, "pana")}
                         required
                       />
                     </div>
@@ -589,7 +528,7 @@ export default function Customer() {
                         step="any"
                         name="partnership"
                         value={addFormData ? addFormData.partnership : ""}
-                        onChange={(e) => addFormHandler(e, 'partnership')}
+                        onChange={(e) => addFormHandler(e, "partnership")}
                         required
                       />
                     </div>
@@ -600,7 +539,7 @@ export default function Customer() {
                         step="any"
                         name="multiple"
                         value={addFormData ? addFormData.multiple : ""}
-                        onChange={(e) => addFormHandler(e, 'multiple')}
+                        onChange={(e) => addFormHandler(e, "multiple")}
                         required
                       />
                     </div>
@@ -611,7 +550,7 @@ export default function Customer() {
                         step="any"
                         name="sp"
                         value={addFormData ? addFormData.sp : ""}
-                        onChange={(e) => addFormHandler(e, 'sp')}
+                        onChange={(e) => addFormHandler(e, "sp")}
                         required
                       />
                     </div>
@@ -622,10 +561,9 @@ export default function Customer() {
                         step="any"
                         name="dp"
                         value={addFormData ? addFormData.dp : ""}
-                        onChange={(e) => addFormHandler(e, 'dp')}
+                        onChange={(e) => addFormHandler(e, "dp")}
                         required
                       />
-
                     </div>
                     <div className="col">
                       <TextField
@@ -634,7 +572,7 @@ export default function Customer() {
                         step="any"
                         name="jodi"
                         value={addFormData ? addFormData.jodi : ""}
-                        onChange={(e) => addFormHandler(e, 'jodi')}
+                        onChange={(e) => addFormHandler(e, "jodi")}
                         required
                       />
                     </div>
@@ -645,38 +583,33 @@ export default function Customer() {
                         step="any"
                         name="tp"
                         value={addFormData ? addFormData.tp : ""}
-                        onChange={(e) => addFormHandler(e, 'tp')}
+                        onChange={(e) => addFormHandler(e, "tp")}
                         required
                       />
                     </div>
                   </div>
-
                 </Grid.Cell>
               </Grid>
-              <Button id="addCustBtn" submit>Submit</Button>
-
-
+              <Button id="addCustBtn" submit>
+                Submit
+              </Button>
             </Form>
-
-
           </Modal.Section>
         </Modal>
-
-
 
         {/* Edit customer popup */}
         <Modal
           open={isVisible.editCustomer}
-          onClose={() => modalOpen('editCustomer')}
+          onClose={() => modalOpen("editCustomer")}
           title="Edit Customer"
           primaryAction={{
-            content: 'Update Customer',
-            onAction: () => document.getElementById('editCustBtn').click(),
+            content: "Update Customer",
+            onAction: () => document.getElementById("editCustBtn").click(),
           }}
           secondaryActions={[
             {
-              content: 'Cancel',
-              onAction: () => modalOpen('editCustomer'),
+              content: "Cancel",
+              onAction: () => modalOpen("editCustomer"),
             },
           ]}
         >
@@ -694,8 +627,7 @@ export default function Customer() {
                         error={validationError.cid}
                         requiredIndicator={true}
                         value={editCustomer.customer_id}
-                        onChange={(e) => editFormHandler(e, 'customer_id')}
-
+                        onChange={(e) => editFormHandler(e, "customer_id")}
                       />
                     </div>
                     <div className="col">
@@ -707,13 +639,10 @@ export default function Customer() {
                         value={editCustomer.name}
                         error={validationError.name}
                         requiredIndicator={true}
-                        onChange={(e) => editFormHandler(e, 'name')}
-
+                        onChange={(e) => editFormHandler(e, "name")}
                       />
                     </div>
                     <div className="col">
-
-
                       <TextField
                         label="Mobile Number 1"
                         type="number"
@@ -721,7 +650,7 @@ export default function Customer() {
                         name="mobile1"
                         placeholder="Enter mobile number"
                         value={editCustomer.mobile1}
-                        onChange={(e) => editFormHandler(e, 'mobile1')}
+                        onChange={(e) => editFormHandler(e, "mobile1")}
                       />
                     </div>
                     <div className="col">
@@ -732,17 +661,16 @@ export default function Customer() {
                         name="mobile2"
                         placeholder="Enter mobile number"
                         value={editCustomer.mobile2}
-                        onChange={(e) => editFormHandler(e, 'mobile2')}
+                        onChange={(e) => editFormHandler(e, "mobile2")}
                       />
                     </div>
                     <div className="col">
-
                       <TextField
                         label="Address"
                         name="address"
                         placeholder="Enter customer address"
                         value={editCustomer.address}
-                        onChange={(e) => editFormHandler(e, 'address')}
+                        onChange={(e) => editFormHandler(e, "address")}
                         multiline={4}
                       />
                     </div>
@@ -754,14 +682,13 @@ export default function Customer() {
                         name="limit"
                         placeholder="Enter limit"
                         value={editCustomer.limit}
-                        onChange={(e) => editFormHandler(e, 'limit')}
+                        onChange={(e) => editFormHandler(e, "limit")}
                       />
                     </div>
                   </div>
                 </Grid.Cell>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
                   <div className="row">
-
                     <div className="col">
                       <Select
                         label="Set"
@@ -782,7 +709,7 @@ export default function Customer() {
                         step="any"
                         name="commission"
                         value={editCustomer ? editCustomer.commission : ""}
-                        onChange={(e) => editFormHandler(e, 'commission')}
+                        onChange={(e) => editFormHandler(e, "commission")}
                         required
                       />
                     </div>
@@ -793,7 +720,7 @@ export default function Customer() {
                         step="any"
                         name="pana"
                         value={editCustomer ? editCustomer.pana : ""}
-                        onChange={(e) => editFormHandler(e, 'pana')}
+                        onChange={(e) => editFormHandler(e, "pana")}
                         required
                       />
                     </div>
@@ -804,10 +731,9 @@ export default function Customer() {
                         step="any"
                         name="partnership"
                         value={editCustomer ? editCustomer.partnership : ""}
-                        onChange={(e) => editFormHandler(e, 'partnership')}
+                        onChange={(e) => editFormHandler(e, "partnership")}
                         required
                       />
-
                     </div>
                     <div className="col">
                       <TextField
@@ -816,7 +742,7 @@ export default function Customer() {
                         step="any"
                         name="multiple"
                         value={editCustomer ? editCustomer.multiple : ""}
-                        onChange={(e) => editFormHandler(e, 'multiple')}
+                        onChange={(e) => editFormHandler(e, "multiple")}
                         required
                       />
                     </div>
@@ -827,7 +753,7 @@ export default function Customer() {
                         step="any"
                         name="sp"
                         value={editCustomer ? editCustomer.sp : ""}
-                        onChange={(e) => editFormHandler(e, 'sp')}
+                        onChange={(e) => editFormHandler(e, "sp")}
                         required
                       />
                     </div>
@@ -838,19 +764,18 @@ export default function Customer() {
                         step="any"
                         name="dp"
                         value={editCustomer ? editCustomer.dp : ""}
-                        onChange={(e) => editFormHandler(e, 'dp')}
+                        onChange={(e) => editFormHandler(e, "dp")}
                         required
                       />
                     </div>
                     <div className="col">
-
                       <TextField
                         label="JODI"
                         type="number"
                         step="any"
                         name="jodi"
                         value={editCustomer ? editCustomer.jodi : ""}
-                        onChange={(e) => editFormHandler(e, 'jodi')}
+                        onChange={(e) => editFormHandler(e, "jodi")}
                         required
                       />
                     </div>
@@ -861,50 +786,45 @@ export default function Customer() {
                         step="any"
                         name="tp"
                         value={editCustomer ? editCustomer.tp : ""}
-                        onChange={(e) => editFormHandler(e, 'tp')}
+                        onChange={(e) => editFormHandler(e, "tp")}
                         required
                       />
-                    </div></div>
+                    </div>
+                  </div>
                 </Grid.Cell>
               </Grid>
-              <Button id="editCustBtn" submit>Update</Button>
+              <Button id="editCustBtn" submit>
+                Update
+              </Button>
             </Form>
           </Modal.Section>
         </Modal>
-
 
         {/* Delete customer popup */}
         <Modal
           small
           // activator={activator}
           open={isVisible.deleteCustomer}
-          onClose={() => modalOpen('deleteCustomer')}
+          onClose={() => modalOpen("deleteCustomer")}
           title="Delete Customer"
           primaryAction={{
-            content: 'Yes',
+            content: "Yes",
             onAction: () => deletehandler(deleteCustomerID),
           }}
           secondaryActions={[
             {
-              content: 'Cancel',
-              onAction: () => modalOpen('deleteCustomer'),
+              content: "Cancel",
+              onAction: () => modalOpen("deleteCustomer"),
             },
           ]}
         >
           <Modal.Section>
-
             <div className="">
               Are you sure you want to delete this customer!
             </div>
-
-
           </Modal.Section>
         </Modal>
-
       </Page>
-
-
-
     </>
   );
 }

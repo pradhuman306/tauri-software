@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Grid, Page, TextField, Select, List, LegacyCard, IndexTable, Button, DataTable } from "@shopify/polaris";
+import { Card, Grid, Page, TextField, Select, LegacyCard, Button, DataTable } from "@shopify/polaris";
 
 export default function Calculater() {
   const [customers, setcustomers] = useState([]);
@@ -313,7 +313,7 @@ export default function Calculater() {
           className="customerHeader"
           title={
             <div className="row">
-              <div className="col">
+              <div className="col subHeader">
                 <Select
                   label="Customer Name"
                   name="name"
@@ -321,37 +321,29 @@ export default function Calculater() {
                   options={customersOptions}
                   value={selectedCId}
                   onChange={(e) => onChangeSet(e)}
-
                 />
               </div>
             </div>
           }
           primaryAction={
             <div className="row">
-              <div className="col">
+              <div className="col inline-field">
                 <TextField
                   label="Date"
                   type="date"
                   value={selectedDate}
                   onChange={(e) => inputHandler(e, 'date')}
-
                 />
               </div>
             </div>
           }
-
         >
-
-
         </Page>
       </div>
+      <div className="contentWrapper">
       <Page fullWidth>
-
-
-
         <Grid>
           <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
-
             <Card>
               <div className="row">
                 <div className="col">
@@ -385,21 +377,20 @@ export default function Calculater() {
             </Card>
           </Grid.Cell>
 
-
-
           <Grid.Cell columnSpan={{ xs: 10, sm: 10, md: 10, lg: 10, xl: 10 }}>
           <LegacyCard>
+          <div className="calculator-table">
           <DataTable
             showTotalsInFooter
             columnContentTypes={[
               'text',
-              'numeric',
-              'numeric',
-              'numeric',
-              'numeric',
-              'numeric',
-              'numeric',
-              'numeric'
+              'text',
+              'text',
+              'text',
+              'text',
+              'text',
+              'text',
+              'text'
             ]}
             headings={[
               '',
@@ -421,34 +412,15 @@ export default function Calculater() {
               plural: 'Total Amount',
             }}
           />
+          </div>
         </LegacyCard>
-            {/* <LegacyCard>
-              <IndexTable
-                resourceName={resourceName}
-                itemCount={timeZoneAll.length}
-                headings={[
-                  { title: '' },
-                  { title: 'Amount' },
-                  { title: 'Pana-Amount' },
-                  { title: 'Kh' },
-                  { title: 'SP-Amount' },
-                  { title: 'DP-Amount	' },
-                  { title: 'J-Amount' },
-                  { title: 'TP-Amount' },
-                ]}
-                selectable={false}
-              >
-                {rowMarkup}
-              </IndexTable>
-            </LegacyCard> */}
-
-
           </Grid.Cell>
         </Grid>
-        <Button onClick={() => close()} primary>Cancel/Close</Button>
-
       </Page>
-    
+      </div>
+      <div className="bottomBar">
+      <Button onClick={() => close()} primary>Cancel</Button>
+      </div>
     </>
   );
 }

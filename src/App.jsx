@@ -37,6 +37,7 @@ const toggleErrorActive = useCallback(() => setErrorMessage(''), []);
   return (
     <React.Fragment>
         <AppProvider i18n={enTranslations}>
+    
     <MyContext.Provider value={{ message, setMessage, setErrorMessage }}>
       <Navbar/>
       <Outlet />
@@ -45,6 +46,7 @@ const toggleErrorActive = useCallback(() => setErrorMessage(''), []);
         {errorMessage?<Toast content={errorMessage} error onDismiss={toggleErrorActive}  duration={2000} />:""}
         </Frame>
     </MyContext.Provider>
+        
       </AppProvider>
     </React.Fragment>
   );

@@ -1,11 +1,8 @@
 import { React, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from "./assets/logo-flat.svg";
-import search from "./assets/search.svg";
-import { TopBar, ActionList, Icon, Frame, Text, Button, Navigation, HorizontalGrid, List } from '@shopify/polaris';
-import { ArrowLeftMinor, QuestionMarkMajor } from '@shopify/polaris-icons';
+import { TopBar, ActionList, Frame, List } from '@shopify/polaris';
+import { EnterMajor } from '@shopify/polaris-icons';
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
-
 
 export default function Navbar() {
   const location = useLocation();
@@ -16,7 +13,6 @@ export default function Navbar() {
   var [entries, setentries] = useState([]);
   const [customers, setcustomers] = useState([]);
   const [contentItems, setcontentItems] = useState([]);
-
 
   const toggleIsUserMenuOpen = useCallback(
     () => setIsUserMenuOpen((isUserMenuOpen) => !isUserMenuOpen),
@@ -32,8 +28,6 @@ export default function Navbar() {
     setIsSearchActive(false);
     setSearchValue('');
   }, []);
-
-
 
   const handleSearchChange = (value) => {
     console.log(customers);
@@ -60,7 +54,6 @@ export default function Navbar() {
     console.log('toggle navigation visibility');
   }, []);
 
-
   useEffect(() => {
     const getdataFromFile = async () => {
       try {
@@ -78,26 +71,23 @@ export default function Navbar() {
         console.log(error);
       }
       // entries
-
     };
     getdataFromFile();
   }, []);
 
   const logo = {
-    width: 124,
+    width: 80,
     topBarSource: "http://localhost:1420/src/assets/logo-flat.svg",
     url: '#',
     accessibilityLabel: 'Bhole',
   };
 
   const userMenuMarkup = (
+    <>
     <TopBar.UserMenu
       actions={[
         {
-          items: [{ content: 'Settings', icon: ArrowLeftMinor, onAction: () => navigate('/settings') }],
-        },
-        {
-          items: [{ content: 'Logout', onAction: () => handleClick() }],
+          items: [{ content: 'Logout', icon: EnterMajor, onAction: () => handleClick() }],
         },
       ]}
       name="Bhole"
@@ -106,6 +96,7 @@ export default function Navbar() {
       open={isUserMenuOpen}
       onToggle={toggleIsUserMenuOpen}
     />
+        </>
   );
 
   const searchResultsMarkup = (
@@ -125,18 +116,30 @@ export default function Navbar() {
 
   const secondaryMenuMarkup = (
     <List className="mainLink">
- <List.Item>
+      <List.Item>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/"
+              className={location.pathname==='/home'?'active':""}
+            >
+              Home
+            </Link>
+          }
+        />
+        </List.Item>
+     <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
               to="/customer"
               className={location.pathname==='/customer'?'active':""}
-
             >
               Customer
             </Link>
           }
-        /></List.Item>
+        />
+        </List.Item>
          <List.Item>
       <TopBar.Menu
           activatorContent={
@@ -154,22 +157,18 @@ export default function Navbar() {
             <Link
               to="/report"
               className={location.pathname==='/report'?'active':""}
-
             >
               Report
             </Link>
           }
         />
       </List.Item>
-        
-     
          <List.Item>
       <TopBar.Menu
           activatorContent={
         <Link
           to="/entry"
           className={location.pathname==='/entry'?'active':""}
-
         >
           Entry/edit
         </Link>}/>
@@ -180,10 +179,7 @@ export default function Navbar() {
             <Link
               to="/calculater/:cid"
               className={location.pathname==='/calculater/:cid'?'active':""}
-        
-
             >
-             
               Calculator
             </Link>
           }
@@ -205,13 +201,6 @@ export default function Navbar() {
     />
   );
 
-
-
-
-
-
-
-
   const getusername = localStorage.getItem("username");
   const getPassword = localStorage.getItem("password");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -231,7 +220,8 @@ export default function Navbar() {
     navigate("/login");
   };
   return (
-    <div style={{ height: '50px' }}>
+
+    <div style={{ height: '56px' }}>
       <Frame topBar={topBarMarkup} logo={logo} />
     </div>
     // <header>

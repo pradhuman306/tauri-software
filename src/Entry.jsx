@@ -1,14 +1,18 @@
 import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
-import { message } from "@tauri-apps/api/dialog";
-import { IndexTable, Text, Modal, Button, Toast, FormLayout, Form, TextField, Page, LegacyCard, Thumbnail, Grid, Icon, Select, Frame, List, ButtonGroup, DataTable } from '@shopify/polaris';
 import {
-  EditMajor,
-  DeleteMajor,
-  PlusMinor
-} from '@shopify/polaris-icons';
+  Modal,
+  Button,
+  TextField,
+  Page,
+  LegacyCard,
+  ButtonGroup,
+  DataTable,
+  Card,
+  Text,
+} from "@shopify/polaris";
+import { PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
-
 
 export default function Entry() {
   const { setErrorMessage, setMessage } = useContext(MyContext);
@@ -23,7 +27,6 @@ export default function Entry() {
       setIsVisible(true);
     }
   };
-
 
   useEffect(() => {
     const getdataFromFile = async () => {
@@ -73,9 +76,7 @@ export default function Entry() {
     const list = [...inputFields];
     list[index][name] = value;
     if (name == "customer_id") {
-      const cdata = customers.filter(
-        (item) => item.customer_id === value
-      );
+      const cdata = customers.filter((item) => item.customer_id === value);
       list[index]["name"] = cdata && cdata[0] ? cdata[0]["name"] : "";
     }
     list[index]["timezone"] = timezone;
@@ -107,10 +108,7 @@ export default function Entry() {
     setTabActive("");
     if (activeButtonIndex === index) return;
     setActiveButtonIndex(index);
-
   };
-
-
 
   const saveEntries = async () => {
     if (tabActive == "edit") {
@@ -140,7 +138,7 @@ export default function Entry() {
         { path: "entries.json", contents: JSON.stringify(entries) },
         { dir: BaseDirectory.Resource }
       );
-      setMessage('Entry updated successfully');
+      setMessage("Entry updated successfully");
     } else {
       let tmp = inputFields.filter((item) => item.customer_id != "");
       if (tmp.length) {
@@ -168,24 +166,18 @@ export default function Entry() {
             tp_amount: "",
           },
         ]);
-        setMessage('Entry saved successfully');
+        setMessage("Entry saved successfully");
         onChangesetTimeZone("TO", 0);
         setTabActive("");
-
       } else {
         setErrorMessage("Please enter cid");
       }
-
     }
-
-
   };
 
   const newEntry = async (v) => {
-
     if (date == "") {
-      setErrorMessage('Please select date');
-      // await message("First select date.", { title: "Account", type: "error" });
+      setErrorMessage("Please select date");
     } else {
       setTabActive(v);
       setInputFields([
@@ -208,20 +200,12 @@ export default function Entry() {
   };
 
   const editEntry = async (v) => {
-
     if (date == "" && timezone == "") {
-      // setErrorMessage('Please select time and date');
       setErrorMessage("Please select time and date");
-      // await message("First select time and date.", {
-      //   title: "Account",
-      //   type: "error",
-      // });
     } else if (date == "") {
-      setErrorMessage('Please select date');
-      // await message("First select date.", { title: "Account", type: "error" });
+      setErrorMessage("Please select date");
     } else if (timezone == "") {
-      setErrorMessage('Please select time');
-      // await message("First select time.", { title: "Account", type: "error" });
+      setErrorMessage("Please select time");
     } else {
       setTabActive(v);
       var startDate = new Date(date + " 00:00:01");
@@ -239,198 +223,87 @@ export default function Entry() {
     setTabActive("");
     setDate("");
   };
-  // const resourceName = {
-  //   singular: 'customer',
-  //   plural: 'customers',
-  // };
-  // const resourceNameInput = {
-  //   singular: 'entry',
-  //   plural: 'entries',
-  // };
-
-  // const rowMarkup = customers.map(
-  //   (
-  //     { id, customer_id, set, name },
-  //     index,
-  //   ) => (
-
-  //     <IndexTable.Row id={id} key={id} position={index}>
-  //       <IndexTable.Cell>
-  //         <Text variant="bodyMd" fontWeight="bold" as="span">
-  //           {customer_id}
-  //         </Text>
-  //       </IndexTable.Cell>
-  //       <IndexTable.Cell>{name}</IndexTable.Cell>
-  //       <IndexTable.Cell>{set}</IndexTable.Cell>
-  //     </IndexTable.Row>
-
-  //   ),
-  // );
-
-  // const tableEdit = inputFields.map(
-  //   (
-  //     {
-  //       id,
-  //       customer_id,
-  //       name,
-  //       amount,
-  //       pana_amount,
-  //       khula_amount,
-  //       sp_amount,
-  //       dp_amount,
-  //       jodi_amount,
-  //       tp_amount },
-  //     index,
-  //   ) => (
-
-  //     <IndexTable.Row id={id} key={id} position={index}>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'customer_id', index)}
-  //           value={customer_id}
-  //           name="customer_id"
-  //         />
-  //       </IndexTable.Cell>
-  //       <IndexTable.Cell>  <TextField
-  //         type="text"
-  //         onChange={(evnt) => handleChange(evnt, 'name', index)}
-  //         value={name}
-  //         name="name"
-  //         readOnly
-  //       /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'amount', index)}
-  //           value={amount}
-  //           name="amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
-  //           value={pana_amount}
-  //           name="pana_amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'khula_amount', index)}
-  //           value={khula_amount}
-  //           name="khula_amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
-  //           value={sp_amount}
-  //           name="sp_amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'dp_amount', index)}
-  //           value={dp_amount}
-  //           name="dp_amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'jodi_amount', index)}
-  //           value={jodi_amount}
-  //           name="jodi_amount"
-  //         /></IndexTable.Cell>
-  //       <IndexTable.Cell>
-  //         <TextField
-  //           type="text"
-  //           onChange={(evnt) => handleChange(evnt, 'tp_amount', index)}
-  //           value={tp_amount}
-  //           name="tp_amount"
-  //         /></IndexTable.Cell>
-
-  //     </IndexTable.Row>
-
-  //   ),
-  // );
-
 
   const rowsTable = [];
   inputFields.map((inFields, index) => {
     let newArray = [];
-    newArray.push(<TextField
-      type="text"
-      onChange={(evnt) => handleChange(evnt, 'customer_id', index)}
-      value={inFields.customer_id}
-      name="customer_id"
-    />,
+    newArray.push(
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'name', index)}
+        onChange={(evnt) => handleChange(evnt, "customer_id", index)}
+        value={inFields.customer_id}
+        name="customer_id"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, "name", index)}
         value={inFields.name}
         name="name"
         readOnly
       />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'amount', index)}
+        onChange={(evnt) => handleChange(evnt, "amount", index)}
         value={inFields.amount}
         name="amount"
-      />, <TextField
-      type="text"
-      onChange={(evnt) => handleChange(evnt, 'pana_amount', index)}
-      value={inFields.pana_amount}
-      name="pana_amount"
-    />,
+      />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'khula_amount', index)}
+        onChange={(evnt) => handleChange(evnt, "pana_amount", index)}
+        value={inFields.pana_amount}
+        name="pana_amount"
+      />,
+      <TextField
+        type="text"
+        onChange={(evnt) => handleChange(evnt, "khula_amount", index)}
         value={inFields.khula_amount}
         name="khula_amount"
       />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'sp_amount', index)}
+        onChange={(evnt) => handleChange(evnt, "sp_amount", index)}
         value={inFields.sp_amount}
         name="sp_amount"
       />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'dp_amount', index)}
+        onChange={(evnt) => handleChange(evnt, "dp_amount", index)}
         value={inFields.dp_amount}
         name="dp_amount"
       />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'jodi_amount', index)}
+        onChange={(evnt) => handleChange(evnt, "jodi_amount", index)}
         value={inFields.jodi_amount}
         name="jodi_amount"
       />,
       <TextField
         type="text"
-        onChange={(evnt) => handleChange(evnt, 'tp_amount', index)}
+        onChange={(evnt) => handleChange(evnt, "tp_amount", index)}
         value={inFields.tp_amount}
         name="tp_amount"
-      />);
+      />
+    );
     rowsTable.push(newArray);
-  })
-
-
+  });
 
   const rowsCustomer = [];
   customers.map((customer, index) => {
     let newArray = [];
-    newArray.push(customer.customer_id, customer.set, customer.name);
+    newArray.push(customer.customer_id, customer.name, customer.set);
     rowsCustomer.push(newArray);
-  })
-
-
+  });
   return (
-    <>
-      <Page fullWidth
+    <div>
+      <Page
+        fullWidth
         title="Entry/Edit"
-        primaryAction={{ content: 'View Customer', icon: PlusMinor, onAction: () => modalOpen() }}>
-
+        primaryAction={{
+          content: "View Customer",
+          icon: PlusMinor,
+          onAction: () => modalOpen(),
+        }}
+      >
         {/* View customer popup */}
         <Modal
           // activator={activator}
@@ -439,51 +312,26 @@ export default function Entry() {
           title="Customers"
           secondaryActions={[
             {
-              content: 'Cancel',
+              content: "Cancel",
               onAction: () => modalOpen(),
             },
           ]}
         >
           <Modal.Section>
-
-            {/* <LegacyCard>
-              <IndexTable
-                resourceName={resourceName}
-                itemCount={customers.length}
-                headings={[
-                  { title: 'CID' },
-                  { title: 'Name' },
-                  { title: 'Set' },
-                ]}
-                selectable={false}
-              >
-                {rowMarkup}
-              </IndexTable>
-            </LegacyCard> */}
             <LegacyCard>
               <DataTable
-                columnContentTypes={[
-                  'numeric',
-                  'text',
-                  'numeric'
-                ]}
-                headings={[
-                  'Cid',
-                  'Name',
-                  'Set',
-                ]}
+                columnContentTypes={["text", "text", "text"]}
+                headings={["Cid", "Name", "Set"]}
                 rows={rowsCustomer}
                 hasZebraStripingOnData
                 increasedTableDensity
                 defaultSortDirection="descending"
               />
             </LegacyCard>
-
-
           </Modal.Section>
         </Modal>
-
       </Page>
+     <div className="contentWrapper">
       <Page
         fullWidth
         title={
@@ -570,7 +418,6 @@ export default function Entry() {
               type="date"
               value={date}
               onChange={(e) => dateChange(e)}
-
             />
             <ButtonGroup>
               <Button
@@ -579,58 +426,43 @@ export default function Entry() {
               >
                 Entry
               </Button>
-              <Button primary className={tabActive == "edit" ? "active" : ""}
-                onClick={() => editEntry("edit")}>  Edit</Button>
+              <Button
+                primary
+                className={tabActive == "edit" ? "active" : ""}
+                onClick={() => editEntry("edit")}
+              >
+                {" "}
+                Edit
+              </Button>
             </ButtonGroup>
           </ButtonGroup>
         }
       >
-        {timezone != "" && tabActive != "" ? (
+        {timezone != "" && tabActive != "" && inputFields.length? (
           <>
-            {/* <LegacyCard>
-              <IndexTable
-                resourceName={resourceNameInput}
-                itemCount={inputFields.length}
-                headings={[
-                  { title: 'CID' },
-                  { title: 'Name' },
-                  { title: 'Amount' },
-                  { title: 'Pana_amount' },
-                  { title: 'Khula_amount' },
-                  { title: 'SP_amount' },
-                  { title: 'DP_amount' },
-                  { title: 'JODI_amount' },
-                  { title: 'TP_amount' },
-                ]}
-                selectable={false}
-              >
-                {tableEdit}
-              </IndexTable>
-            </LegacyCard> */}
-
             <LegacyCard>
               <DataTable
                 columnContentTypes={[
-                  'numeric',
-                  'text',
-                  'numeric',
-                  'numeric',
-                  'numeric',
-                  'numeric',
-                  'numeric',
-                  'numeric',
-                  'numeric'
+                  "text",
+                  "text",
+                  "text",
+                  "text",
+                  "text",
+                  "text",
+                  "text",
+                  "text",
+                  "text",
                 ]}
                 headings={[
-                  'CID',
-                  'Name',
-                  'Amount',
-                  'Pana_amount',
-                  'Khula_amount',
-                  'SP_amount',
-                  'DP_amount',
-                  'JODI_amount',
-                  'TP_amount'
+                  "CID",
+                  "Name",
+                  "Amount",
+                  "Pana_amount",
+                  "Khula_amount",
+                  "SP_amount",
+                  "DP_amount",
+                  "JODI_amount",
+                  "TP_amount",
                 ]}
                 rows={rowsTable}
                 hasZebraStripingOnData
@@ -638,36 +470,47 @@ export default function Entry() {
                 defaultSortDirection="descending"
               />
             </LegacyCard>
-
             {timezone != "" && tabActive != "" && tabActive == "entry" ? (
-              <Button
-                primary
-                onClick={() => addInputField()}
-              >
+             <div style={{marginTop:'15px'}}>
+               <Button primary onClick={() => addInputField()}>
                 Add New
               </Button>
+             </div>
             ) : (
               ""
             )}
-            <ButtonGroup>
-              {inputFields.length ? <Button
+          </>
+        ) : (
+          <Card>
+            <Text alignment="center" variant="headingMd" as="h3">No Data Available</Text>
+          </Card>
+        )}
+      </Page>
+      </div>
+      {timezone != "" && tabActive != "" && inputFields.length? (
+          <>
+          <div className="bottomBar">
+          <ButtonGroup>
+            <Button onClick={() => cancel()}>
+              {" "}
+              Cancel
+            </Button>
+            {inputFields.length ? (
+              <Button primary
                 className={tabActive == "entry" ? "active" : ""}
                 onClick={() => saveEntries()}
               >
                 Save
-              </Button> : ""}
-
-              <Button primary onClick={() => cancel()}
-              >  Cancel</Button>
-            </ButtonGroup>
-          </>
-        ) : (
-          ""
-        )
-        }
-      </Page>
-
-
-    </>
+              </Button>
+            ) : (
+              ""
+            )}
+          </ButtonGroup>
+    </div>
+</>
+          ) : (
+""
+          )}
+    </div>
   );
 }

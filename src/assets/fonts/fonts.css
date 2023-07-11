@@ -51,32 +51,57 @@
     font-display: swap;
 }
 
-.Polaris-Frame__Content{
+:root {
+    --primary-color: #007a5c;
+    --secondary-color: #125443;
+    --dark-text: #232323;
+    --light-text: #797a7c;
+    --light-bg: #E4E5E7;
+    --white-color: #fff;
+    --border-color: #ebebec;
+    --bg-color: #F6F6F7;
+    --error-bg: #fde2dd;
+    --error-color: #bf1400;
+    --font-family: 'Inter';
+    --card-shadow: 0rem 0.125rem 0.25rem rgba(31, 33, 36, .1), 0rem 0.0625rem 0.375rem rgba(31, 33, 36, .05);
+
+}
+
+.Polaris-Frame__Content {
     display: none;
 }
-#addCustBtn,#editCustBtn,#addSetBtn,#editSetBtn{
+
+#addCustBtn,
+#editCustBtn,
+#addSetBtn,
+#editSetBtn {
     display: none;
 }
-.Polaris-TopBar__SecondaryMenu{
+
+.Polaris-TopBar__SecondaryMenu {
     list-style: none;
 }
+
 .Polaris-TopBar__SecondaryMenu ul {
     list-style: none;
     padding: 0;
     display: flex;
     align-items: center;
 }
+
 .Polaris-TopBar__SecondaryMenu .Polaris-List--spacingLoose .Polaris-List__Item {
     margin-bottom: 0;
 }
+
 .Polaris-TopBar-Menu__Activator:hover {
     background-color: transparent;
 }
 
 li.Polaris-List__Item a {
-    color: #232323;
+    color: var(--dark-text);
     min-width: 2.25rem;
     padding: var(--p-space-1) var(--p-space-2);
+    padding: 4px 10px;
     border: 0;
     cursor: pointer;
     transition: background-color var(--p-motion-duration-100);
@@ -84,14 +109,19 @@ li.Polaris-List__Item a {
     border-radius: var(--p-border-radius-1);
     text-decoration: none;
 }
-.Polaris-TopBar__SecondaryMenu .Polaris-TopBar-Menu__Activator{
+
+.Polaris-TopBar__SecondaryMenu .Polaris-TopBar-Menu__Activator {
     min-width: unset;
     margin: 0;
     padding: 0;
 
 }
-li.Polaris-List__Item a:hover, li.Polaris-List__Item a.active{
+
+li.Polaris-List__Item a:hover,
+li.Polaris-List__Item a.active {
     background-color: var(--pc-top-bar-background-lighter, var(--p-color-bg-hover));
+    border-radius: 50px;
+    background: var(--light-bg);
 }
 
 
@@ -102,64 +132,69 @@ li.Polaris-List__Item a:hover, li.Polaris-List__Item a.active{
 .Polaris-Labelled__LabelWrapper {
     width: 150px;
 }
-.col > div {
+
+.col>div {
     display: flex;
     align-items: center;
 }
+
 .col {
-    margin-bottom: 15px;
-}
-.Polaris-Connected,.Polaris-Select {
-    width: 210px;
-}
-.Polaris-LegacyCard {
     margin-bottom: 10px;
 }
-.Polaris-IndexTable__TableCell button.Polaris-Button+ button.Polaris-Button {
+
+.Polaris-IndexTable__TableCell button.Polaris-Button+button.Polaris-Button {
     margin-left: 10px;
 }
+
 .Polaris-IndexTable__TableCell button.Polaris-Button {
     padding: 0;
 }
+
 .customerHeader .Polaris-Box {
     padding: 0;
 }
+
 .customerHeader .col {
     margin-bottom: 0;
 }
+
 .customerHeader {
-    background: #fff;
-    padding: 20px 0 13px;
-    border-bottom: 1px solid #ebebec;
+    background: var(--white-color);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
 }
+
 .customerHeader .Polaris-Label label {
     font-size: 14px;
     font-weight: normal;
 }
+
 .customerHeader .Polaris-Labelled__LabelWrapper {
     width: auto;
     margin-right: 10px;
 }
-select{
+
+select {
     padding: 0 12px;
 }
+
 input[type="date"] {
     position: relative;
-  }
-  
-  /* create a new arrow, because we are going to mess up the native one
+}
+
+/* create a new arrow, because we are going to mess up the native one
   see "List of symbols" below if you want another, you could also try to add a font-awesome icon.. */
-  input[type="date"]:after {
+input[type="date"]:after {
     content: "\1F4C5";
-  }
-  
-  /* change color of symbol on hover */
-  input[type="date"]:hover:after {
-    color: #bf1400;
-  }
-  
-  /* make the native arrow invisible and stretch it over the whole field so you can click anywhere in the input field to trigger the native datepicker*/
-  input[type="date"]::-webkit-calendar-picker-indicator {
+}
+
+/* change color of symbol on hover */
+input[type="date"]:hover:after {
+    color: var(--error-color);
+}
+
+/* make the native arrow invisible and stretch it over the whole field so you can click anywhere in the input field to trigger the native datepicker*/
+input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     top: 0;
     left: 0;
@@ -169,14 +204,161 @@ input[type="date"] {
     height: auto;
     color: transparent;
     background: transparent;
-  }
-  
-  /* adjust increase/decrease button */
-  input[type="date"]::-webkit-inner-spin-button {
+}
+
+/* adjust increase/decrease button */
+input[type="date"]::-webkit-inner-spin-button {
     z-index: 1;
-  }
-  
-  /* adjust clear button */
-  input[type="date"]::-webkit-clear-button {
+}
+
+/* adjust clear button */
+input[type="date"]::-webkit-clear-button {
     z-index: 1;
-  }
+}
+
+/* frame height css */
+.Polaris-Frame {
+    min-height: auto;
+}
+
+.contentWrapper {
+    margin-bottom: 55px;
+}
+
+.bottomBar {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    background: var(--white-color);
+    width: 100%;
+    z-index: 91;
+}
+
+.Polaris-Connected,
+.Polaris-Select {
+    width: 100%;
+}
+
+.subHeader .Polaris-Select {
+    width: 210px;
+    max-width: 210px;
+}
+
+.Polaris-DataTable__Cell--firstColumn {
+    white-space: nowrap;
+}
+
+.Polaris-Avatar--styleTwo {
+    color: var(--white-color);
+    background: var(--primary-color);
+}
+
+.Polaris-Label {
+    white-space: nowrap;
+}
+
+.btn-wrap {
+    display: flex;
+    justify-content: end;
+    padding: 15px 0;
+}
+
+.Polaris-Button.Polaris-Button--pressed {
+    background: var(--primary-color);
+}
+
+.calculatorTable .Polaris-TextField__Input {
+    min-height: auto;
+    padding: 10px;
+    height: 25px;
+}
+
+.calculator-table .Polaris-TextField__Input {
+    max-height: 25px;
+    height: 25px;
+    padding: 3px 10px;
+    min-height: auto;
+}
+
+.calculator-table td {
+    padding: 4px 10px !important;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: calc(100vh - 30px);
+    align-items: center;
+    width: 100%;
+}
+
+
+.login-wrapper .form-group+.form-group {
+    margin-top: 15px;
+}
+
+.login-top img {
+    height: 50px;
+}
+
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px 0;
+}
+
+.login-mid-up {
+    padding: 35px 40px;
+    min-width: 460px;
+}
+
+.login-sub-heading {
+    line-height: 20px;
+    color: var(--light-text);
+    ;
+}
+
+.login-mid-heading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-mid-down {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.login-mid-down p {
+    font-size: 12px;
+    color: var(--light-text);
+}
+
+.login-down p {
+    font-size: 12px;
+}
+
+.login-down p {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card {
+    border-radius: 8px;
+    background: var(--white-color);
+    padding: 40px;
+    box-shadow: var(--card-shadow);
+}
+
+@media print {
+    .print-btn {
+        display: none;
+    }
+}

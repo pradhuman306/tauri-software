@@ -731,14 +731,3 @@ transform: translate(-50%, -50%);
 .d-none {
     display: none;
 }
-@media print{
-    .body-header,
-    .print-delet-btn,
-    header {
-        display: none;
-    }
-
-    .report-body::-webkit-scrollbar {
-        display: none;
-      }
-}
