@@ -72,10 +72,7 @@ export default function Home() {
       })
       updateSetOptions(optionsSet);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "set.json", contents: JSON.stringify(setData) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+     
       console.log(error);
     }
 
@@ -86,10 +83,7 @@ export default function Home() {
       const mycustomers = JSON.parse(myfiledata);
       setcustomers(mycustomers);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "customers.json", contents: JSON.stringify(customers) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+     
       console.log(error);
     }
     try {
@@ -99,10 +93,7 @@ export default function Home() {
       const entry = JSON.parse(myfileentries);
       setEntries(entry);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "entries.json", contents: JSON.stringify(entries) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+  
       console.log(error);
     }
   };
@@ -181,26 +172,23 @@ export default function Home() {
 
     let isSubmit = true;
     if (!addFormData.customer_id) {
-      // validationErr.cid = "Please enter customer ID";
       isSubmit = false;
     } else {
       validationErr.cid = false;
     }
     if (!addFormData.set) {
-      // validationErr.set = "Please select set";
       isSubmit = false;
     } else {
       validationErr.set = false;
     }
     if (!addFormData.name) {
-      // validationErr.name = "Please enter customer name";
       isSubmit = false;
     } else {
       validationErr.name = false;
     }
     if (isSubmit) {
       addNote();
-      navigate("/entry");
+      navigate("/customer");
       modalOpen("addCustomer");
     }
     setValidationError(validationErr);
@@ -210,9 +198,7 @@ export default function Home() {
     var reportList = [];
     for (let index = 0; index < entries.length; index++) {
       var CID = entries[index].customer_id;
-      // date loop
-      // for (let index = 0; index < datevise.length; index++) {
-      //   var vDate = datevise[index];
+ 
         // calculations 
         var cdata = customers.filter(
           (item) => item.customer_id === CID
@@ -228,8 +214,7 @@ export default function Home() {
         newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
         newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
         //
-        // var startDate = new Date(vDate + " 00:00:01");
-        // var endDate = new Date(vDate + " 23:59:59");
+     
         var getData = entries.filter(function (a) {
           var aDate = new Date(a.date);
           return (
@@ -331,7 +316,7 @@ export default function Home() {
         </Grid>
         {/* Add customer popup */}
         <Modal
-          // activator={activator}
+      
           open={isVisible.addCustomer}
           onClose={() => modalOpen("addCustomer")}
           title="Add New Customer"

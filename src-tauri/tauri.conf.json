@@ -81,7 +81,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.nextige.Bhole",
+      "identifier": "com.nextige.bhole",
       "targets": "all"
     },
     "security": {

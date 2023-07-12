@@ -14,11 +14,15 @@ import {
   Select,
   DataTable,
   ButtonGroup,
+  Card,
+  Text,
 } from "@shopify/polaris";
 import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Customer() {
+  document.onkeydown = keydown;
+
   const { message, setMessage, setErrorMessage } = useContext(MyContext);
   const [validationError, setValidationError] = useState({
     cid: false,
@@ -29,6 +33,8 @@ export default function Customer() {
   const [active, setActive] = useState(false);
   const [selectedSet, setSelectedSet] = useState("");
   const [msg, setMsg] = useState("");
+  const [customerName, setDeleteCustomerName] = useState("");
+  
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
     commission: "",
@@ -117,19 +123,16 @@ export default function Customer() {
 
     let isSubmit = true;
     if (!editCustomer.customer_id) {
-      // validationErr.cid = "Please enter customer ID";
       isSubmit = false;
     } else {
       validationErr.cid = false;
     }
     if (!editCustomer.set) {
-      // validationErr.set = "Please select set";
       isSubmit = false;
     } else {
       validationErr.set = false;
     }
     if (!editCustomer.name) {
-      // validationErr.name = "Please enter customer name";
       isSubmit = false;
     } else {
       validationErr.name = false;
@@ -169,7 +172,6 @@ export default function Customer() {
       currentdate.getMinutes() +
       ":" +
       currentdate.getSeconds();
-    // addFormData.date = datetime;
     addFormData.date = new Date(Date.now());
     addFormData.id = Date.now();
     addnewcustomer([{ ...addFormData }, ...customers]);
@@ -253,10 +255,7 @@ export default function Customer() {
       });
       updateSetOptions(optionsSet);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "set.json", contents: JSON.stringify(setData) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+   
       console.log(error);
     }
 
@@ -267,10 +266,7 @@ export default function Customer() {
       const mycustomers = JSON.parse(myfiledata);
       setcustomers(mycustomers);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "customers.json", contents: JSON.stringify(customers) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+
       console.log(error);
     }
   };
@@ -349,6 +345,7 @@ export default function Customer() {
           onClick={() => {
             modalOpen("deleteCustomer");
             setDeleteCustomerID(customer.id);
+            setDeleteCustomerName(customer.name);
           }}
         >
           <Icon source={DeleteMinor} color="base" />
@@ -357,6 +354,19 @@ export default function Customer() {
     );
     rows.push(newArray);
   });
+
+  function keydown(evt){
+    if (!evt) evt = event;
+   
+    if(evt.keyCode==115 && isVisible.addCustomer ){
+      document.getElementById("addCustBtn").click();
+    }else if(evt.keyCode==115 && isVisible.editCustomer){
+      document.getElementById("editCustBtn").click();
+    }
+  
+  }
+
+
   return (
     <>
       <Page
@@ -369,14 +379,17 @@ export default function Customer() {
       >
   
         <LegacyCard>
-          <DataTable
+          {rows.length ? <DataTable
             columnContentTypes={["text", "text", "text", "text"]}
             headings={["Cid", "Name", "Set", "Action"]}
             rows={rows}
             hasZebraStripingOnData
             increasedTableDensity
             defaultSortDirection="descending"
-          />
+          />:   <Card>
+          <Text alignment="center" variant="headingMd" as="h3">No customer found</Text>
+        </Card>}
+         
         </LegacyCard>
 
         {/* Add customer popup */}
@@ -786,7 +799,6 @@ export default function Customer() {
         {/* Delete customer popup */}
         <Modal
           small
-          // activator={activator}
           open={isVisible.deleteCustomer}
           onClose={() => modalOpen("deleteCustomer")}
           title="Delete Customer"
@@ -803,7 +815,7 @@ export default function Customer() {
         >
           <Modal.Section>
             <div className="">
-              Are you sure you want to delete this customer!
+              Are you sure you want to delete {customerName}!
             </div>
           </Modal.Section>
         </Modal>

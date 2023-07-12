@@ -11,16 +11,20 @@ import {
   Icon,
   DataTable,
   ButtonGroup,
+  Card,
+  Text,
 } from "@shopify/polaris";
 import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Set() {
+  document.onkeydown = keydown;
   const navigate = useNavigate();
   const { setMessage, setErrorMessage } = useContext(MyContext);
   const [addFormData, setAddFormData] = useState({});
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
+  const [setName, updateSetName] = useState("");
   const [validationError, setValidationError] = useState({
     set: false,
   });
@@ -185,10 +189,7 @@ export default function Set() {
       const mydata = JSON.parse(myfiledata);
       updateSetdata(mydata);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "set.json", contents: JSON.stringify(setData) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+     
       getdataFromFile();
       console.log(error);
     }
@@ -222,6 +223,7 @@ export default function Set() {
           onClick={() => {
             modalOpen("deleteSet");
             setDeleteSetID(data.id);
+            updateSetName(data.set);
           }}
         >
           <Icon source={DeleteMinor} color="base" />
@@ -230,6 +232,17 @@ export default function Set() {
     );
     rows.push(newArray);
   });
+
+  function keydown(evt){
+    if (!evt) evt = event;
+   
+    if(evt.keyCode==115 && isVisible.addSet ){
+      document.getElementById("addSetBtn").click();
+    }else if(evt.keyCode==115 && isVisible.editSet){
+      document.getElementById("editSetBtn").click();
+    }
+  
+  }
 
   return (
     <>
@@ -241,6 +254,7 @@ export default function Set() {
           onAction: () => modalOpen("addSet"),
         }}
       >
+        {rows.length ? 
         <LegacyCard>
           <DataTable
             columnContentTypes={[
@@ -272,7 +286,10 @@ export default function Set() {
             increasedTableDensity
             defaultSortDirection="descending"
           />
-        </LegacyCard>
+        </LegacyCard>:<Card>
+          <Text alignment="center" variant="headingMd" as="h3">No set found</Text>
+        </Card>}
+        
 
         {/* Add set popup */}
         <Modal
@@ -552,7 +569,7 @@ export default function Set() {
           ]}
         >
           <Modal.Section>
-            <div className="">Are you sure you want to delete this set!</div>
+            <div className="">Are you sure you want to delete set {setName}!</div>
           </Modal.Section>
         </Modal>
       </Page>

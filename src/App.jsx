@@ -24,12 +24,8 @@ const toggleActive = useCallback(() => setMessage(''), []);
 const toggleErrorActive = useCallback(() => setErrorMessage(''), []);
   const navigate = useNavigate();
     appWindow.onCloseRequested(async (event) => {
-      // if (!confirmed) {
-      // event.preventDefault();
-      // }else{
         localStorage.clear();
-        // navigate("/login");
-      // }
+       
     })
   
   return (

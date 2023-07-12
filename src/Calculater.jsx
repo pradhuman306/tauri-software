@@ -20,14 +20,11 @@ export default function Calculater() {
         setcustomers(mycust);
         let custOpt = [{ label: "Select Customer", value: "" }];
         mycust.map((data) => {
-          custOpt.push({ label: data.name, value: data.customer_id });
+          custOpt.push({ label: data.name+" "+data.customer_id, value: data.customer_id });
         })
         setcustomersOptions(custOpt);
       } catch (error) {
-        // await writeTextFile(
-        //   { path: "customers.json", contents: JSON.stringify(customers) },
-        //   { dir: BaseDirectory.Resource }
-        // );
+    
         console.log(error);
       }
       try {
@@ -37,10 +34,7 @@ export default function Calculater() {
         const mycustomers = JSON.parse(myfileNotes);
         setentries(mycustomers);
       } catch (error) {
-        // await writeTextFile(
-        //   { path: "entries.json", contents: JSON.stringify(entries) },
-        //   { dir: BaseDirectory.Resource }
-        // );
+   
         console.log(error);
       }
     };
@@ -241,49 +235,18 @@ export default function Calculater() {
     });
     setDisplayData([]);
     setMainTotal(0);
-    setDate(0);
   }
   useEffect(() => {
     calculations(selectedCId, selectedDate);
   }, [addFormData]);
 
 
-  // const resourceName = {
-  //   singular: 'timeZoneAll',
-  //   plural: 'timeZoneAlls',
-  // };
-  // const rowMarkup = timeZoneAll.map(
-  //   (
-  //     zone,
-  //     index,
-  //   ) => (
-
-  //     <IndexTable.Row id={index} key={index} position={index}>
-  //       <IndexTable.Cell>{zone}</IndexTable.Cell>
-  //       {zone === 'Total Amount' ? <IndexTable.Cell> <TextField type="text" step="any" value={mainTotal} readOnly /></IndexTable.Cell> : ""}
-
-  //       {zone != 'Total Amount' && amountDetails.map((amountKey) => (
-  //         <IndexTable.Cell>
-  //           {zone === 'Total-1' ? <TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly /> : zone === 'Total-2' ? <TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly /> : zone === 'Final Total' ? <TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly /> : <TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />}
-
-  //         </IndexTable.Cell>
-
-  //       ))}
-
-
-  //     </IndexTable.Row>
-
-  //   ),
-  // );
-
+ 
   const rows = [];
 
   timeZoneAll.map((zone, index) => {
     let newArray = [];
     newArray.push(zone);
-    // if (zone === 'Total Amount') {
-    //   newArray.push(<TextField type="text" step="any" value={mainTotal} readOnly />);
-    // }
     if (zone != 'Total Amount') {
       amountDetails.map((amountKey) => {
         if (zone === 'Total-1') {
@@ -340,7 +303,7 @@ export default function Calculater() {
         >
         </Page>
       </div>
-      <div className="contentWrapper">
+      <div className="contentWrapper mb-0">
       <Page fullWidth>
         <Grid>
           <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
@@ -374,6 +337,10 @@ export default function Calculater() {
                   <TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
                 </div>
               </div>
+              <div className="align-center">
+      <Button onClick={() => close()} primary>Cancel</Button>
+      </div>
+
             </Card>
           </Grid.Cell>
 
@@ -419,7 +386,6 @@ export default function Calculater() {
       </Page>
       </div>
       <div className="bottomBar">
-      <Button onClick={() => close()} primary>Cancel</Button>
       </div>
     </>
   );

@@ -225,6 +225,14 @@ input[type="date"]::-webkit-clear-button {
     margin-bottom: 55px;
 }
 
+.contentWrapper.mb-0 {
+    margin-bottom: 0;
+}
+
+.Polaris-Page__Content {
+    padding-top: 10px;
+}
+
 .bottomBar {
     display: flex;
     justify-content: center;
@@ -379,6 +387,10 @@ input[type="date"]::-webkit-clear-button {
 .amount {
     font-size: 28px;
     font-weight: 700;
+}
+.align-center{
+    text-align: center;
+    margin-top:25px;
 }
 
 @media print {

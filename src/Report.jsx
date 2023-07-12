@@ -21,7 +21,9 @@ export default function Report() {
   const [tabActive, setTabActive] = useState(false);
   const { setErrorMessage, setMessage } = useContext(MyContext);
   const [remainingEntries, setRemainingEntries] = useState([]);
-
+  const todaydate = new Date();
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
   const getNotesFromFile = async () => {
     try {
       const myfileNotes = await readTextFile("entries.json", {
@@ -31,10 +33,7 @@ export default function Report() {
       setentries(mycustomers);
       setfilterentries(mycustomers);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "entries.json", contents: JSON.stringify(entries) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+   
       getNotesFromFile();
       console.log(error);
     }
@@ -47,19 +46,26 @@ export default function Report() {
       const mycust = JSON.parse(myfiledata);
       setcustomers(mycust);
     } catch (error) {
-      // await writeTextFile(
-      //   { path: "customers.json", contents: JSON.stringify(customers) },
-      //   { dir: BaseDirectory.Resource }
-      // );
+  
       console.log(error);
     }
   };
   useEffect(() => {
     getNotesFromFile();
+    let day = todaydate.getDate();
+    let month = todaydate.getMonth() + 1;
+    let year = todaydate.getFullYear();
+    if (month.toString().length <= 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length <= 1) {
+      day = '0' + day;
+    }
+    setStart(year + '-' + month + '-' + day);
+    setEnd(year + '-' + month + '-' + day);
   }, []);
 
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+
 
   const searchData = () => {
     if (start != "" && end != "") {
@@ -472,7 +478,7 @@ export default function Report() {
           </>
         ) : (
           <Card>
-            <Text alignment="center" variant="headingMd" as="h3">No Data Available</Text>
+            <Text alignment="center" variant="headingMd" as="h3">No data available</Text>
           </Card>
         )}
         {/* Delete set popup */}

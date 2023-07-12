@@ -15,10 +15,14 @@ import { PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Entry() {
+  document.onkeydown = keydown;
+
+
   const { setErrorMessage, setMessage } = useContext(MyContext);
   const [customers, setcustomers] = useState([]);
   var [entries, setentries] = useState([]);
-
+  const todaydate = new Date();
+  const [date, setDate] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const modalOpen = () => {
     if (isVisible) {
@@ -59,10 +63,20 @@ export default function Entry() {
       }
     };
     getdataFromFile();
+    let day = todaydate.getDate();
+    let month = todaydate.getMonth() + 1;
+    let year = todaydate.getFullYear();
+    if (month.toString().length <= 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length <= 1) {
+      day = '0' + day;
+    }
+    setDate(year + '-' + month + '-' + day);
   }, []);
 
   const [tabActive, setTabActive] = useState("");
-  const [date, setDate] = useState("");
+
 
   const dateChange = async (value) => {
     setDate(value);
@@ -78,12 +92,44 @@ export default function Entry() {
     if (name == "customer_id") {
       const cdata = customers.filter((item) => item.customer_id === value);
       list[index]["name"] = cdata && cdata[0] ? cdata[0]["name"] : "";
+      if(cdata && cdata[0] ){
+     if(cdata[0].pana != 0 && cdata[0].pana != "" && cdata[0].pana != null){
+      list[index]['isDisabled'] = false;
+     }else{
+      list[index]['isDisabled'] = true;
+     }
+    }
     }
     list[index]["timezone"] = timezone;
     setInputFields(list);
   };
+  const handleBlur = (e, name, index) => {
+    let value = e.target.value;
+    console.log(value);
+    if(tabActive != "edit"){
+      if (name == "customer_id") {
+        if(value != ''){
+          setTimeout(() => {
+            addInputField();
+          }, 500);
+        }else{
+          setTimeout(() => {
+            if(inputFields.length > 1){
+              inputFields.pop();
+              setInputFields(inputFields)
+            }
+          
+          }, 500);
+        
+        }
+        }
+    }
+  
+  };
 
   const addInputField = () => {
+    console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+  
     setInputFields([
       ...inputFields,
       {
@@ -101,6 +147,7 @@ export default function Entry() {
         tp_amount: "",
       },
     ]);
+  
   };
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
   const onChangesetTimeZone = (tz, index) => {
@@ -224,6 +271,14 @@ export default function Entry() {
     setDate("");
   };
 
+  function keydown(evt){
+    if (!evt) evt = event;
+    if(evt.keyCode==115 && timezone != "" && tabActive != ""){
+      saveEntries();
+    }
+  
+  }
+
   const rowsTable = [];
   inputFields.map((inFields, index) => {
     let newArray = [];
@@ -231,6 +286,7 @@ export default function Entry() {
       <TextField
         type="text"
         onChange={(evnt) => handleChange(evnt, "customer_id", index)}
+        onBlur={(evnt) => handleBlur(evnt, "customer_id", index)}
         value={inFields.customer_id}
         name="customer_id"
       />,
@@ -251,6 +307,7 @@ export default function Entry() {
         type="text"
         onChange={(evnt) => handleChange(evnt, "pana_amount", index)}
         value={inFields.pana_amount}
+        disabled={inFields.isDisabled}
         name="pana_amount"
       />,
       <TextField
@@ -473,7 +530,7 @@ export default function Entry() {
             {timezone != "" && tabActive != "" && tabActive == "entry" ? (
              <div style={{marginTop:'15px'}}>
                <Button primary onClick={() => addInputField()}>
-                Add New
+                +
               </Button>
              </div>
             ) : (
@@ -482,7 +539,7 @@ export default function Entry() {
           </>
         ) : (
           <Card>
-            <Text alignment="center" variant="headingMd" as="h3">No Data Available</Text>
+            <Text alignment="center" variant="headingMd" as="h3">No data available</Text>
           </Card>
         )}
       </Page>
