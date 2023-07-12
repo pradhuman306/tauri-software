@@ -19,7 +19,7 @@ import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Customer() {
-  const { message, setMessage } = useContext(MyContext);
+  const { message, setMessage, setErrorMessage } = useContext(MyContext);
   const [validationError, setValidationError] = useState({
     cid: false,
     name: false,
@@ -85,26 +85,28 @@ export default function Customer() {
 
     let isSubmit = true;
     if (!addFormData.customer_id) {
-      // validationErr.cid = "Please enter customer ID";
       isSubmit = false;
     } else {
       validationErr.cid = false;
     }
     if (!addFormData.set) {
-      // validationErr.set = "Please select set";
       isSubmit = false;
     } else {
       validationErr.set = false;
     }
     if (!addFormData.name) {
-      // validationErr.name = "Please enter customer name";
       isSubmit = false;
     } else {
       validationErr.name = false;
     }
+    let filteredCustomer = customers.filter((data)=>data.customer_id == addFormData.customer_id);
+    if(filteredCustomer.length){
+      isSubmit = false; 
+      setErrorMessage("Customer already exist");
+    }
     if (isSubmit) {
       addNote();
-      navigate("/entry");
+      setAddFormData({});
       modalOpen("addCustomer");
     }
     setValidationError(validationErr);
@@ -251,10 +253,10 @@ export default function Customer() {
       });
       updateSetOptions(optionsSet);
     } catch (error) {
-      await writeTextFile(
-        { path: "set.json", contents: JSON.stringify(setData) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "set.json", contents: JSON.stringify(setData) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
 
@@ -265,10 +267,10 @@ export default function Customer() {
       const mycustomers = JSON.parse(myfiledata);
       setcustomers(mycustomers);
     } catch (error) {
-      await writeTextFile(
-        { path: "customers.json", contents: JSON.stringify(customers) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "customers.json", contents: JSON.stringify(customers) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
   };
@@ -365,22 +367,7 @@ export default function Customer() {
           onAction: () => modalOpen("addCustomer"),
         }}
       >
-        {/* <LegacyCard>
-          <IndexTable
-            resourceName={resourceName}
-            itemCount={customers.length}
-            headings={[
-              { title: 'Cid' },
-              { title: 'Name' },
-              { title: 'Set' },
-              { title: 'Action' },
-            ]}
-            selectable={false}
-
-          >
-            {rowMarkup}
-          </IndexTable>
-        </LegacyCard> */}
+  
         <LegacyCard>
           <DataTable
             columnContentTypes={["text", "text", "text", "text"]}
@@ -394,7 +381,6 @@ export default function Customer() {
 
         {/* Add customer popup */}
         <Modal
-          // activator={activator}
           open={isVisible.addCustomer}
           onClose={() => modalOpen("addCustomer")}
           title="Add New Customer"
@@ -421,7 +407,6 @@ export default function Customer() {
                         name="customer_id"
                         placeholder="Enter customer ID"
                         value={addFormData.customer_id}
-                        error={validationError.cid}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "customer_id")}
                       />
@@ -433,7 +418,6 @@ export default function Customer() {
                         name="name"
                         placeholder="Enter customer name"
                         value={addFormData.name}
-                        error={validationError.name}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "name")}
                       />
@@ -489,7 +473,6 @@ export default function Customer() {
                       <Select
                         label="Set"
                         name="set"
-                        error={validationError.set}
                         id="set"
                         options={setOptions}
                         value={selectedSet}

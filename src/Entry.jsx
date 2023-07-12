@@ -37,10 +37,10 @@ export default function Entry() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
       } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(customers) },
-          { dir: BaseDirectory.Resource }
-        );
+        // await writeTextFile(
+        //   { path: "customers.json", contents: JSON.stringify(customers) },
+        //   { dir: BaseDirectory.Resource }
+        // );
         console.log(error);
       }
       // entries
@@ -51,10 +51,10 @@ export default function Entry() {
         const mycustentries = JSON.parse(myfiledataentries);
         setentries(mycustentries);
       } catch (error) {
-        await writeTextFile(
-          { path: "entries.json", contents: JSON.stringify(entries) },
-          { dir: BaseDirectory.Resource }
-        );
+        // await writeTextFile(
+        //   { path: "entries.json", contents: JSON.stringify(entries) },
+        //   { dir: BaseDirectory.Resource }
+        // );
         console.log(error);
       }
     };

@@ -24,10 +24,10 @@ export default function Calculater() {
         })
         setcustomersOptions(custOpt);
       } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(customers) },
-          { dir: BaseDirectory.Resource }
-        );
+        // await writeTextFile(
+        //   { path: "customers.json", contents: JSON.stringify(customers) },
+        //   { dir: BaseDirectory.Resource }
+        // );
         console.log(error);
       }
       try {
@@ -37,10 +37,10 @@ export default function Calculater() {
         const mycustomers = JSON.parse(myfileNotes);
         setentries(mycustomers);
       } catch (error) {
-        await writeTextFile(
-          { path: "entries.json", contents: JSON.stringify(entries) },
-          { dir: BaseDirectory.Resource }
-        );
+        // await writeTextFile(
+        //   { path: "entries.json", contents: JSON.stringify(entries) },
+        //   { dir: BaseDirectory.Resource }
+        // );
         console.log(error);
       }
     };

@@ -72,10 +72,10 @@ export default function Home() {
       })
       updateSetOptions(optionsSet);
     } catch (error) {
-      await writeTextFile(
-        { path: "set.json", contents: JSON.stringify(setData) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "set.json", contents: JSON.stringify(setData) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
 
@@ -86,10 +86,10 @@ export default function Home() {
       const mycustomers = JSON.parse(myfiledata);
       setcustomers(mycustomers);
     } catch (error) {
-      await writeTextFile(
-        { path: "customers.json", contents: JSON.stringify(customers) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "customers.json", contents: JSON.stringify(customers) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
     try {
@@ -99,10 +99,10 @@ export default function Home() {
       const entry = JSON.parse(myfileentries);
       setEntries(entry);
     } catch (error) {
-      await writeTextFile(
-        { path: "entries.json", contents: JSON.stringify(entries) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "entries.json", contents: JSON.stringify(entries) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
   };
@@ -319,13 +319,13 @@ export default function Home() {
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Customer</Text>
-              <p style={{marginTop:'15px'}}>{customers.length + "+"}</p>
+              <p style={{marginTop:'15px'}}>{customers.length }</p>
             </Card>
           </Grid.Cell>
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Set</Text>
-              <p style={{marginTop:'15px'}}>{setData.length + "+"}</p>
+              <p style={{marginTop:'15px'}}>{setData.length}</p>
             </Card>
           </Grid.Cell>
         </Grid>

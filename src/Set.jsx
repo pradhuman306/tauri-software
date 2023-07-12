@@ -17,7 +17,7 @@ import { MyContext } from "./App";
 
 export default function Set() {
   const navigate = useNavigate();
-  const { setMessage } = useContext(MyContext);
+  const { setMessage, setErrorMessage } = useContext(MyContext);
   const [addFormData, setAddFormData] = useState({});
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
@@ -53,9 +53,14 @@ export default function Set() {
     } else {
       validationErr.set = false;
     }
+    let filteredSet = setData.filter((data)=>data.set == addFormData.set);
+    if(filteredSet.length){
+      isSubmit = false; 
+      setErrorMessage("Set already exist");
+    }
     if (isSubmit) {
       addNote();
-      navigate("/customer");
+      setAddFormData({});
       setMessage("Set added successfully");
       modalOpen("addSet");
     }
@@ -180,10 +185,10 @@ export default function Set() {
       const mydata = JSON.parse(myfiledata);
       updateSetdata(mydata);
     } catch (error) {
-      await writeTextFile(
-        { path: "set.json", contents: JSON.stringify(setData) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "set.json", contents: JSON.stringify(setData) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       getdataFromFile();
       console.log(error);
     }
@@ -272,7 +277,6 @@ export default function Set() {
         {/* Add set popup */}
         <Modal
           small
-          // activator={activator}
           open={isVisible.addSet}
           onClose={() => modalOpen("addSet")}
           title="Add New Set"
@@ -297,7 +301,6 @@ export default function Set() {
                     step="any"
                     name="set"
                     value={addFormData ? addFormData.set : ""}
-                    error={validationError.set}
                     requiredIndicator={true}
                     onChange={(e) => addFormHandler(e, "set")}
                     required

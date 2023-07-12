@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "accountant",
+    "productName": "Bhole",
     "version": "0.0.0"
   },
   "tauri": {
@@ -81,7 +81,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.nextige.accountant",
+      "identifier": "com.nextige.Bhole",
       "targets": "all"
     },
     "security": {
@@ -95,7 +95,7 @@
         "fullscreen": false,
         "resizable": true,
         "center": true,
-        "title": "accountant",
+        "title": "Bhole",
         "width": 1000,
         "height": 1000
       }

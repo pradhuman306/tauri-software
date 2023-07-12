@@ -4,11 +4,9 @@ import PrivateRoute from "./PrivateRoute";
 import Login from "./Login";
 import Home from "./Home";
 import { appWindow } from "@tauri-apps/api/window";
-import { confirm } from '@tauri-apps/api/dialog';
 import Report from "./Report";
 import Customer from "./Customer";
 import Set from "./Set";
-import CustomerList from "./CustomerList";
 import Calculater from "./Calculater";
 import Entry from "./Entry";
 import Navbar from "./Navbar";
@@ -80,14 +78,6 @@ export const appRouter = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Customer />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "customer-list",
-        element:(
-          <PrivateRoute>
-            <CustomerList />
           </PrivateRoute>
         ),
       },

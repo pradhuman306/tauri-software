@@ -31,10 +31,10 @@ export default function Report() {
       setentries(mycustomers);
       setfilterentries(mycustomers);
     } catch (error) {
-      await writeTextFile(
-        { path: "entries.json", contents: JSON.stringify(entries) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "entries.json", contents: JSON.stringify(entries) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       getNotesFromFile();
       console.log(error);
     }
@@ -47,10 +47,10 @@ export default function Report() {
       const mycust = JSON.parse(myfiledata);
       setcustomers(mycust);
     } catch (error) {
-      await writeTextFile(
-        { path: "customers.json", contents: JSON.stringify(customers) },
-        { dir: BaseDirectory.Resource }
-      );
+      // await writeTextFile(
+      //   { path: "customers.json", contents: JSON.stringify(customers) },
+      //   { dir: BaseDirectory.Resource }
+      // );
       console.log(error);
     }
   };
