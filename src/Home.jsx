@@ -313,19 +313,19 @@ export default function Home() {
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Balance</Text>
-              <p style={{marginTop:'15px'}}>₹ {getTotalBalance()}</p>
+              <p className="amount" style={{marginTop:'15px'}}>₹ {getTotalBalance()}</p>
             </Card>
           </Grid.Cell>
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Customer</Text>
-              <p style={{marginTop:'15px'}}>{customers.length }</p>
+              <p className="amount" style={{marginTop:'15px'}}>{customers.length }</p>
             </Card>
           </Grid.Cell>
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Set</Text>
-              <p style={{marginTop:'15px'}}>{setData.length}</p>
+              <p className="amount" style={{marginTop:'15px'}}>{setData.length}</p>
             </Card>
           </Grid.Cell>
         </Grid>

@@ -345,7 +345,7 @@ export default function Calculater() {
         <Grid>
           <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
             <Card>
-              <div className="row">
+              <div className="row calculator-table">
                 <div className="col">
                   <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly />
                 </div>
