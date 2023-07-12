@@ -22,8 +22,8 @@ export default function Login() {
   const handleSubmit = (event) => {
     console.log(userData);
     event.preventDefault();
-    if (userData.username === "px" && userData.password === "12345") {
-      localStorage.setItem("username", "px");
+    if (userData.username === "bhole" && userData.password === "12345") {
+      localStorage.setItem("username", "bhole");
       localStorage.setItem("password", "12345");
       navigate("/");
       setErr("");

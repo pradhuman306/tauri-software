@@ -6,6 +6,7 @@ import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 export default function Navbar() {
   const location = useLocation();
+  console.log(location);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -64,11 +65,7 @@ export default function Navbar() {
         console.log(mycust);
         setcustomers(mycust);
       } catch (error) {
-        await writeTextFile(
-          { path: "customers.json", contents: JSON.stringify(customers) },
-          { dir: BaseDirectory.Resource }
-        );
-        console.log(error);
+         console.log(error);
       }
       // entries
     };
@@ -78,7 +75,7 @@ export default function Navbar() {
   const logo = {
     width: 80,
     topBarSource: "http://localhost:1420/src/assets/logo-flat.svg",
-    url: '#',
+    url: '/',
     accessibilityLabel: 'Bhole',
   };
 
@@ -109,25 +106,13 @@ export default function Navbar() {
     <TopBar.SearchField
       onChange={handleSearchChange}
       value={searchValue}
-      placeholder="Customer / SID... "
+      placeholder="Customer... "
       showFocusBorder
     />
   );
 
   const secondaryMenuMarkup = (
     <List className="mainLink">
-      <List.Item>
-        <TopBar.Menu
-          activatorContent={
-            <Link
-              to="/"
-              className={location.pathname==='/home'?'active':""}
-            >
-              Home
-            </Link>
-          }
-        />
-        </List.Item>
      <List.Item>
         <TopBar.Menu
           activatorContent={
@@ -170,7 +155,7 @@ export default function Navbar() {
           to="/entry"
           className={location.pathname==='/entry'?'active':""}
         >
-          Entry/edit
+          Entry/Edit
         </Link>}/>
         </List.Item>
         <List.Item>
@@ -178,7 +163,7 @@ export default function Navbar() {
           activatorContent={
             <Link
               to="/calculater/:cid"
-              className={location.pathname==='/calculater/:cid'?'active':""}
+              className={location.pathname==='/calculater/:cid' || location.pathname.includes('calculater')?'active':""}
             >
               Calculator
             </Link>
@@ -224,98 +209,5 @@ export default function Navbar() {
     <div style={{ height: '56px' }}>
       <Frame topBar={topBarMarkup} logo={logo} />
     </div>
-    // <header>
-    //   <div className="container">
-    //     <div className="header-wrapper">
-
-
-    //       {isLoggedIn ? (
-    //         <div className="main-header">
-    //           <div className="header-menus">
-    //           <div className="header-left">
-    //         <div className="logo">
-    //           <img src={logo} alt="logo" />
-    //         </div>
-    //           <div className="search-wrap">
-    //             <input type="search" name="search" placeholder="search..."/>
-    //           </div>
-    //         </div>
-    //             <div className="header-right">
-    //             <ul>
-    //               <li>
-    //                 <Link
-    //                   to="/customer"
-    //                   className={
-    //                     location.pathname === "/customer" ? "active" : ""
-    //                   }
-    //                 >
-    //                   Customer
-    //                 </Link>
-    //               </li>
-    //               {/* <li>
-    //         <Link to="/cash" className={location.pathname === '/cash'? 'active':''}>Cash</Link>
-    //           </li> */}
-    //               <li>
-    //                 <Link
-    //                   to="/set"
-    //                   className={location.pathname === "/set" ? "active" : ""}
-    //                 >
-    //                   Set
-    //                 </Link>
-    //               </li>
-    //               <li>
-    //                 <Link
-    //                   to="/report"
-    //                   className={
-    //                     location.pathname === "/report" ? "active" : ""
-    //                   }
-    //                 >
-    //                   Report
-    //                 </Link>
-    //               </li>
-    //               <li>
-    //                 <Link
-    //                   to="/entry"
-    //                   className={location.pathname === "/entry" ? "active" : ""}
-    //                 >
-    //                   Entry/edit
-    //                 </Link>
-    //               </li>
-    //               {/* <li className="check-sub"> */}
-    //               {/* <a className={location.pathname === '/customer-list' || location.pathname === '/calculater'? 'active':''}>Check</a> */}
-    //               {/* <ul className="sub-menu">  */}
-    //               {/* <li>
-    //         <Link to="/customer-list" className={location.pathname === '/customer-list'? 'active':''}>Customers</Link>
-    //               </li> */}
-    //               <li>
-    //                 <Link
-    //                   to="/calculater"
-    //                   className={
-    //                     location.pathname === "/calculater" ? "active" : ""
-    //                   }
-    //                 >
-    //                   Calculater
-    //                 </Link>
-    //               </li>
-    //               {/* </ul> */}
-    //               {/* </li> */}
-
-    //             </ul>
-    //             {isLoggedIn ? (
-    //           <div className="login-btn">
-    //             <button onClick={(e) => handleClick()}>Logout</button>
-    //           </div>
-    //         ) : (
-    //           ""
-    //         )}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       ) : (
-    //         ""
-    //       )}
-    //     </div>
-    //   </div>
-    // </header>
   );
 }

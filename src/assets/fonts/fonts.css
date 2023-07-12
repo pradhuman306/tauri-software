@@ -130,7 +130,7 @@ li.Polaris-List__Item a.active {
 }
 
 .Polaris-Labelled__LabelWrapper {
-    width: 150px;
+    width: 220px;
 }
 
 .col>div {
@@ -160,7 +160,7 @@ li.Polaris-List__Item a.active {
 
 .customerHeader {
     background: var(--white-color);
-    padding: 12px 0;
+    padding: 8px 0;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -297,13 +297,26 @@ input[type="date"]::-webkit-clear-button {
 
 
 .login-wrapper .form-group+.form-group {
-    margin-top: 15px;
+    margin-top: 25px;
 }
 
 .login-top img {
     height: 50px;
 }
-
+.login-mid-heading h3.Polaris-Text--root.Polaris-Text--headingLg {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 40px;
+}
+.login-mid-heading p.Polaris-Text--root {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--light-text);
+}
+.Polaris-Labelled__LabelWrapper {
+    margin-bottom: 6px;
+}
 .login-wrapper {
     display: flex;
     align-items: center;
@@ -321,12 +334,11 @@ input[type="date"]::-webkit-clear-button {
 .login-sub-heading {
     line-height: 20px;
     color: var(--light-text);
-    ;
 }
 
 .login-mid-heading {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .login-mid-down {
@@ -335,7 +347,7 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .login-mid-down p {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--light-text);
 }
 
@@ -353,8 +365,20 @@ input[type="date"]::-webkit-clear-button {
 .card {
     border-radius: 8px;
     background: var(--white-color);
-    padding: 40px;
+    padding: 55px;
     box-shadow: var(--card-shadow);
+}
+
+.Polaris-Select__Input:focus-visible ~ .Polaris-Select__Backdrop::after, .Polaris-TopBar-SearchField__Backdrop::after, .Polaris-TextField--focus > .Polaris-TextField__Input ~ .Polaris-TextField__Backdrop::after, .Polaris-TextField--focus > .Polaris-TextField__VerticalContent ~ .Polaris-TextField__Backdrop::after, .Polaris-TextField__Input:focus-visible ~ .Polaris-TextField__Backdrop::after {
+    box-shadow: none !important;
+    outline: 0 !important;
+}
+.Polaris-DataTable__Cell--verticalAlignTop {
+    vertical-align: middle;
+}
+.amount {
+    font-size: 28px;
+    font-weight: 700;
 }
 
 @media print {
