@@ -7,6 +7,7 @@ import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 export default function Navbar() {
   const location = useLocation();
   console.log(location);
+  const logoImg = '../src/assets/logo-flat.svg';
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -74,11 +75,11 @@ export default function Navbar() {
 
   const logo = {
     width: 80,
-    topBarSource: "http://localhost:1420/src/assets/logo-flat.svg",
+    topBarSource: logoImg,
     url: '/',
     accessibilityLabel: 'Bhole',
   };
-
+console.log(logoImg);
   const userMenuMarkup = (
     <>
     <TopBar.UserMenu
@@ -208,6 +209,7 @@ export default function Navbar() {
 
     <div style={{ height: '56px' }}>
       <Frame topBar={topBarMarkup} logo={logo} />
+    
     </div>
   );
 }

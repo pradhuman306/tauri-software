@@ -128,7 +128,6 @@ export default function Entry() {
   };
 
   const addInputField = () => {
-    console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkk');
   
     setInputFields([
       ...inputFields,

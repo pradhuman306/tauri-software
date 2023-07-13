@@ -75,7 +75,7 @@ export default function Calculater() {
 
   const [selectedCId, setCID] = useState("");
   const [selectedDate, setDate] = useState("");
-  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1', 'Total-1', 'MO', 'BO', 'MK', 'BK', 'A2', 'Total-2', 'Final Total']);
+  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1','Total Day','MO', 'BO', 'MK', 'BK', 'Total-2','Total Night','Final Total']);
   const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
 
   const [DayData, setDayData] = useState({
@@ -250,6 +250,12 @@ export default function Calculater() {
     if (zone != 'Total Amount') {
       amountDetails.map((amountKey) => {
         if (zone === 'Total-1') {
+          newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
+        }
+        else if (zone === 'Total Day') {
+          newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
+        }
+        else if (zone === 'Total Night') {
           newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
         }
         else if (zone === 'Total-2') {
