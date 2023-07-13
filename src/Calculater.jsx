@@ -20,7 +20,7 @@ export default function Calculater() {
         setcustomers(mycust);
         let custOpt = [{ label: "Select Customer", value: "" }];
         mycust.map((data) => {
-          custOpt.push({ label: data.name+" "+data.customer_id, value: data.customer_id });
+          custOpt.push({ label: data.name+" ("+data.customer_id+")", value: data.customer_id });
         })
         setcustomersOptions(custOpt);
       } catch (error) {
@@ -103,7 +103,6 @@ export default function Calculater() {
       (item) => item.customer_id === value
     );
     setCID(value);
-    console.log('cdata', cdata);
     const newFormData = { ...addFormData };
     newFormData["customer_id"] = value;
     newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
@@ -127,6 +126,8 @@ export default function Calculater() {
   };
   const [displayData, setDisplayData] = useState([]);
   const [mainTotal, setMainTotal] = useState(0);
+  const [dayTotal, setDayTotal] = useState(0);
+  const [nightTotal, setNightTotal] = useState(0);
 
   const calculations = (id, date) => {
     if (id == "" || date == "") {
@@ -140,49 +141,61 @@ export default function Calculater() {
         aDate >= startDate && aDate <= endDate && a.customer_id == id
       );
     });
-    console.log('reduce ', filteredData);
-
     const result = filteredData.reduce((acc, { timezone, amount, dp_amount, jodi_amount, khula_amount, pana_amount, sp_amount, tp_amount }) => ({
       ...acc,
       [timezone]: {
         timezone,
-        amount: acc[timezone] ? (Number(amount) ? Number(acc[timezone].amount) + Number(amount) : (amount)) : (Number(amount) ? Number(amount) : amount),
-        dp_amount: acc[timezone] ? (Number(dp_amount) ? Number(acc[timezone].dp_amount) + Number(dp_amount) : (dp_amount)) : (Number(dp_amount) ? Number(dp_amount) : dp_amount),
-        jodi_amount: acc[timezone] ? (Number(jodi_amount) ? Number(acc[timezone].jodi_amount) + Number(jodi_amount) : (jodi_amount)) : (Number(jodi_amount) ? Number(jodi_amount) : jodi_amount),
-        khula_amount: acc[timezone] ? (Number(khula_amount) ? Number(acc[timezone].khula_amount) + Number(khula_amount) : (khula_amount)) : (Number(khula_amount) ? Number(khula_amount) : khula_amount),
-        pana_amount: acc[timezone] ? (Number(pana_amount) ? Number(acc[timezone].pana_amount) + Number(pana_amount) : (pana_amount)) : (Number(pana_amount) ? Number(pana_amount) : pana_amount),
-        sp_amount: acc[timezone] ? (Number(sp_amount) ? Number(acc[timezone].sp_amount) + Number(sp_amount) : (sp_amount)) : (Number(sp_amount) ? Number(sp_amount) : sp_amount),
-        tp_amount: acc[timezone] ? (Number(tp_amount) ? Number(acc[timezone].tp_amount) + Number(tp_amount) : (tp_amount)) : (Number(tp_amount) ? Number(tp_amount) : tp_amount),
-      }
+        amount: acc[timezone] ? (Number(acc[timezone].amount) + Number(amount)) : Number(amount),
+        dp_amount: acc[timezone]? Number(acc[timezone].dp_amount) + Number(dp_amount) : Number(dp_amount),
+        jodi_amount: acc[timezone]? Number(acc[timezone].jodi_amount) + Number(jodi_amount) : Number(jodi_amount),
+        khula_amount: acc[timezone]? Number(acc[timezone].khula_amount) + Number(khula_amount) : Number(khula_amount),
+        pana_amount: acc[timezone]? Number(acc[timezone].pana_amount) + Number(pana_amount) : Number(pana_amount),
+        sp_amount: acc[timezone]? Number(acc[timezone].sp_amount) + Number(sp_amount) : Number(sp_amount),
+        tp_amount: acc[timezone]? Number(acc[timezone].tp_amount) + Number(tp_amount) : Number(tp_amount),
+        }
     }),
       {});
 
     var totalDayData = [];
-    var first_arr = ['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'A1'];
-    // total 1 calculate
-    for (let index = 0; index < first_arr.length; index++) {
-      var zone = first_arr[index];
-      totalDayData['amount'] = totalDayData['amount'] ? (result[zone] ? totalDayData['amount'] + Number(result[zone].amount) : totalDayData['amount']) : result[zone] ? Number(result[zone].amount) : 0;
-      totalDayData['pana_amount'] = totalDayData['pana_amount'] ? (result[zone] ? totalDayData['pana_amount'] + Number(result[zone].pana_amount) : totalDayData['pana_amount']) : result[zone] ? Number(result[zone].pana_amount) : 0;
-      totalDayData['khula_amount'] = totalDayData['khula_amount'] ? (result[zone] ? totalDayData['khula_amount'] + Number(result[zone].khula_amount) : totalDayData['khula_amount']) : result[zone] ? Number(result[zone].khula_amount) : 0;
-      totalDayData['sp_amount'] = totalDayData['sp_amount'] ? (result[zone] ? totalDayData['sp_amount'] + Number(result[zone].sp_amount) : totalDayData['sp_amount']) : result[zone] ? Number(result[zone].sp_amount) : 0;
-      totalDayData['dp_amount'] = totalDayData['dp_amount'] ? (result[zone] ? totalDayData['dp_amount'] + Number(result[zone].dp_amount) : totalDayData['dp_amount']) : result[zone] ? Number(result[zone].dp_amount) : 0;
-      totalDayData['jodi_amount'] = totalDayData['jodi_amount'] ? (result[zone] ? totalDayData['jodi_amount'] + Number(result[zone].jodi_amount) : totalDayData['jodi_amount']) : result[zone] ? Number(result[zone].jodi_amount) : 0;
-      totalDayData['tp_amount'] = totalDayData['tp_amount'] ? (result[zone] ? totalDayData['tp_amount'] + Number(result[zone].tp_amount) : totalDayData['tp_amount']) : result[zone] ? Number(result[zone].tp_amount) : 0;
-    }
+      totalDayData["amount"] = 0;
+      totalDayData["pana_amount"] = 0;
+      totalDayData["khula_amount"] = 0;
+      totalDayData["sp_amount"] = 0;
+      totalDayData["dp_amount"] = 0;
+      totalDayData["jodi_amount"] = 0;
+      totalDayData["tp_amount"] = 0;
+      var first_arr = ["TO", "TK", "MO", "KO", "MK", "KK", "A1"];
+      // total 1 calculate
+      for (let index = 0; index < first_arr.length; index++) {
+        var zone = first_arr[index];
+        totalDayData["amount"] = (result[zone]? totalDayData["amount"] + Number(result[zone].amount) : totalDayData["amount"]);
+        totalDayData["pana_amount"] =result[zone]? totalDayData["pana_amount"] + Number(result[zone].pana_amount): totalDayData["pana_amount"];
+        totalDayData["khula_amount"] = result[zone]? totalDayData["khula_amount"] +Number(result[zone].khula_amount): totalDayData["khula_amount"];
+        totalDayData["sp_amount"] =  result[zone]? totalDayData["sp_amount"] + Number(result[zone].sp_amount): totalDayData["sp_amount"];
+        totalDayData["dp_amount"] = result[zone] ? totalDayData["dp_amount"] + Number(result[zone].dp_amount): totalDayData["dp_amount"];
+        totalDayData["jodi_amount"] = result[zone]? totalDayData["jodi_amount"] +Number(result[zone].jodi_amount): totalDayData["jodi_amount"];
+        totalDayData["tp_amount"] = result[zone] ? totalDayData["tp_amount"] + Number(result[zone].tp_amount): totalDayData["tp_amount"];
+      }
     setDayData(totalDayData);
     var totalNightData = [];
-    var second_arr = ['MO2', 'BO', 'MK2', 'BK', 'A2'];
+    totalNightData["amount"] = 0;
+    totalNightData["pana_amount"] = 0;
+    totalNightData["khula_amount"] = 0;
+    totalNightData["sp_amount"] = 0;
+    totalNightData["dp_amount"] = 0;
+    totalNightData["jodi_amount"] = 0;
+    totalNightData["tp_amount"] = 0;
+    var second_arr = ["MO2", "BO", "MK2", "BK", "A2"];
     // total 2 calculate
     for (let index = 0; index < second_arr.length; index++) {
       var zone = second_arr[index];
-      totalNightData['amount'] = totalNightData['amount'] ? (result[zone] ? totalNightData['amount'] + Number(result[zone].amount) : totalNightData['amount']) : result[zone] ? Number(result[zone].amount) : 0;
-      totalNightData['pana_amount'] = totalNightData['pana_amount'] ? (result[zone] ? totalNightData['pana_amount'] + Number(result[zone].pana_amount) : totalNightData['pana_amount']) : result[zone] ? Number(result[zone].pana_amount) : 0;
-      totalNightData['khula_amount'] = totalNightData['khula_amount'] ? (result[zone] ? totalNightData['khula_amount'] + Number(result[zone].khula_amount) : totalNightData['khula_amount']) : result[zone] ? Number(result[zone].khula_amount) : 0;
-      totalNightData['sp_amount'] = totalNightData['sp_amount'] ? (result[zone] ? totalNightData['sp_amount'] + Number(result[zone].sp_amount) : totalNightData['sp_amount']) : result[zone] ? Number(result[zone].sp_amount) : 0;
-      totalNightData['dp_amount'] = totalNightData['dp_amount'] ? (result[zone] ? totalNightData['dp_amount'] + Number(result[zone].dp_amount) : totalNightData['dp_amount']) : result[zone] ? Number(result[zone].dp_amount) : 0;
-      totalNightData['jodi_amount'] = totalNightData['jodi_amount'] ? (result[zone] ? totalNightData['jodi_amount'] + Number(result[zone].jodi_amount) : totalNightData['jodi_amount']) : result[zone] ? Number(result[zone].jodi_amount) : 0;
-      totalNightData['tp_amount'] = totalNightData['tp_amount'] ? (result[zone] ? totalNightData['tp_amount'] + Number(result[zone].tp_amount) : totalNightData['tp_amount']) : result[zone] ? Number(result[zone].tp_amount) : 0;
+      totalNightData["amount"] = (result[zone]? totalNightData["amount"] + Number(result[zone].amount) : totalNightData["amount"]);
+      totalNightData["pana_amount"] =result[zone]? totalNightData["pana_amount"] + Number(result[zone].pana_amount): totalNightData["pana_amount"];
+      totalNightData["khula_amount"] = result[zone]? totalNightData["khula_amount"] +Number(result[zone].khula_amount): totalNightData["khula_amount"];
+      totalNightData["sp_amount"] =  result[zone]? totalNightData["sp_amount"] + Number(result[zone].sp_amount): totalNightData["sp_amount"];
+      totalNightData["dp_amount"] = result[zone] ? totalNightData["dp_amount"] + Number(result[zone].dp_amount): totalNightData["dp_amount"];
+      totalNightData["jodi_amount"] = result[zone]? totalNightData["jodi_amount"] +Number(result[zone].jodi_amount): totalNightData["jodi_amount"];
+      totalNightData["tp_amount"] = result[zone] ? totalNightData["tp_amount"] + Number(result[zone].tp_amount): totalNightData["tp_amount"];
     }
     setNightData(totalNightData);
     setDisplayData(result);
@@ -199,6 +212,50 @@ export default function Calculater() {
     var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
     var partnership_percent = SUB_TOTAL * addFormData.partnership / 100;
     var TOTAL = SUB_TOTAL - partnership_percent;
+
+    var day_winning_amount = 0;
+    day_winning_amount += (totalDayData['khula_amount']) * addFormData.multiple;
+    day_winning_amount += (totalDayData['sp_amount'] ) * addFormData.sp;
+    day_winning_amount += (totalDayData['dp_amount'] ) * addFormData.dp;
+    day_winning_amount += (totalDayData['jodi_amount'] ) * addFormData.jodi;
+    day_winning_amount += (totalDayData['tp_amount'] ) * addFormData.tp;
+    var day_amount_commision = (((totalDayData['amount']) * addFormData.commission) / 100);
+    var day_pana_commision = (((totalDayData['pana_amount']) * addFormData.pana) / 100);
+    var day_sec_sub_total = day_winning_amount + day_pana_commision + day_amount_commision;
+    var day_SUB_TOTAL = day_sec_sub_total - (totalDayData['amount']) - (totalDayData['pana_amount']);
+    var day_partnership_percent = day_SUB_TOTAL * addFormData.partnership / 100;
+    var DAY_TOTAL = day_SUB_TOTAL - day_partnership_percent;
+    if (DAY_TOTAL) {
+      DAY_TOTAL = DAY_TOTAL.toFixed(2);
+      if ((totalDayData['amount']) > DAY_TOTAL) {
+        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Dr.';
+      } else {
+        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Cr.';
+      }
+    }
+    setDayTotal(DAY_TOTAL);
+
+    var night_winning_amount = 0;
+    night_winning_amount += ( totalNightData['khula_amount']) * addFormData.multiple;
+    night_winning_amount += (totalNightData['sp_amount']) * addFormData.sp;
+    night_winning_amount += ( totalNightData['dp_amount']) * addFormData.dp;
+    night_winning_amount += ( totalNightData['jodi_amount']) * addFormData.jodi;
+    night_winning_amount += (totalNightData['tp_amount']) * addFormData.tp;
+    var night_amount_commision = (((totalNightData['amount']) * addFormData.commission) / 100);
+    var night_pana_commision = (((totalNightData['pana_amount']) * addFormData.pana) / 100);
+    var night_sec_sub_total = night_winning_amount + night_pana_commision + night_amount_commision;
+    var night_SUB_TOTAL = night_sec_sub_total - (totalNightData['amount']) - (totalNightData['pana_amount']);
+    var night_partnership_percent = night_SUB_TOTAL * addFormData.partnership / 100;
+    var night_TOTAL = night_SUB_TOTAL - night_partnership_percent;
+    if (night_TOTAL) {
+      night_TOTAL = night_TOTAL.toFixed(2);
+      if ((totalNightData['amount']) > night_TOTAL) {
+        night_TOTAL = Math.abs(night_TOTAL) + ' Dr.';
+      } else {
+        night_TOTAL = Math.abs(night_TOTAL) + ' Cr.';
+      }
+    }
+    setNightTotal(night_TOTAL);
 
     if (TOTAL) {
       TOTAL = TOTAL.toFixed(2);
@@ -253,10 +310,18 @@ export default function Calculater() {
           newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
         }
         else if (zone === 'Total Day') {
-          newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
+          if(newArray.length == 1){
+            newArray.push(<span className={dayTotal?dayTotal.includes('Dr')?'debit':'credit':''}><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount' ? dayTotal: ''} readOnly /></span>);
+          }else{
+            newArray.push(<span></span>);
+          }
         }
         else if (zone === 'Total Night') {
-          newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
+          if(newArray.length == 1){
+          newArray.push(<span className={nightTotal?nightTotal.includes('Dr')?'debit':'credit':'' }><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount'? nightTotal: ''} readOnly /></span>);
+        }else{
+          newArray.push(<span></span>);
+        }
         }
         else if (zone === 'Total-2') {
           newArray.push(<TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly />);
@@ -376,7 +441,7 @@ export default function Calculater() {
               'TP-Amount'
             ]}
             rows={rows}
-            totals={['', mainTotal, '', '', '', '', '', '']}
+            totals={['', <span className={mainTotal?mainTotal.includes('Dr')?'debit':'credit':'' }>{mainTotal}</span>, '', '', '', '', '', '']}
             hasZebraStripingOnData
             increasedTableDensity
             defaultSortDirection="descending"

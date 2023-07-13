@@ -20,7 +20,6 @@ export default function Login() {
 
 
   const handleSubmit = (event) => {
-    console.log(userData);
     event.preventDefault();
     if (userData.username === "bhole" && userData.password === "12345") {
       localStorage.setItem("username", "bhole");

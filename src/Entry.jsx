@@ -105,7 +105,6 @@ export default function Entry() {
   };
   const handleBlur = (e, name, index) => {
     let value = e.target.value;
-    console.log(value);
     if(tabActive != "edit"){
       if (name == "customer_id") {
         if(value != ''){

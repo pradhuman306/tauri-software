@@ -278,7 +278,6 @@ export default function Customer() {
     customers = customers.filter(function (a) {
       return a.id != id;
     });
-    console.log(customers);
     await writeTextFile(
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }

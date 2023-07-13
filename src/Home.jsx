@@ -298,7 +298,7 @@ export default function Home() {
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>
             <Card>
               <Text variant="headingMd" as="h3">Total Balance</Text>
-              <p className="amount" style={{marginTop:'15px'}}>₹ {getTotalBalance()}</p>
+              <p className={`amount ${getTotalBalance()>0 ? 'credit':'debit'}`} style={{marginTop:'15px'}}>₹ {getTotalBalance()}</p>
             </Card>
           </Grid.Cell>
           <Grid.Cell columnSpan={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}>

@@ -6,7 +6,6 @@ import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 export default function Navbar() {
   const location = useLocation();
-  console.log(location);
   const logoImg = '../src/assets/logo-flat.svg';
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
@@ -32,7 +31,6 @@ export default function Navbar() {
   }, []);
 
   const handleSearchChange = (value) => {
-    console.log(customers);
     let contentItems = [];
     if (customers.length) {
       let tmp = customers.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -63,7 +61,6 @@ export default function Navbar() {
           dir: BaseDirectory.Resource,
         });
         const mycust = JSON.parse(myfiledata);
-        console.log(mycust);
         setcustomers(mycust);
       } catch (error) {
          console.log(error);
@@ -79,7 +76,6 @@ export default function Navbar() {
     url: '/',
     accessibilityLabel: 'Bhole',
   };
-console.log(logoImg);
   const userMenuMarkup = (
     <>
     <TopBar.UserMenu
