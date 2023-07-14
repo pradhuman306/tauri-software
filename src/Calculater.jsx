@@ -76,6 +76,7 @@ export default function Calculater() {
   const [selectedCId, setCID] = useState("");
   const [selectedDate, setDate] = useState("");
   const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1','Total Day','MO', 'BO', 'MK', 'BK', 'Total-2','Total Night','Final Total']);
+  const [showtimeZoneAll, setTimeZoneAllshow] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1','Total Day','MO2', 'BO', 'MK2', 'BK', 'Total-2','Total Night','Final Total']);
   const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
 
   const [DayData, setDayData] = useState({
@@ -300,6 +301,7 @@ export default function Calculater() {
 
  
   const rows = [];
+  console.log(displayData);
 
   timeZoneAll.map((zone, index) => {
     let newArray = [];
@@ -329,7 +331,9 @@ export default function Calculater() {
         else if(zone === 'Final Total'){
           newArray.push(<TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly />);
         }else {
-          newArray.push(<TextField type="text" name={`${zone}[${amountKey}]`} value={displayData[zone] ? displayData[zone][amountKey] : ''} readOnly />);
+          let zone2 = showtimeZoneAll[index];
+          console.log(zone2);
+          newArray.push(<TextField type="text" name={`${zone2}[${amountKey}]`} value={displayData[zone2] ? displayData[zone2][amountKey] : ''} readOnly />);
         }
    
       })
