@@ -313,14 +313,14 @@ export default function Calculater() {
         }
         else if (zone === 'Total Day') {
           if(newArray.length == 1){
-            newArray.push(<span className={dayTotal?dayTotal.includes('Dr')?'debit':'credit':''}><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount' ? dayTotal: ''} readOnly /></span>);
+            newArray.push(<span className={dayTotal?dayTotal.includes('Dr')?'debit':'credit':''}>{amountKey == 'amount' ? dayTotal: ''}</span>);
           }else{
             newArray.push(<span></span>);
           }
         }
         else if (zone === 'Total Night') {
           if(newArray.length == 1){
-          newArray.push(<span className={nightTotal?nightTotal.includes('Dr')?'debit':'credit':'' }><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount'? nightTotal: ''} readOnly /></span>);
+          newArray.push(<span className={nightTotal?nightTotal.includes('Dr')?'debit':'credit':'' }>{amountKey == 'amount'? nightTotal: ''}</span>);
         }else{
           newArray.push(<span></span>);
         }

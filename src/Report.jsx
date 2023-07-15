@@ -1,4 +1,4 @@
-import { React, useCallback, useContext, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import {
   Button,
