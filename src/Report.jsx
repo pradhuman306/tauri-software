@@ -27,15 +27,23 @@ export default function Report() {
   const [end, setEnd] = useState("");
   const [checked, setChecked] = useState(false);
 
-  const handleChange = async (id) => {
+  const handleChange = async (id,value) => {
 
   // Create a new array with the modified objects
   const updatedArray = filterentries.map((obj)=>{
     if(obj.customer_id == id){
-      return{
-        ...obj,
-        checked:!obj.checked
+      if(!Object.keys(obj).includes("checked") && obj.customer_id == id){
+        return{
+          ...obj,
+          checked:!value
+        }
+      }else{
+        return{
+          ...obj,
+          checked:!value
+        }
       }
+     
     }
     return {...obj}
   })
@@ -46,7 +54,7 @@ export default function Report() {
   );
   setfilterentries(updatedArray);
 
-
+console.log(updatedArray);
   }
   useEffect(()=>{
     if(start != '' && end != '' && filterentries.length && customers.length){
@@ -168,13 +176,21 @@ export default function Report() {
 
         var allcustomercalculatedata = doCalcultion(allcustomerdata,CID,newFormData);
         // return false;
+        console.log(allcustomerdata);
       let tmp = allcustomerdata.filter((obj)=>{
-        return obj.checked === true;
+        if (!Object.keys(obj).includes("checked") || obj.checked === false) {
+          console.log(!Object.keys(obj).includes("checked"));
+          return true;
+        }
+      
       })
       let checked = false;
-      if(tmp.length){
+      if(tmp.length == 0){
+        console.log('inside');
         checked = true;
       }
+
+      console.log(checked);
        
       console.log(tmp);
 
@@ -367,7 +383,7 @@ export default function Report() {
     newArray.push(data.date, data.name, data.credit, data.debit,data.total, <Checkbox
       checked={data.checked}
       id={data.id}
-      onChange={()=>handleChange(data.id)}
+      onChange={()=>handleChange(data.id,data.checked)}
     />);
     rows.push(newArray);
   });
