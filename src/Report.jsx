@@ -1,4 +1,4 @@
-import { React, useContext, useEffect, useState } from "react";
+import { React, useCallback, useContext, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import {
   Button,
@@ -10,6 +10,7 @@ import {
   Modal,
   DataTable,
   Card,
+  Checkbox
 } from "@shopify/polaris";
 import { MyContext } from "./App";
 
@@ -24,6 +25,37 @@ export default function Report() {
   const todaydate = new Date();
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = async (id) => {
+
+  // Create a new array with the modified objects
+  const updatedArray = filterentries.map((obj)=>{
+    if(obj.customer_id == id){
+      return{
+        ...obj,
+        checked:!obj.checked
+      }
+    }
+    return {...obj}
+  })
+
+  await writeTextFile(
+    { path: "entries.json", contents: JSON.stringify(updatedArray) },
+    { dir: BaseDirectory.Resource }
+  );
+  setfilterentries(updatedArray);
+
+
+  }
+  useEffect(()=>{
+    if(start != '' && end != '' && filterentries.length && customers.length){
+      console.log(filterentries);
+      searchData();
+    }
+  },[filterentries,customers])
+ 
+    
   const getNotesFromFile = async () => {
     try {
       const myfileNotes = await readTextFile("entries.json", {
@@ -130,10 +162,22 @@ export default function Report() {
             return a.customer_id == CID;
           });
 
+
+
         var calculateData = doCalcultion(getData,CID,newFormData);
 
         var allcustomercalculatedata = doCalcultion(allcustomerdata,CID,newFormData);
         // return false;
+      let tmp = allcustomerdata.filter((obj)=>{
+        return obj.checked === true;
+      })
+      let checked = false;
+      if(tmp.length){
+        checked = true;
+      }
+       
+      console.log(tmp);
+
           if (CID && calculateData) {
             reportList.push({
               id: CID,
@@ -142,7 +186,7 @@ export default function Report() {
               credit: calculateData.type == "Positive" ? calculateData.total.toFixed(2) : "",
               debit: calculateData.type == "Negative" ? calculateData.total.toFixed(2) : "",
               total: allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'',
-              checked: 'true'
+              checked: checked
             });
           }
         } // date loop end
@@ -320,7 +364,11 @@ export default function Report() {
   const rows = [];
   reportData.map((data, index) => {
     let newArray = [];
-    newArray.push(data.date, data.name, data.credit, data.debit,data.total,data.checked);
+    newArray.push(data.date, data.name, data.credit, data.debit,data.total, <Checkbox
+      checked={data.checked}
+      id={data.id}
+      onChange={()=>handleChange(data.id)}
+    />);
     rows.push(newArray);
   });
 
