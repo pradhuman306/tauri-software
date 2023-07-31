@@ -152,21 +152,18 @@ export default function Cashbook() {
   };
 
   const addNote = async () => {
-    var currentdate = new Date();
-    var datetime =
-      currentdate.getDate() +
-      "/" +
-      (currentdate.getMonth() + 1) +
-      "/" +
-      currentdate.getFullYear() +
-      " " +
-      currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes() +
-      ":" +
-      currentdate.getSeconds();
-    // addFormData.date = datetime;
-    addFormData.date = new Date(Date.now());
+    var todaydate = new Date();
+    let day = todaydate.getDate();
+    let month = todaydate.getMonth() + 1;
+    let year = todaydate.getFullYear();
+    if (month.toString().length <= 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length <= 1) {
+      day = '0' + day;
+    }
+    var DATE = year + '-' + month + '-' + day;
+    addFormData.date = DATE;
     addFormData.id = Date.now();
     updateData([{ ...addFormData }, ...setData]);
   };

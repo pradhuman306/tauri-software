@@ -340,7 +340,23 @@ export default function Entry() {
       />
     );
     rowsTable.push(newArray);
+  
   });
+
+  let totalArray = [];
+  totalArray.push(
+    <span><b>Total</b></span>,
+    <span></span>,
+    <span>{Number((inputFields.reduce((a,v) =>  a = a + v.amount,0)))}</span>,
+    <span>Pana Amount</span>,
+    <span>Khula</span>,
+    <span>SP</span>,
+    <span>DP</span>,
+    <span>JODi</span>,
+    <span>TP</span>,
+
+  );
+  rowsTable.push(totalArray);
 
   const rowsCustomer = [];
   customers.map((customer, index) => {
