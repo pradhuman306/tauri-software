@@ -417,7 +417,7 @@ export default function Customer() {
                   <div className="row">
                     <div className="col">
                       <TextField
-                        label="ID"
+                        label="Customer ID"
                         type="number"
                         name="customer_id"
                         placeholder="Enter ID"

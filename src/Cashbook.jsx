@@ -7,6 +7,7 @@ import {
   Form,
   TextField,
   Page,
+  Select,
   LegacyCard,
   Icon,
   DataTable,
@@ -25,6 +26,9 @@ export default function Cashbook() {
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
   const [setName, updateSetName] = useState("");
+  const [customers, setcustomers] = useState([]);
+  const [customersOptions, setcustomersOptions] = useState([]);
+
   const [validationError, setValidationError] = useState({
     set: false,
   });
@@ -51,6 +55,11 @@ export default function Cashbook() {
     event.preventDefault();
     let validationErr = { ...validationError };
     let isSubmit = true;
+    if (!addFormData.cid) {
+      isSubmit = false;
+    } else {
+      validationErr.cid = false;
+    }
     if (isSubmit) {
       addNote();
       setAddFormData({});
@@ -110,10 +119,28 @@ export default function Cashbook() {
   };
 
   const [setData, updateSetdata] = useState([]);
+  const [deleteCustomerID, setDeleteCustomerID] = useState("");
+  const [customerName, setDeleteCustomerName] = useState("");
+
+  const deleteCashbookData = async (id) => {
+    console.log(id);
+    var newdata = setData.filter(function (a) {
+      return a.cid != id;
+    });
+    await writeTextFile(
+      { path: "cashbook.json", contents: JSON.stringify(newdata) },
+      { dir: BaseDirectory.Resource }
+    );
+    getdataFromFile();
+    setMessage("Data deleted successfully");
+    modalOpen("deleteCustomer");
+  };
+
   const [isVisible, setIsVisible] = useState({
     addSet: false,
     editSet: false,
     deleteSet: false,
+    deleteCustomer: false,
   });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
@@ -164,10 +191,29 @@ export default function Cashbook() {
     }
     var DATE = year + '-' + month + '-' + day;
     addFormData.date = DATE;
+    addFormData.credit = addFormData.credit?addFormData.credit:0;
+    addFormData.debit = addFormData.debit?addFormData.debit:0;
     addFormData.id = Date.now();
     updateData([{ ...addFormData }, ...setData]);
   };
   const getdataFromFile = async () => {
+
+    // customers 
+    try {
+      const myfiledata = await readTextFile("customers.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mycust = JSON.parse(myfiledata);
+      setcustomers(mycust);
+      let custOpt = [{ label: "Select Customer", value: "" }];
+      mycust.map((data) => {
+        custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+      })
+      setcustomersOptions(custOpt);
+    } catch (error) {
+      console.log(error);
+    }
+
     try {
       const myfiledata = await readTextFile("cashbook.json", {
         dir: BaseDirectory.Resource,
@@ -185,14 +231,34 @@ export default function Cashbook() {
   }, []);
 
   const rows = [];
-
-  setData.map((data, index) => {
+  var result = setData.reduce((acc, {cid, credit, debit}) => ({...acc, [cid]: {cid, credit: acc[cid] ? Number(acc[cid].credit) + Number(credit): Number(credit), debit: acc[cid] ? Number(acc[cid].debit) + Number(debit): Number(debit)}}), {});
+  result = Object.values(result);
+  result.map((data, index) => {
     let newArray = [];
+    var found = customers.find(obj => {
+      return obj.customer_id === data.cid;
+    });
     newArray.push(
       data.cid,
-      data.date,
-      data.credit,
-      data.debit,
+      // data.date,
+      found.name,
+      data.credit?'₹'+data.credit:'',
+      data.debit?'₹'+data.debit:'',
+      <b>₹{Number(data.credit)-Number(data.debit)+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>,
+      <ButtonGroup>
+        <Button
+          size="micro"
+          destructive
+          outline
+          onClick={() => {
+            modalOpen("deleteCustomer");
+            setDeleteCustomerID(data.cid);
+            setDeleteCustomerName(found.name);
+          }}
+        >
+          <Icon source={DeleteMinor} color="base" />
+        </Button>
+      </ButtonGroup>
     );
     rows.push(newArray);
   });
@@ -226,12 +292,16 @@ export default function Cashbook() {
               "text",
               "text",
               "text",
+              "text",
+              "text"
             ]}
             headings={[
               "CID",
               "Name",
               "Credit",
               "Debit",
+              "Total",
+              "Action",
             ]}
             rows={rows}
             hasZebraStripingOnData
@@ -264,16 +334,16 @@ export default function Cashbook() {
             <Form onSubmit={submitHandler}>
               <div className="row">
                 <div className="col">
-                  <TextField
-                    label="Customer"
-                    type="number"
-                    step="any"
-                    name="cid"
-                    value={addFormData ? addFormData.cid : ""}
-                    requiredIndicator={true}
-                    onChange={(e) => addFormHandler(e, "cid")}
-                    required
-                  />
+
+                <Select
+                  label="Customer"
+                  name="name"
+                  id="name"
+                  options={customersOptions}
+                  value={addFormData ? addFormData.cid : ""}
+                  requiredIndicator={true}
+                  onChange={(e) => addFormHandler(e, "cid")}
+                />
                 </div>
                 <div className="col">
                   <TextField
@@ -281,7 +351,7 @@ export default function Cashbook() {
                     type="number"
                     step="any"
                     name="credit"
-                    value={addFormData ? addFormData.credit : ""}
+                    value={addFormData ? addFormData.credit : 0}
                     onChange={(e) => addFormHandler(e, "credit")}
                     required
                   />
@@ -292,7 +362,7 @@ export default function Cashbook() {
                     type="number"
                     step="any"
                     name="debit"
-                    value={addFormData ? addFormData.debit : ""}
+                    value={addFormData ? addFormData.debit : 0}
                     onChange={(e) => addFormHandler(e, "debit")}
                     required
                   />
@@ -389,6 +459,30 @@ export default function Cashbook() {
         >
           <Modal.Section>
             <div className="">Are you sure you want to delete {setName}!</div>
+          </Modal.Section>
+        </Modal>
+
+         {/* Delete customer popup */}
+         <Modal
+          small
+          open={isVisible.deleteCustomer}
+          onClose={() => modalOpen("deleteCustomer")}
+          title="Delete Customer"
+          primaryAction={{
+            content: "Yes",
+            onAction: () => deleteCashbookData(deleteCustomerID),
+          }}
+          secondaryActions={[
+            {
+              content: "Cancel",
+              onAction: () => modalOpen("deleteCustomer"),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <div className="">
+              Are you sure you want to delete <b>{customerName}</b>?
+            </div>
           </Modal.Section>
         </Modal>
       </Page>

@@ -13,8 +13,10 @@ import {
   Checkbox
 } from "@shopify/polaris";
 import { MyContext } from "./App";
+import { useNavigate } from "react-router-dom";
 
 export default function Report() {
+  const navigate = useNavigate();
   const [entries, setentries] = useState([]);
   const [filterentries, setfilterentries] = useState([]);
   const [customers, setcustomers] = useState([]);
@@ -89,6 +91,17 @@ console.log(updatedArray);
   
       console.log(error);
     }
+
+    try {
+      const myfiledata = await readTextFile("cashbook.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mydata = JSON.parse(myfiledata);
+      updateCashbookdata(mydata);
+    } catch (error) {
+      console.log(error);
+    }
+
   };
   useEffect(() => {
     getNotesFromFile();
@@ -362,8 +375,27 @@ console.log(updatedArray);
     setEnd("");
     setTabActive(false);
   };
+  const [cashbookData, updateCashbookdata] = useState([]);
+  const AddDatatoCashBook = (data) => {
+    let newArray = [];
+    data.map((obj, index) => {
+      newArray.push({id:Date.now(),cid:obj.id,credit:obj.credit?Number(obj.credit):0,debit:obj.debit?Number(obj.debit):0,date:obj.date});
+    })
+    updateData([...newArray,...cashbookData]);
+  }
 
-  const [isVisible, setIsVisible] = useState({ deleteReport: false });
+  const updateData = async (data) => {
+    updateCashbookdata([...data]);
+    await writeTextFile(
+      { path: "cashbook.json", contents: JSON.stringify(data) },
+      { dir: BaseDirectory.Resource }
+    );
+    modalOpen("cashBook")
+    setMessage("Entries added to Cashbook");
+    navigate("/cashbook");
+  };
+
+  const [isVisible, setIsVisible] = useState({ deleteReport: false,cashBook: false });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
     if (isVisibleTemp[id]) {
@@ -442,6 +474,9 @@ console.log(updatedArray);
                 <Button destructive onClick={(e) => modalOpen("deleteReport")}>
                   Delete
                 </Button>
+                <Button onClick={(e) => modalOpen('cashBook')} >
+                  Add To Cashbook
+                </Button>
               </ButtonGroup>
             </div>
           </>
@@ -470,6 +505,29 @@ console.log(updatedArray);
           <Modal.Section>
             <div className="">
               Are you sure you want to delete this entries!
+            </div>
+          </Modal.Section>
+        </Modal>
+        {/* cashbook modal  */}
+        <Modal
+          small
+          open={isVisible.cashBook}
+          onClose={() => modalOpen("cashBook")}
+          title="Add Enties to Cashbook"
+          primaryAction={{
+            content: "Yes",
+            onAction: () => AddDatatoCashBook(reportData),
+          }}
+          secondaryActions={[
+            {
+              content: "Cancel",
+              onAction: () => modalOpen("cashBook"),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <div className="">
+              Are you sure you want to Add this entries to CashBook!
             </div>
           </Modal.Section>
         </Modal>

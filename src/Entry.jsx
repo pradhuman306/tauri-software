@@ -347,14 +347,13 @@ export default function Entry() {
   totalArray.push(
     <span><b>Total</b></span>,
     <span></span>,
-    <span>{Number((inputFields.reduce((a,v) =>  a = a + v.amount,0)))}</span>,
-    <span>Pana Amount</span>,
-    <span>Khula</span>,
-    <span>SP</span>,
-    <span>DP</span>,
-    <span>JODi</span>,
-    <span>TP</span>,
-
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.sp_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.dp_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0)))}</b></span>,
   );
   rowsTable.push(totalArray);
 
