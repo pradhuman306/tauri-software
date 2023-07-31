@@ -287,6 +287,7 @@ export default function Home() {
   return (
     <>
       <Page
+      fullWidth
         title="Dashboard"
         primaryAction={{
           content: "New Customer",
@@ -358,38 +359,6 @@ export default function Home() {
                         error={validationError.name}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "name")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 1"
-                        type="number"
-                        step="any"
-                        name="mobile1"
-                        placeholder="Enter mobile number"
-                        value={addFormData.mobile1}
-                        onChange={(e) => addFormHandler(e, "mobile1")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 2"
-                        type="number"
-                        step="any"
-                        name="mobile2"
-                        placeholder="Enter mobile number"
-                        value={addFormData.mobile2}
-                        onChange={(e) => addFormHandler(e, "mobile2")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Address"
-                        name="address"
-                        placeholder="Enter customer address"
-                        value={addFormData.address}
-                        onChange={(e) => addFormHandler(e, "address")}
-                        multiline={4}
                       />
                     </div>
                     <div className="col">

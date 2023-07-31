@@ -369,6 +369,7 @@ export default function Customer() {
   return (
     <>
       <Page
+       fullWidth
         title="Customers"
         primaryAction={{
           content: "Add Customer",
@@ -377,10 +378,11 @@ export default function Customer() {
         }}
       >
   
-        <LegacyCard>
+       <div className="no-border">
+       <LegacyCard>
           {rows.length ? <DataTable
             columnContentTypes={["text", "text", "text", "text"]}
-            headings={["Cid", "Name", "Set", "Action"]}
+            headings={["CID", "Name", "Set", "Action"]}
             rows={rows}
             hasZebraStripingOnData
             increasedTableDensity
@@ -390,6 +392,7 @@ export default function Customer() {
         </Card>}
          
         </LegacyCard>
+       </div>
 
         {/* Add customer popup */}
         <Modal
@@ -414,10 +417,10 @@ export default function Customer() {
                   <div className="row">
                     <div className="col">
                       <TextField
-                        label="Customer ID"
+                        label="ID"
                         type="number"
                         name="customer_id"
-                        placeholder="Enter customer ID"
+                        placeholder="Enter ID"
                         value={addFormData.customer_id}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "customer_id")}
@@ -425,45 +428,13 @@ export default function Customer() {
                     </div>
                     <div className="col">
                       <TextField
-                        label="Customer Name"
+                        label="Name"
                         type="text"
                         name="name"
-                        placeholder="Enter customer name"
+                        placeholder="Enter name"
                         value={addFormData.name}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "name")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 1"
-                        type="number"
-                        step="any"
-                        name="mobile1"
-                        placeholder="Enter mobile number"
-                        value={addFormData.mobile1}
-                        onChange={(e) => addFormHandler(e, "mobile1")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 2"
-                        type="number"
-                        step="any"
-                        name="mobile2"
-                        placeholder="Enter mobile number"
-                        value={addFormData.mobile2}
-                        onChange={(e) => addFormHandler(e, "mobile2")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Address"
-                        name="address"
-                        placeholder="Enter customer address"
-                        value={addFormData.address}
-                        onChange={(e) => addFormHandler(e, "address")}
-                        multiline={4}
                       />
                     </div>
                     <div className="col">
@@ -615,7 +586,7 @@ export default function Customer() {
                   <div className="row">
                     <div className="col">
                       <TextField
-                        label="Customer ID"
+                        label="ID"
                         type="number"
                         name="customer_id"
                         placeholder="Enter customer ID"
@@ -627,46 +598,14 @@ export default function Customer() {
                     </div>
                     <div className="col">
                       <TextField
-                        label="Customer Name"
+                        label="Name"
                         type="text"
                         name="name"
-                        placeholder="Enter customer name"
+                        placeholder="Enter name"
                         value={editCustomer.name}
                         error={validationError.name}
                         requiredIndicator={true}
                         onChange={(e) => editFormHandler(e, "name")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 1"
-                        type="number"
-                        step="any"
-                        name="mobile1"
-                        placeholder="Enter mobile number"
-                        value={editCustomer.mobile1}
-                        onChange={(e) => editFormHandler(e, "mobile1")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Mobile Number 2"
-                        type="number"
-                        step="any"
-                        name="mobile2"
-                        placeholder="Enter mobile number"
-                        value={editCustomer.mobile2}
-                        onChange={(e) => editFormHandler(e, "mobile2")}
-                      />
-                    </div>
-                    <div className="col">
-                      <TextField
-                        label="Address"
-                        name="address"
-                        placeholder="Enter customer address"
-                        value={editCustomer.address}
-                        onChange={(e) => editFormHandler(e, "address")}
-                        multiline={4}
                       />
                     </div>
                     <div className="col">
@@ -814,7 +753,7 @@ export default function Customer() {
         >
           <Modal.Section>
             <div className="">
-              Are you sure you want to delete {customerName}!
+              Are you sure you want to delete <b>{customerName}</b>!
             </div>
           </Modal.Section>
         </Modal>

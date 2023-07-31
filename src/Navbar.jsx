@@ -71,7 +71,7 @@ export default function Navbar() {
   }, []);
 
   const logo = {
-    width: 80,
+    width: 100,
     topBarSource: logoImg,
     url: '/',
     accessibilityLabel: 'Bhole',
@@ -163,6 +163,18 @@ export default function Navbar() {
               className={location.pathname==='/calculater/:cid' || location.pathname.includes('calculater')?'active':""}
             >
               Calculator
+            </Link>
+          }
+        />
+         </List.Item>
+         <List.Item>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/cashbook"
+              className={location.pathname==='/cashbook' ?'active':""}
+            >
+              CashBook 
             </Link>
           }
         />

@@ -17,7 +17,7 @@ import {
 import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
-export default function Set() {
+export default function Cashbook() {
   document.onkeydown = keydown;
   const navigate = useNavigate();
   const { setMessage, setErrorMessage } = useContext(MyContext);
@@ -51,17 +51,6 @@ export default function Set() {
     event.preventDefault();
     let validationErr = { ...validationError };
     let isSubmit = true;
-    if (!addFormData.set) {
-      validationErr.set = "Please enter set";
-      isSubmit = false;
-    } else {
-      validationErr.set = false;
-    }
-    let filteredSet = setData.filter((data)=>data.set == addFormData.set);
-    if(filteredSet.length){
-      isSubmit = false; 
-      setErrorMessage("Set already exist");
-    }
     if (isSubmit) {
       addNote();
       setAddFormData({});
@@ -96,7 +85,7 @@ export default function Set() {
       return { ...obj };
     });
     await writeTextFile(
-      { path: "set.json", contents: JSON.stringify(tmp) },
+      { path: "cashbook.json", contents: JSON.stringify(tmp) },
       { dir: BaseDirectory.Resource }
     );
     getdataFromFile();
@@ -144,7 +133,7 @@ export default function Set() {
   const updateData = async (data) => {
     updateSetdata([...data]);
     await writeTextFile(
-      { path: "set.json", contents: JSON.stringify(data) },
+      { path: "cashbook.json", contents: JSON.stringify(data) },
       { dir: BaseDirectory.Resource }
     );
   };
@@ -154,7 +143,7 @@ export default function Set() {
       return a.id != id;
     });
     await writeTextFile(
-      { path: "set.json", contents: JSON.stringify(tmp) },
+      { path: "cashbook.json", contents: JSON.stringify(tmp) },
       { dir: BaseDirectory.Resource }
     );
     getdataFromFile();
@@ -183,7 +172,7 @@ export default function Set() {
   };
   const getdataFromFile = async () => {
     try {
-      const myfiledata = await readTextFile("set.json", {
+      const myfiledata = await readTextFile("cashbook.json", {
         dir: BaseDirectory.Resource,
       });
       const mydata = JSON.parse(myfiledata);
@@ -203,32 +192,10 @@ export default function Set() {
   setData.map((data, index) => {
     let newArray = [];
     newArray.push(
-      data.set,
-      data.commission,
-      data.pana,
-      data.partnership,
-      data.multiple,
-      data.sp,
-      data.dp,
-      data.jodi,
-      data.tp,
-      <ButtonGroup>
-        <Button size="micro" onClick={() => handleEditSet(data.id, "editSet")}>
-          <Icon source={EditMinor} color="base" />
-        </Button>
-        <Button
-          destructive
-          outline 
-          size="micro"
-          onClick={() => {
-            modalOpen("deleteSet");
-            setDeleteSetID(data.id);
-            updateSetName(data.set);
-          }}
-        >
-          <Icon source={DeleteMinor} color="base" />
-        </Button>
-      </ButtonGroup>
+      data.cid,
+      data.date,
+      data.credit,
+      data.debit,
     );
     rows.push(newArray);
   });
@@ -247,15 +214,13 @@ export default function Set() {
   return (
     <>
       <Page
-      fullWidth
-        title="Customer Set"
+        title="CashBook"
         primaryAction={{
-          content: "Add New Set",
+          content: "Add Payment",
           icon: PlusMinor,
           onAction: () => modalOpen("addSet"),
         }}
       >
-        <div className="no-border">
         {rows.length ? 
         <LegacyCard>
           <DataTable
@@ -264,24 +229,12 @@ export default function Set() {
               "text",
               "text",
               "text",
-              "text",
-              "text",
-              "text",
-              "text",
-              "text",
-              "text",
             ]}
             headings={[
-              "Set",
-              "Commission",
-              "Pana",
-              "Partnership",
-              "Multiple",
-              "SP",
-              "DP",
-              "JODI",
-              "TP",
-              "Action",
+              "CID",
+              "Name",
+              "Credit",
+              "Debit",
             ]}
             rows={rows}
             hasZebraStripingOnData
@@ -289,19 +242,18 @@ export default function Set() {
             defaultSortDirection="descending"
           />
         </LegacyCard>:<Card>
-          <Text alignment="center" variant="headingMd" as="h3">No set found</Text>
+          <Text alignment="center" variant="headingMd" as="h3">No record found</Text>
         </Card>}
         
-        </div>
 
         {/* Add set popup */}
         <Modal
           small
           open={isVisible.addSet}
           onClose={() => modalOpen("addSet")}
-          title="Add New Set"
+          title="Add"
           primaryAction={{
-            content: "Add Set",
+            content: "Add",
             onAction: () => document.getElementById("addSetBtn").click(),
           }}
           secondaryActions={[
@@ -316,102 +268,35 @@ export default function Set() {
               <div className="row">
                 <div className="col">
                   <TextField
-                    label="Set"
+                    label="Customer"
                     type="number"
                     step="any"
-                    name="set"
-                    value={addFormData ? addFormData.set : ""}
+                    name="cid"
+                    value={addFormData ? addFormData.cid : ""}
                     requiredIndicator={true}
-                    onChange={(e) => addFormHandler(e, "set")}
-                    required
-                    // error={setError}
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Commision"
-                    type="number"
-                    step="any"
-                    name="commission"
-                    value={addFormData ? addFormData.commission : ""}
-                    onChange={(e) => addFormHandler(e, "commission")}
+                    onChange={(e) => addFormHandler(e, "cid")}
                     required
                   />
                 </div>
                 <div className="col">
                   <TextField
-                    label="Pana"
+                    label="Credit"
                     type="number"
                     step="any"
-                    name="pana"
-                    value={addFormData ? addFormData.pana : ""}
-                    onChange={(e) => addFormHandler(e, "pana")}
+                    name="credit"
+                    value={addFormData ? addFormData.credit : ""}
+                    onChange={(e) => addFormHandler(e, "credit")}
                     required
                   />
                 </div>
                 <div className="col">
                   <TextField
-                    label="Partnership"
+                    label="Debit"
                     type="number"
                     step="any"
-                    name="partnership"
-                    value={addFormData ? addFormData.partnership : ""}
-                    onChange={(e) => addFormHandler(e, "partnership")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Multiple"
-                    type="number"
-                    step="any"
-                    name="multiple"
-                    value={addFormData ? addFormData.multiple : ""}
-                    onChange={(e) => addFormHandler(e, "multiple")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="SP"
-                    type="number"
-                    step="any"
-                    name="sp"
-                    value={addFormData ? addFormData.sp : ""}
-                    onChange={(e) => addFormHandler(e, "sp")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="DP"
-                    type="number"
-                    step="any"
-                    name="dp"
-                    value={addFormData ? addFormData.dp : ""}
-                    onChange={(e) => addFormHandler(e, "dp")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="JODI"
-                    type="number"
-                    step="any"
-                    name="jodi"
-                    value={addFormData ? addFormData.jodi : ""}
-                    onChange={(e) => addFormHandler(e, "jodi")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="TP"
-                    type="number"
-                    step="any"
-                    name="tp"
-                    value={addFormData ? addFormData.tp : ""}
-                    onChange={(e) => addFormHandler(e, "tp")}
+                    name="debit"
+                    value={addFormData ? addFormData.debit : ""}
+                    onChange={(e) => addFormHandler(e, "debit")}
                     required
                   />
                 </div>
@@ -446,102 +331,36 @@ export default function Set() {
               <div className="row">
                 <div className="col">
                   <TextField
-                    label="Set"
+                    label="Customer"
                     type="number"
                     step="any"
-                    name="set"
-                    value={editSet ? editSet.set : ""}
-                    error={validationError.set}
+                    name="cid"
+                    value={editSet ? editSet.cid : ""}
+                    error={validationError.cid}
                     requiredIndicator={true}
-                    onChange={(e) => editFormHandler(e, "set")}
+                    onChange={(e) => editFormHandler(e, "cid")}
                     required
                   />
                 </div>
                 <div className="col">
                   <TextField
-                    label="Commision"
+                    label="Credit"
                     type="number"
                     step="any"
-                    name="commission"
-                    value={editSet ? editSet.commission : ""}
-                    onChange={(e) => editFormHandler(e, "commission")}
+                    name="credit"
+                    value={editSet ? editSet.credit : ""}
+                    onChange={(e) => editFormHandler(e, "credit")}
                     required
                   />
                 </div>
                 <div className="col">
                   <TextField
-                    label="Pana"
+                    label="Debit"
                     type="number"
                     step="any"
-                    name="pana"
+                    name="debit"
                     value={editSet ? editSet.pana : ""}
-                    onChange={(e) => editFormHandler(e, "pana")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Partnership"
-                    type="number"
-                    step="any"
-                    name="partnership"
-                    value={editSet ? editSet.partnership : ""}
-                    onChange={(e) => editFormHandler(e, "partnership")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Multiple"
-                    type="number"
-                    step="any"
-                    name="multiple"
-                    value={editSet ? editSet.multiple : ""}
-                    onChange={(e) => editFormHandler(e, "multiple")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="SP"
-                    type="number"
-                    step="any"
-                    name="sp"
-                    value={editSet ? editSet.sp : ""}
-                    onChange={(e) => editFormHandler(e, "sp")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="DP"
-                    type="number"
-                    step="any"
-                    name="dp"
-                    value={editSet ? editSet.dp : ""}
-                    onChange={(e) => editFormHandler(e, "dp")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="JODI"
-                    type="number"
-                    step="any"
-                    name="jodi"
-                    value={editSet ? editSet.jodi : ""}
-                    onChange={(e) => editFormHandler(e, "jodi")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="TP"
-                    type="number"
-                    step="any"
-                    name="tp"
-                    value={editSet ? editSet.tp : ""}
-                    onChange={(e) => editFormHandler(e, "tp")}
+                    onChange={(e) => editFormHandler(e, "debit")}
                     required
                   />
                 </div>
@@ -559,7 +378,7 @@ export default function Set() {
           // activator={activator}
           open={isVisible.deleteSet}
           onClose={() => modalOpen("deleteSet")}
-          title="Delete Set"
+          title="Delete"
           primaryAction={{
             content: "Yes",
             onAction: () => deletehandler(deleteSetID),
@@ -572,7 +391,7 @@ export default function Set() {
           ]}
         >
           <Modal.Section>
-            <div className="">Are you sure you want to delete set <b>{setName}</b>!</div>
+            <div className="">Are you sure you want to delete {setName}!</div>
           </Modal.Section>
         </Modal>
       </Page>

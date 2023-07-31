@@ -92,42 +92,42 @@ export default function Entry() {
     if (name == "customer_id") {
       const cdata = customers.filter((item) => item.customer_id === value);
       list[index]["name"] = cdata && cdata[0] ? cdata[0]["name"] : "";
-      if(cdata && cdata[0] ){
-     if(cdata[0].pana != 0 && cdata[0].pana != "" && cdata[0].pana != null){
-      list[index]['isDisabled'] = false;
-     }else{
-      list[index]['isDisabled'] = true;
-     }
-    }
+      if (cdata && cdata[0]) {
+        if (cdata[0].pana != 0 && cdata[0].pana != "" && cdata[0].pana != null) {
+          list[index]['isDisabled'] = false;
+        } else {
+          list[index]['isDisabled'] = true;
+        }
+      }
     }
     list[index]["timezone"] = timezone;
     setInputFields(list);
   };
   const handleBlur = (e, name, index) => {
     let value = e.target.value;
-    if(tabActive != "edit"){
+    if (tabActive != "edit") {
       if (name == "customer_id") {
-        if(value != ''){
+        if (value != '') {
           setTimeout(() => {
             addInputField();
           }, 500);
-        }else{
+        } else {
           setTimeout(() => {
-            if(inputFields.length > 1){
+            if (inputFields.length > 1) {
               inputFields.pop();
               setInputFields(inputFields)
             }
-          
+
           }, 500);
-        
+
         }
-        }
+      }
     }
-  
+
   };
 
   const addInputField = () => {
-  
+
     setInputFields([
       ...inputFields,
       {
@@ -145,7 +145,7 @@ export default function Entry() {
         tp_amount: "",
       },
     ]);
-  
+
   };
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
   const onChangesetTimeZone = (tz, index) => {
@@ -269,12 +269,12 @@ export default function Entry() {
     setDate("");
   };
 
-  function keydown(evt){
+  function keydown(evt) {
     if (!evt) evt = event;
-    if(evt.keyCode==115 && timezone != "" && tabActive != ""){
+    if (evt.keyCode == 115 && timezone != "" && tabActive != "") {
       saveEntries();
     }
-  
+
   }
 
   const rowsTable = [];
@@ -386,95 +386,99 @@ export default function Entry() {
           </Modal.Section>
         </Modal>
       </Page>
-     <div className="contentWrapper">
-      <Page
-        fullWidth
-        title={
-          <ButtonGroup segmented>
-            <Button
-              pressed={activeButtonIndex === 0}
-              onClick={() => onChangesetTimeZone("TO", 0)}
-            >
-              TO
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 1}
-              onClick={() => onChangesetTimeZone("TK", 1)}
-            >
-              TK
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 2}
-              onClick={() => onChangesetTimeZone("MO", 2)}
-            >
-              MO
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 3}
-              onClick={() => onChangesetTimeZone("KO", 3)}
-            >
-              KO
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 4}
-              onClick={() => onChangesetTimeZone("MK", 4)}
-            >
-              MK
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 5}
-              onClick={() => onChangesetTimeZone("KK", 5)}
-            >
-              KK
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 6}
-              onClick={() => onChangesetTimeZone("A1", 6)}
-            >
-              A1
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 7}
-              onClick={() => onChangesetTimeZone("MO2", 7)}
-            >
-              MO2
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 8}
-              onClick={() => onChangesetTimeZone("BO", 8)}
-            >
-              BO
-            </Button>
+      <div className="contentWrapper customTd">
+        <Page
+          fullWidth
+          title={
+            <ButtonGroup segmented>
+              <Button
+                pressed={activeButtonIndex === 0}
+                onClick={() => onChangesetTimeZone("TO", 0)}
+              >
+                TO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 1}
+                onClick={() => onChangesetTimeZone("TK", 1)}
+              >
+                TK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 2}
+                onClick={() => onChangesetTimeZone("MO", 2)}
+              >
+                MO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 3}
+                onClick={() => onChangesetTimeZone("KO", 3)}
+              >
+                KO
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 4}
+                onClick={() => onChangesetTimeZone("MK", 4)}
+              >
+                MK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 5}
+                onClick={() => onChangesetTimeZone("KK", 5)}
+              >
+                KK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 6}
+                onClick={() => onChangesetTimeZone("A1", 6)}
+              >
+                A1
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 7}
+                onClick={() => onChangesetTimeZone("MO2", 7)}
+              >
+                MO2
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 8}
+                onClick={() => onChangesetTimeZone("BO", 8)}
+              >
+                BO
+              </Button>
 
-            <Button
-              pressed={activeButtonIndex === 9}
-              onClick={() => onChangesetTimeZone("MK2", 9)}
-            >
-              MK2
-            </Button>
+              <Button
+                pressed={activeButtonIndex === 9}
+                onClick={() => onChangesetTimeZone("MK2", 9)}
+              >
+                MK2
+              </Button>
 
-            <Button
-              pressed={activeButtonIndex === 10}
-              onClick={() => onChangesetTimeZone("BK", 10)}
-            >
-              BK
-            </Button>
-            <Button
-              pressed={activeButtonIndex === 11}
-              onClick={() => onChangesetTimeZone("A2", 11)}
-            >
-              A2
-            </Button>
-          </ButtonGroup>
-        }
-        primaryAction={
-          <ButtonGroup>
-            <TextField
-              type="date"
-              value={date}
-              onChange={(e) => dateChange(e)}
-            />
+              <Button
+                pressed={activeButtonIndex === 10}
+                onClick={() => onChangesetTimeZone("BK", 10)}
+              >
+                BK
+              </Button>
+              <Button
+                pressed={activeButtonIndex === 11}
+                onClick={() => onChangesetTimeZone("A2", 11)}
+              >
+                A2
+              </Button>
+            </ButtonGroup>
+          }
+          primaryAction={
             <ButtonGroup>
+<Text>Date</Text>
+            
+                <TextField
+                  type="date"
+                  // label="Select Date"
+                  value={date}
+                  onChange={(e) => dateChange(e)}
+                />
+             
+
               <Button
                 className={tabActive == "entry" ? "active" : ""}
                 onClick={() => newEntry("entry")}
@@ -490,82 +494,81 @@ export default function Entry() {
                 Edit
               </Button>
             </ButtonGroup>
-          </ButtonGroup>
-        }
-      >
-        {timezone != "" && tabActive != "" && inputFields.length? (
-          <>
-            <LegacyCard>
-              <DataTable
-                columnContentTypes={[
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                  "text",
-                ]}
-                headings={[
-                  "CID",
-                  "Name",
-                  "Amount",
-                  "Pana_amount",
-                  "Khula_amount",
-                  "SP_amount",
-                  "DP_amount",
-                  "JODI_amount",
-                  "TP_amount",
-                ]}
-                rows={rowsTable}
-                hasZebraStripingOnData
-                increasedTableDensity
-                defaultSortDirection="descending"
-              />
-            </LegacyCard>
-            {timezone != "" && tabActive != "" && tabActive == "entry" ? (
-             <div style={{marginTop:'15px'}}>
-               <Button primary onClick={() => addInputField()}>
-                +
-              </Button>
-             </div>
-            ) : (
-              ""
-            )}
-          </>
-        ) : (
-          <Card>
-            <Text alignment="center" variant="headingMd" as="h3">No data available</Text>
-          </Card>
-        )}
-      </Page>
-      </div>
-      {timezone != "" && tabActive != "" && inputFields.length? (
-          <>
-          <div className="bottomBar">
-          <ButtonGroup>
-            <Button onClick={() => cancel()}>
-              {" "}
-              Cancel
-            </Button>
-            {inputFields.length ? (
-              <Button primary
-                className={tabActive == "entry" ? "active" : ""}
-                onClick={() => saveEntries()}
-              >
-                Save
-              </Button>
-            ) : (
-              ""
-            )}
-          </ButtonGroup>
-    </div>
-</>
+          }
+        >
+          {timezone != "" && tabActive != "" && inputFields.length ? (
+            <>
+              <LegacyCard>
+                <DataTable
+                  columnContentTypes={[
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                    "text",
+                  ]}
+                  headings={[
+                    "CID",
+                    "Name",
+                    "Amount",
+                    "Pana Amount",
+                    "Khula Amount",
+                    "SP Amount",
+                    "DP Amount",
+                    "JODI Amount",
+                    "TP Amount",
+                  ]}
+                  rows={rowsTable}
+                  hasZebraStripingOnData
+                  increasedTableDensity
+                  defaultSortDirection="descending"
+                />
+              </LegacyCard>
+              {timezone != "" && tabActive != "" && tabActive == "entry" ? (
+                <div style={{ marginTop: '15px' }}>
+                  <Button primary onClick={() => addInputField()}>
+                    Add Row
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
+            </>
           ) : (
-""
+            <Card>
+              <Text alignment="center" variant="headingMd" as="h3">No data available</Text>
+            </Card>
           )}
+        </Page>
+      </div>
+      {timezone != "" && tabActive != "" && inputFields.length ? (
+        <>
+          <div className="bottomBar">
+            <ButtonGroup>
+              <Button onClick={() => cancel()}>
+                {" "}
+                Cancel
+              </Button>
+              {inputFields.length ? (
+                <Button primary
+                  className={tabActive == "entry" ? "active" : ""}
+                  onClick={() => saveEntries()}
+                >
+                  Save
+                </Button>
+              ) : (
+                ""
+              )}
+            </ButtonGroup>
+          </div>
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

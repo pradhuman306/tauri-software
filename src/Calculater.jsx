@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Grid, Page, TextField, Select, LegacyCard, Button, DataTable } from "@shopify/polaris";
+import { Card, ButtonGroup, Page, TextField, Select, LegacyCard, Button, DataTable,Modal } from "@shopify/polaris";
 
 export default function Calculater() {
   const [customers, setcustomers] = useState([]);
@@ -10,6 +10,7 @@ export default function Calculater() {
   const params = useParams();
   const date = new Date();
   const nav = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     const getNotesFromFile = async () => {
       try {
@@ -20,11 +21,11 @@ export default function Calculater() {
         setcustomers(mycust);
         let custOpt = [{ label: "Select Customer", value: "" }];
         mycust.map((data) => {
-          custOpt.push({ label: data.name+" ("+data.customer_id+")", value: data.customer_id });
+          custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
         })
         setcustomersOptions(custOpt);
       } catch (error) {
-    
+
         console.log(error);
       }
       try {
@@ -34,7 +35,7 @@ export default function Calculater() {
         const mycustomers = JSON.parse(myfileNotes);
         setentries(mycustomers);
       } catch (error) {
-   
+
         console.log(error);
       }
     };
@@ -75,8 +76,8 @@ export default function Calculater() {
 
   const [selectedCId, setCID] = useState("");
   const [selectedDate, setDate] = useState("");
-  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1','Total Day','MO', 'BO', 'MK', 'BK', 'Total-2','Total Night','Final Total']);
-  const [showtimeZoneAll, setTimeZoneAllshow] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1','Total Day','MO2', 'BO', 'MK2', 'BK', 'Total-2','Total Night','Final Total']);
+  const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1', 'Total Day', 'MO', 'BO', 'MK', 'BK', 'Total-2', 'Total Night', 'Final Total']);
+  const [showtimeZoneAll, setTimeZoneAllshow] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1', 'Total Day', 'MO2', 'BO', 'MK2', 'BK', 'Total-2', 'Total Night', 'Final Total']);
   const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
 
   const [DayData, setDayData] = useState({
@@ -115,6 +116,7 @@ export default function Calculater() {
     newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
     newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
     newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
+    newFormData["limit"] = cdata[0] ? cdata[0]["limit"] : null;
     setAddFormData(newFormData);
     calculations(value, selectedDate);
   };
@@ -147,36 +149,36 @@ export default function Calculater() {
       [timezone]: {
         timezone,
         amount: acc[timezone] ? (Number(acc[timezone].amount) + Number(amount)) : Number(amount),
-        dp_amount: acc[timezone]? Number(acc[timezone].dp_amount) + Number(dp_amount) : Number(dp_amount),
-        jodi_amount: acc[timezone]? Number(acc[timezone].jodi_amount) + Number(jodi_amount) : Number(jodi_amount),
-        khula_amount: acc[timezone]? Number(acc[timezone].khula_amount) + Number(khula_amount) : Number(khula_amount),
-        pana_amount: acc[timezone]? Number(acc[timezone].pana_amount) + Number(pana_amount) : Number(pana_amount),
-        sp_amount: acc[timezone]? Number(acc[timezone].sp_amount) + Number(sp_amount) : Number(sp_amount),
-        tp_amount: acc[timezone]? Number(acc[timezone].tp_amount) + Number(tp_amount) : Number(tp_amount),
-        }
+        dp_amount: acc[timezone] ? Number(acc[timezone].dp_amount) + Number(dp_amount) : Number(dp_amount),
+        jodi_amount: acc[timezone] ? Number(acc[timezone].jodi_amount) + Number(jodi_amount) : Number(jodi_amount),
+        khula_amount: acc[timezone] ? Number(acc[timezone].khula_amount) + Number(khula_amount) : Number(khula_amount),
+        pana_amount: acc[timezone] ? Number(acc[timezone].pana_amount) + Number(pana_amount) : Number(pana_amount),
+        sp_amount: acc[timezone] ? Number(acc[timezone].sp_amount) + Number(sp_amount) : Number(sp_amount),
+        tp_amount: acc[timezone] ? Number(acc[timezone].tp_amount) + Number(tp_amount) : Number(tp_amount),
+      }
     }),
       {});
 
     var totalDayData = [];
-      totalDayData["amount"] = 0;
-      totalDayData["pana_amount"] = 0;
-      totalDayData["khula_amount"] = 0;
-      totalDayData["sp_amount"] = 0;
-      totalDayData["dp_amount"] = 0;
-      totalDayData["jodi_amount"] = 0;
-      totalDayData["tp_amount"] = 0;
-      var first_arr = ["TO", "TK", "MO", "KO", "MK", "KK", "A1"];
-      // total 1 calculate
-      for (let index = 0; index < first_arr.length; index++) {
-        var zone = first_arr[index];
-        totalDayData["amount"] = (result[zone]? totalDayData["amount"] + Number(result[zone].amount) : totalDayData["amount"]);
-        totalDayData["pana_amount"] =result[zone]? totalDayData["pana_amount"] + Number(result[zone].pana_amount): totalDayData["pana_amount"];
-        totalDayData["khula_amount"] = result[zone]? totalDayData["khula_amount"] +Number(result[zone].khula_amount): totalDayData["khula_amount"];
-        totalDayData["sp_amount"] =  result[zone]? totalDayData["sp_amount"] + Number(result[zone].sp_amount): totalDayData["sp_amount"];
-        totalDayData["dp_amount"] = result[zone] ? totalDayData["dp_amount"] + Number(result[zone].dp_amount): totalDayData["dp_amount"];
-        totalDayData["jodi_amount"] = result[zone]? totalDayData["jodi_amount"] +Number(result[zone].jodi_amount): totalDayData["jodi_amount"];
-        totalDayData["tp_amount"] = result[zone] ? totalDayData["tp_amount"] + Number(result[zone].tp_amount): totalDayData["tp_amount"];
-      }
+    totalDayData["amount"] = 0;
+    totalDayData["pana_amount"] = 0;
+    totalDayData["khula_amount"] = 0;
+    totalDayData["sp_amount"] = 0;
+    totalDayData["dp_amount"] = 0;
+    totalDayData["jodi_amount"] = 0;
+    totalDayData["tp_amount"] = 0;
+    var first_arr = ["TO", "TK", "MO", "KO", "MK", "KK", "A1"];
+    // total 1 calculate
+    for (let index = 0; index < first_arr.length; index++) {
+      var zone = first_arr[index];
+      totalDayData["amount"] = (result[zone] ? totalDayData["amount"] + Number(result[zone].amount) : totalDayData["amount"]);
+      totalDayData["pana_amount"] = result[zone] ? totalDayData["pana_amount"] + Number(result[zone].pana_amount) : totalDayData["pana_amount"];
+      totalDayData["khula_amount"] = result[zone] ? totalDayData["khula_amount"] + Number(result[zone].khula_amount) : totalDayData["khula_amount"];
+      totalDayData["sp_amount"] = result[zone] ? totalDayData["sp_amount"] + Number(result[zone].sp_amount) : totalDayData["sp_amount"];
+      totalDayData["dp_amount"] = result[zone] ? totalDayData["dp_amount"] + Number(result[zone].dp_amount) : totalDayData["dp_amount"];
+      totalDayData["jodi_amount"] = result[zone] ? totalDayData["jodi_amount"] + Number(result[zone].jodi_amount) : totalDayData["jodi_amount"];
+      totalDayData["tp_amount"] = result[zone] ? totalDayData["tp_amount"] + Number(result[zone].tp_amount) : totalDayData["tp_amount"];
+    }
     setDayData(totalDayData);
     var totalNightData = [];
     totalNightData["amount"] = 0;
@@ -190,13 +192,13 @@ export default function Calculater() {
     // total 2 calculate
     for (let index = 0; index < second_arr.length; index++) {
       var zone = second_arr[index];
-      totalNightData["amount"] = (result[zone]? totalNightData["amount"] + Number(result[zone].amount) : totalNightData["amount"]);
-      totalNightData["pana_amount"] =result[zone]? totalNightData["pana_amount"] + Number(result[zone].pana_amount): totalNightData["pana_amount"];
-      totalNightData["khula_amount"] = result[zone]? totalNightData["khula_amount"] +Number(result[zone].khula_amount): totalNightData["khula_amount"];
-      totalNightData["sp_amount"] =  result[zone]? totalNightData["sp_amount"] + Number(result[zone].sp_amount): totalNightData["sp_amount"];
-      totalNightData["dp_amount"] = result[zone] ? totalNightData["dp_amount"] + Number(result[zone].dp_amount): totalNightData["dp_amount"];
-      totalNightData["jodi_amount"] = result[zone]? totalNightData["jodi_amount"] +Number(result[zone].jodi_amount): totalNightData["jodi_amount"];
-      totalNightData["tp_amount"] = result[zone] ? totalNightData["tp_amount"] + Number(result[zone].tp_amount): totalNightData["tp_amount"];
+      totalNightData["amount"] = (result[zone] ? totalNightData["amount"] + Number(result[zone].amount) : totalNightData["amount"]);
+      totalNightData["pana_amount"] = result[zone] ? totalNightData["pana_amount"] + Number(result[zone].pana_amount) : totalNightData["pana_amount"];
+      totalNightData["khula_amount"] = result[zone] ? totalNightData["khula_amount"] + Number(result[zone].khula_amount) : totalNightData["khula_amount"];
+      totalNightData["sp_amount"] = result[zone] ? totalNightData["sp_amount"] + Number(result[zone].sp_amount) : totalNightData["sp_amount"];
+      totalNightData["dp_amount"] = result[zone] ? totalNightData["dp_amount"] + Number(result[zone].dp_amount) : totalNightData["dp_amount"];
+      totalNightData["jodi_amount"] = result[zone] ? totalNightData["jodi_amount"] + Number(result[zone].jodi_amount) : totalNightData["jodi_amount"];
+      totalNightData["tp_amount"] = result[zone] ? totalNightData["tp_amount"] + Number(result[zone].tp_amount) : totalNightData["tp_amount"];
     }
     setNightData(totalNightData);
     setDisplayData(result);
@@ -216,10 +218,10 @@ export default function Calculater() {
 
     var day_winning_amount = 0;
     day_winning_amount += (totalDayData['khula_amount']) * addFormData.multiple;
-    day_winning_amount += (totalDayData['sp_amount'] ) * addFormData.sp;
-    day_winning_amount += (totalDayData['dp_amount'] ) * addFormData.dp;
-    day_winning_amount += (totalDayData['jodi_amount'] ) * addFormData.jodi;
-    day_winning_amount += (totalDayData['tp_amount'] ) * addFormData.tp;
+    day_winning_amount += (totalDayData['sp_amount']) * addFormData.sp;
+    day_winning_amount += (totalDayData['dp_amount']) * addFormData.dp;
+    day_winning_amount += (totalDayData['jodi_amount']) * addFormData.jodi;
+    day_winning_amount += (totalDayData['tp_amount']) * addFormData.tp;
     var day_amount_commision = (((totalDayData['amount']) * addFormData.commission) / 100);
     var day_pana_commision = (((totalDayData['pana_amount']) * addFormData.pana) / 100);
     var day_sec_sub_total = day_winning_amount + day_pana_commision + day_amount_commision;
@@ -237,10 +239,10 @@ export default function Calculater() {
     setDayTotal(DAY_TOTAL);
 
     var night_winning_amount = 0;
-    night_winning_amount += ( totalNightData['khula_amount']) * addFormData.multiple;
+    night_winning_amount += (totalNightData['khula_amount']) * addFormData.multiple;
     night_winning_amount += (totalNightData['sp_amount']) * addFormData.sp;
-    night_winning_amount += ( totalNightData['dp_amount']) * addFormData.dp;
-    night_winning_amount += ( totalNightData['jodi_amount']) * addFormData.jodi;
+    night_winning_amount += (totalNightData['dp_amount']) * addFormData.dp;
+    night_winning_amount += (totalNightData['jodi_amount']) * addFormData.jodi;
     night_winning_amount += (totalNightData['tp_amount']) * addFormData.tp;
     var night_amount_commision = (((totalNightData['amount']) * addFormData.commission) / 100);
     var night_pana_commision = (((totalNightData['pana_amount']) * addFormData.pana) / 100);
@@ -259,6 +261,11 @@ export default function Calculater() {
     setNightTotal(night_TOTAL);
 
     if (TOTAL) {
+      if(Number(addFormData.limit) < TOTAL){
+        setIsVisible(true);
+      }else{
+        setIsVisible(false);
+      }
       TOTAL = TOTAL.toFixed(2);
       if ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
         TOTAL = Math.abs(TOTAL) + ' Dr.';
@@ -299,7 +306,7 @@ export default function Calculater() {
   }, [addFormData]);
 
 
- 
+
   const rows = [];
   console.log(displayData);
 
@@ -312,30 +319,30 @@ export default function Calculater() {
           newArray.push(<TextField type="text" name={`${'total1'}[${amountKey}]`} value={DayData ? DayData[amountKey] : ''} readOnly />);
         }
         else if (zone === 'Total Day') {
-          if(newArray.length == 1){
-            newArray.push(<span className={dayTotal?dayTotal.includes('Dr')?'debit':'credit':''}>{amountKey == 'amount' ? dayTotal: ''}</span>);
-          }else{
+          if (newArray.length == 1) {
+            newArray.push(<span className={dayTotal ? dayTotal.includes('Dr') ? 'debit' : 'credit' : ''}><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount' ? dayTotal : ''} readOnly /></span>);
+          } else {
             newArray.push(<span></span>);
           }
         }
         else if (zone === 'Total Night') {
-          if(newArray.length == 1){
-          newArray.push(<span className={nightTotal?nightTotal.includes('Dr')?'debit':'credit':'' }>{amountKey == 'amount'? nightTotal: ''}</span>);
-        }else{
-          newArray.push(<span></span>);
-        }
+          if (newArray.length == 1) {
+            newArray.push(<span className={nightTotal ? nightTotal.includes('Dr') ? 'debit' : 'credit' : ''}><TextField type="text" name={`${'total1'}[${amountKey}]`} value={amountKey == 'amount' ? nightTotal : ''} readOnly /></span>);
+          } else {
+            newArray.push(<span></span>);
+          }
         }
         else if (zone === 'Total-2') {
           newArray.push(<TextField type="text" name={`${'total2'}[${amountKey}]`} value={NightData ? NightData[amountKey] : ''} readOnly />);
         }
-        else if(zone === 'Final Total'){
+        else if (zone === 'Final Total') {
           newArray.push(<TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly />);
-        }else {
+        } else {
           let zone2 = showtimeZoneAll[index];
           console.log(zone2);
           newArray.push(<TextField type="text" name={`${zone2}[${amountKey}]`} value={displayData[zone2] ? displayData[zone2][amountKey] : ''} readOnly />);
         }
-   
+
       })
     }
     rows.push(newArray);
@@ -345,15 +352,18 @@ export default function Calculater() {
 
   return (
     <>
-      <div className="customerHeader">
-        <Page
-          fullWidth
-          className="customerHeader"
-          title={
-            <div className="row">
-              <div className="col subHeader">
+
+
+
+      <Page
+        fullWidth
+        title="Calculator"
+        primaryAction={
+          <ButtonGroup>
+            
+            <div className="col subHeader">
                 <Select
-                  label="Customer Name"
+                  label="Customer"
                   name="name"
                   id="name"
                   options={customersOptions}
@@ -361,11 +371,7 @@ export default function Calculater() {
                   onChange={(e) => onChangeSet(e)}
                 />
               </div>
-            </div>
-          }
-          primaryAction={
-            <div className="row">
-              <div className="col inline-field">
+              <div className="col subHeader">
                 <TextField
                   label="Date"
                   type="date"
@@ -373,95 +379,92 @@ export default function Calculater() {
                   onChange={(e) => inputHandler(e, 'date')}
                 />
               </div>
+          </ButtonGroup>
+        }
+      >
+      </Page>
+
+        <Page fullWidth>
+        <div className="row calculator-table">
+
+{/* <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly /> */}
+
+<TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly />
+
+<TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly />
+<TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
+<TextField label="Multiple" type="number" step="any" name="multiple" value={addFormData.multiple} readOnly />
+
+<TextField label="SP" type="number" step="any" name="sp" value={addFormData.sp} readOnly />
+
+<TextField label="DP" type="number" step="any" name="dp" value={addFormData.dp} readOnly />
+
+<TextField label="Jodi" type="number" step="any" name="jodi" value={addFormData.jodi} readOnly />
+
+<TextField label="TP" type="number" step="any" name="tp" value={addFormData.tp} readOnly />
+
+</div>
+        </Page>
+       
+      <div className="contentWrapper mb-2">
+
+        
+        <Page fullWidth>
+
+
+
+          <LegacyCard>
+            <div className="calculator-table">
+              <DataTable
+                showTotalsInFooter
+                columnContentTypes={[
+                  'text',
+                  'text',
+                  'text',
+                  'text',
+                  'text',
+                  'text',
+                  'text',
+                  'text'
+                ]}
+                headings={[
+                  '',
+                  'Amount',
+                  'Pana Amount',
+                  'Khula Amount',
+                  'SP Amount',
+                  'DP Amount',
+                  'JODI Amount',
+                  'TP Amount'
+                ]}
+                rows={rows}
+                totals={['', <span className={mainTotal ? mainTotal.includes('Dr') ? 'debit' : 'credit' : ''}>{mainTotal}</span>, '', '', '', '', '', '']}
+                hasZebraStripingOnData
+                increasedTableDensity
+                defaultSortDirection="descending"
+                totalsName={{
+                  singular: 'Total Amount',
+                  plural: 'Total Amount',
+                }}
+              />
             </div>
-          }
-        >
+          </LegacyCard>
+
         </Page>
       </div>
-      <div className="contentWrapper mb-0">
-      <Page fullWidth>
-        <Grid>
-          <Grid.Cell columnSpan={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
-            <Card>
-              <div className="row calculator-table">
-                <div className="col">
-                  <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="Multiple" type="number" step="any" name="multiple" value={addFormData.multiple} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="SP" type="number" step="any" name="sp" value={addFormData.sp} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="DP" type="number" step="any" name="dp" value={addFormData.dp} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="Jodi" type="number" step="any" name="jodi" value={addFormData.jodi} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="TP" type="number" step="any" name="tp" value={addFormData.tp} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly />
-                </div>
-                <div className="col">
-                  <TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
-                </div>
-              </div>
-              <div className="align-center">
-      <Button onClick={() => close()} primary>Cancel</Button>
-      </div>
-
-            </Card>
-          </Grid.Cell>
-
-          <Grid.Cell columnSpan={{ xs: 10, sm: 10, md: 10, lg: 10, xl: 10 }}>
-          <LegacyCard>
-          <div className="calculator-table">
-          <DataTable
-            showTotalsInFooter
-            columnContentTypes={[
-              'text',
-              'text',
-              'text',
-              'text',
-              'text',
-              'text',
-              'text',
-              'text'
-            ]}
-            headings={[
-              '',
-              'Amount',
-              'Pana-Amount',
-              'Kh',
-              'SP-Amount',
-              'DP-Amount',
-              'J-Amount',
-              'TP-Amount'
-            ]}
-            rows={rows}
-            totals={['', <span className={mainTotal?mainTotal.includes('Dr')?'debit':'credit':'' }>{mainTotal}</span>, '', '', '', '', '', '']}
-            hasZebraStripingOnData
-            increasedTableDensity
-            defaultSortDirection="descending"
-            totalsName={{
-              singular: 'Total Amount',
-              plural: 'Total Amount',
-            }}
-          />
-          </div>
-        </LegacyCard>
-          </Grid.Cell>
-        </Grid>
-      </Page>
-      </div>
-      <div className="bottomBar">
-      </div>
+      <Modal
+          small
+          open={isVisible}
+          title="Warning"
+          onClose={() => setIsVisible(false)}
+        >
+          <Modal.Section>
+            <div className="error">
+            Customer limit exceeded! 
+            <span> Max limit is <b>₹{addFormData.limit}</b></span>
+            </div>
+          </Modal.Section>
+        </Modal>
     </>
   );
 }

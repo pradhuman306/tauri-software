@@ -391,15 +391,19 @@ console.log(updatedArray);
   return (
     <>
       <Page
+      fullWidth
         primaryAction={
           <ButtonGroup>
+             <div className="col subHeader">
             <TextField
+            label="From"
               type="date"
               name="start"
               value={start}
               onChange={(e) => onchangeHandler(e, "start")}
             />
-            <Text>to</Text>
+            </div>
+            <Text>To</Text>
             <TextField
               type="date"
               name="end"

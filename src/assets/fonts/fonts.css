@@ -74,28 +74,151 @@
     color: var(--error-color);
 }
 
+body{
+    font-size: 14px;
+    font-family: 'Inter' !important;
+}
+
 .Polaris-Frame__Content {
     display: none;
 }
+.Polaris-TopBar-Menu__Activator {
+    border-radius: 50px;
+}
+.Polaris-TopBar {
+    height: 3.8rem;
+    border-top: 1px solid #dfe0e2;}
 
+li.Polaris-List__Item a {
+    font-family: 'Inter';
+    padding: 8px 14px !important;
+    font-weight: 500;
+    border-radius: 8px !important;
+}
+.Polaris-TopBar__LogoContainer.Polaris-TopBar__LogoDisplayControl {
+    padding-left: 25px;
+}
+.Polaris-TopBar-Menu__Activator {
+    margin-left: 30px;
+    margin-right: 20px;
+    padding: 6px 15px;
+}
+.Polaris-TopBar-Menu__ActivatorWrapper .Polaris-TopBar-Menu__Activator {
+    border-radius: 8px;
+}
+.Polaris-Button--primary {
+    border-radius: 8px;
+}
+[data-buttongroup-segmented='true'] > :first-child .Polaris-Button, [data-buttongroup-segmented='true'] > :first-child .Polaris-Button::after {
+    border-radius: 0;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+[data-buttongroup-segmented='true'] > :last-child .Polaris-Button, [data-buttongroup-segmented='true'] > :last-child .Polaris-Button::after{
+    border-top-right-radius: 8px;
+    border-bottom-right-radius:  8px;
+}
+.Polaris-TextField__Backdrop {
+    border-radius: 8px;
+}
+.Polaris-TopBar__SecondaryMenu + div .Polaris-TopBar-Menu__ActivatorWrapper .Polaris-TopBar-Menu__Activator:hover {
+    background-color: var(--light-bg);
+}
+.Polaris-Modal-CloseButton:hover {
+
+    background: var(--light-bg);
+}
+input#\:r0\: {
+    border:0;
+    height: 2.4rem;
+    padding: 0px 30px;
+}
+button.Polaris-Button.Polaris-Button--outline.Polaris-Button--sizeMicro,button.Polaris-Button.Polaris-Button--sizeMicro {
+    padding: 7px;
+}
+.Polaris-DataTable__IncreasedTableDensity .Polaris-DataTable__Cell--header {
+    font-size: 12px;
+    text-transform: uppercase !important;
+    color: hsl(0deg 0% 14% / 80%);
+}
+
+.Polaris-Modal-Dialog__Container .Polaris-DataTable__Table {
+    width: 100%;
+    border-spacing: 0;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    border-radius: 10px;
+}
+b {
+    text-transform: capitalize;
+}
+.Polaris-DataTable__IncreasedTableDensity tr th+td {
+    text-transform: capitalize;
+    font-weight: 500;
+}
+.Polaris-TopBar-SearchField {
+    border: 1px solid #ccc !important;
+    box-shadow: 0 1px 10px rgb(35 35 35 / 15%);
+    border-radius: 8px;
+}
+.Polaris-TextField__Input {
+    font-family: 'Inter';
+}
+.Polaris-Avatar--styleTwo {
+    border-radius: 8px; 
+}
+.Polaris-TopBar-Search {
+    box-shadow: 0 6px 20px rgb(35 35 35 / 20%);
+    border: 1px solid #ccc !important;
+    border-radius: 8px;
+}
+.Polaris-TopBar-SearchField__Backdrop {
+    background: transparent !important;   
+}
+.Polaris-TopBar-SearchField__Backdrop {
+    background: transparent !important;
+}
+.Polaris-ActionList__Item:hover {
+    background-color: rgb(228 229 231);
+}
+ul.Polaris-Box.Polaris-Box--listReset li+li {
+    margin-top: 5px;
+}
+.Polaris-ActionList__Text {
+    text-transform: capitalize;
+    font-family: 'Inter';
+    font-weight: 500;
+}
+.Polaris-TopBar-Search {
+    margin: 5px 23px;
+}
 #addCustBtn,
 #editCustBtn,
 #addSetBtn,
 #editSetBtn {
     display: none;
 }
-
+.Polaris-Label__Text {
+    font-weight: 500;
+}
 .Polaris-TopBar__SecondaryMenu {
     list-style: none;
 }
-
+.Polaris-Select__Backdrop {
+    border-radius: 8px;
+}
+button.Polaris-Button.Polaris-Button--primary {
+    border-radius: 8px !important;
+}
 .Polaris-TopBar__SecondaryMenu ul {
     list-style: none;
     padding: 0;
     display: flex;
     align-items: center;
 }
-
+button.Polaris-Button {
+    border-radius: 8px;
+}
 .Polaris-TopBar__SecondaryMenu .Polaris-List--spacingLoose .Polaris-List__Item {
     margin-bottom: 0;
 }
@@ -127,7 +250,6 @@ li.Polaris-List__Item a {
 li.Polaris-List__Item a:hover,
 li.Polaris-List__Item a.active {
     background-color: var(--pc-top-bar-background-lighter, var(--p-color-bg-hover));
-    border-radius: 50px;
     background: var(--light-bg);
 }
 
@@ -136,9 +258,7 @@ li.Polaris-List__Item a.active {
     font-family: 'Inter';
 }
 
-.Polaris-Labelled__LabelWrapper {
-    width: 220px;
-}
+
 
 .col>div {
     display: flex;
@@ -167,7 +287,7 @@ li.Polaris-List__Item a.active {
 
 .customerHeader {
     background: var(--white-color);
-    padding: 8px 0;
+    padding: 16px 10px 10px 0;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -175,16 +295,47 @@ li.Polaris-List__Item a.active {
     font-size: 14px;
     font-weight: normal;
 }
+.calculator-table .Polaris-TextField__Input {
+    border: 0;
+    background: #fff;
+}
+td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop {
+    border-left: 1px solid #ccc;
+    text-align: center;
+}
+th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--firstColumn {
+    text-align: center;
+    font-weight: 500;
+}
+
+.calculator-table .Polaris-TextField__Input {
+    font-size: 16px;
+}
 
 .customerHeader .Polaris-Labelled__LabelWrapper {
     width: auto;
     margin-right: 10px;
 }
-
+th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--header {
+    text-align: center;
+    font-size: 14px;
+    background: #e4e5e7;
+}
+.calculator-table .Polaris-TextField__Input{
+    text-align: center;
+}
 select {
     padding: 0 12px;
 }
-
+.Polaris-Checkbox__Backdrop::before{
+    background-color: #125443;
+}
+.no-border td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop,
+.no-border th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--header,
+.no-border  th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--firstColumn {
+    border-left: 0;
+    text-align: left;
+}
 input[type="date"] {
     position: relative;
 }
@@ -193,8 +344,11 @@ input[type="date"] {
   see "List of symbols" below if you want another, you could also try to add a font-awesome icon.. */
 input[type="date"]:after {
     content: "\1F4C5";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
-
 /* change color of symbol on hover */
 input[type="date"]:hover:after {
     color: var(--error-color);
@@ -249,6 +403,32 @@ input[type="date"]::-webkit-clear-button {
     background: var(--white-color);
     width: 100%;
     z-index: 91;
+    border-top: 1px solid #dfe0e2;
+    box-shadow: 0 0px 2px rgba(31, 33, 36, 0.1);
+}
+.col.subHeader .Polaris-Labelled__LabelWrapper {
+    justify-content: flex-end;
+}
+select option{
+    height: 40px;
+}
+.col.subHeader {
+    margin-bottom: 0;
+}
+.Polaris-ButtonGroup__Item {
+    max-width: 202px;
+}
+.col.subHeader .Polaris-Labelled__LabelWrapper {
+    margin-bottom: 0;
+}
+
+.col.subHeader .Polaris-Labelled__LabelWrapper {
+    width: 220px;
+}
+.col.subHeader .Polaris-Label__Text {
+    font-weight: normal;
+    font-size: 14px;
+    margin-right: 10px;
 }
 
 .Polaris-Connected,
@@ -260,7 +440,9 @@ input[type="date"]::-webkit-clear-button {
     width: 210px;
     max-width: 210px;
 }
-
+.Polaris-Page--fullWidth {
+    max-width: 80%;
+}
 .Polaris-DataTable__Cell--firstColumn {
     white-space: nowrap;
 }
@@ -269,7 +451,9 @@ input[type="date"]::-webkit-clear-button {
     color: var(--white-color);
     background: var(--primary-color);
 }
-
+.customerHeader .Polaris-Labelled__LabelWrapper {
+    margin-bottom: 0;
+}
 .Polaris-Label {
     white-space: nowrap;
 }
@@ -290,11 +474,96 @@ input[type="date"]::-webkit-clear-button {
     height: 25px;
 }
 
+.row.calculator-table {
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    box-shadow: var(--p-shadow-md);
+}
+.row.calculator-table > div {
+    display: flex;
+    align-items: center;
+}
+.row.calculator-table .Polaris-Labelled__LabelWrapper {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+.row.calculator-table .Polaris-Labelled__LabelWrapper {
+    margin-right: 0;
+    justify-content: center;
+}
+tfoot {
+    background: #007a5c;
+}
+
+tfoot td{
+   font-size: 16px;
+   height: 45px;
+}
+tfoot th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
+    border: 0;
+    color: #fff;
+ }
+
+ table.Polaris-DataTable__Table tbody tr:nth-child(14), table.Polaris-DataTable__Table tbody tr:nth-child(8) {
+    background: rgb(48 48 48 / 20%);
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(13) th,
+table.Polaris-DataTable__Table tbody tr:nth-child(13) td,
+table.Polaris-DataTable__Table tbody tr:nth-child(7) th,
+table.Polaris-DataTable__Table tbody tr:nth-child(7) td {
+    background: rgb(48 48 48 / 10%) !important;
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(13) td input,
+table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
+table.Polaris-DataTable__Table tbody tr:nth-child(14) td input,
+table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
+table.Polaris-DataTable__Table tbody tr:nth-child(8) td input {
+    background: transparent !important;
+
+}
+.mb-2{
+    margin-bottom: 30px;
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(15) td, table.Polaris-DataTable__Table tbody tr:nth-child(15) th {
+    border: 1px solid #007a5c !important;
+    background: rgb(0 122 92 / 10%) !important;
+    color: #007a5c;
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(15) td{
+    border-left:0 !important;
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(15) td input{
+    color: #007a5c;
+    background: transparent;
+    font-weight: 500;
+}
+table.Polaris-DataTable__Table tbody tr:nth-child(15) td .Polaris-TextField__Backdrop,
+table.Polaris-DataTable__Table tbody tr:nth-child(13) td .Polaris-TextField__Backdrop,
+table.Polaris-DataTable__Table tbody tr:nth-child(14) td .Polaris-TextField__Backdrop,
+table.Polaris-DataTable__Table tbody tr:nth-child(7) td .Polaris-TextField__Backdrop,
+table.Polaris-DataTable__Table tbody tr:nth-child(8) td .Polaris-TextField__Backdrop
+ {
+    border: 0 !important;
+    background: transparent !important;
+}
+
+
+tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
+   border: 0;
+   color: #fff;
+}
+.customTd tr.Polaris-DataTable__TableRow.Polaris-DataTable--hoverable > th+td {
+    width: 210px;
+}
 .calculator-table .Polaris-TextField__Input {
     max-height: 25px;
     height: 22px;
     padding: 3px 10px;
     min-height: auto;
+    font-size: 14px;
 }
 
 .calculator-table td {
