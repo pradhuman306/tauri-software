@@ -30,12 +30,14 @@ export default function Home() {
   const [setOptions, updateSetOptions] = useState([]);
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
+    customer_id2:"",
     commission: "",
     dp: "",
     jodi: "",
     multiple: "",
     pana: "",
     partnership: "",
+    partnership2: "",
     set: "",
     tp: "",
     sp: "",
@@ -134,6 +136,7 @@ export default function Home() {
     newFormData["multiple"] = fdata[0] ? fdata[0]["multiple"] : "";
     newFormData["pana"] = fdata[0] ? fdata[0]["pana"] : "";
     newFormData["partnership"] = fdata[0] ? fdata[0]["partnership"] : "";
+    newFormData["partnership2"] = fdata[0] ? fdata[0]["partnership2"] : "";
     newFormData["set"] = fdata[0] ? fdata[0]["set"] : "";
     newFormData["tp"] = fdata[0] ? fdata[0]["tp"] : "";
     newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
@@ -210,6 +213,7 @@ export default function Home() {
         newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
         newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
         newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
+        newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
         newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
         newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
         newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
@@ -277,6 +281,12 @@ export default function Home() {
           var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
           var partnership_percent = SUB_TOTAL * newFormData['partnership'] / 100;
           var TOTAL = SUB_TOTAL - partnership_percent;
+          if(newFormData["partnership2"] && newFormData["partnership2"] != ""){
+            var customer2Risk = ((SUB_TOTAL * newFormData["partnership2"]) / 100);
+          }else{
+            var customer2Risk = 0;
+          }
+          TOTAL = TOTAL - customer2Risk;
           totalBalance+=TOTAL;
         } // length condition
   
@@ -363,6 +373,16 @@ export default function Home() {
                     </div>
                     <div className="col">
                       <TextField
+                        label="Customer ID2"
+                        type="number"
+                        name="customer_id2"
+                        placeholder="Enter ID2"
+                        value={addFormData.customer_id2}
+                        onChange={(e) => addFormHandler(e, "customer_id2")}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
                         label="Limit"
                         type="number"
                         step="any"
@@ -421,6 +441,16 @@ export default function Home() {
                         value={addFormData ? addFormData.partnership : ""}
                         onChange={(e) => addFormHandler(e, "partnership")}
                         required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Partnership2"
+                        type="number"
+                        step="any"
+                        name="partnership2"
+                        value={addFormData ? addFormData.partnership2 : ""}
+                        onChange={(e) => addFormHandler(e, "partnership2")}
                       />
                     </div>
                     <div className="col">

@@ -123,7 +123,6 @@ export default function Cashbook() {
   const [customerName, setDeleteCustomerName] = useState("");
 
   const deleteCashbookData = async (id) => {
-    console.log(id);
     var newdata = setData.filter(function (a) {
       return a.cid != id;
     });

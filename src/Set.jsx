@@ -203,10 +203,11 @@ export default function Set() {
   setData.map((data, index) => {
     let newArray = [];
     newArray.push(
-      data.set,
+      <b>{data.set}</b>,
       data.commission,
       data.pana,
       data.partnership,
+      data.partnership2,
       data.multiple,
       data.sp,
       data.dp,
@@ -270,12 +271,14 @@ export default function Set() {
               "text",
               "text",
               "text",
+              "text",
             ]}
             headings={[
               "Set",
               "Commission",
               "Pana",
               "Partnership",
+              "Partnership2",
               "Multiple",
               "SP",
               "DP",
@@ -358,6 +361,16 @@ export default function Set() {
                     value={addFormData ? addFormData.partnership : ""}
                     onChange={(e) => addFormHandler(e, "partnership")}
                     required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Partnership2"
+                    type="number"
+                    step="any"
+                    name="partnership2"
+                    value={addFormData ? addFormData.partnership2 : ""}
+                    onChange={(e) => addFormHandler(e, "partnership2")}
                   />
                 </div>
                 <div className="col">
@@ -488,6 +501,16 @@ export default function Set() {
                     value={editSet ? editSet.partnership : ""}
                     onChange={(e) => editFormHandler(e, "partnership")}
                     required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Partnership2"
+                    type="number"
+                    step="any"
+                    name="partnership2"
+                    value={editSet ? editSet.partnership2 : ""}
+                    onChange={(e) => editFormHandler(e, "partnership2")}
                   />
                 </div>
                 <div className="col">

@@ -74,6 +74,17 @@
     color: var(--error-color);
 }
 
+.background-debit {
+    color: var(--white-color);
+    background-color: var(--error-color);
+}
+
+.background-credit {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+}
+
+
 body{
     font-size: 14px;
     font-family: 'Inter' !important;

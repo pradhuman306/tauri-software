@@ -37,12 +37,14 @@ export default function Customer() {
   
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
+    customer_id2: "",
     commission: "",
     dp: "",
     jodi: "",
     multiple: "",
     pana: "",
     partnership: "",
+    partnership2: "",
     set: "",
     tp: "",
     sp: "",
@@ -214,6 +216,7 @@ export default function Customer() {
     newFormData["multiple"] = fdata[0] ? fdata[0]["multiple"] : "";
     newFormData["pana"] = fdata[0] ? fdata[0]["pana"] : "";
     newFormData["partnership"] = fdata[0] ? fdata[0]["partnership"] : "";
+    newFormData["partnership2"] = fdata[0] ? fdata[0]["partnership2"] : "";
     newFormData["set"] = fdata[0] ? fdata[0]["set"] : "";
     newFormData["tp"] = fdata[0] ? fdata[0]["tp"] : "";
     newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
@@ -237,6 +240,7 @@ export default function Customer() {
     newFormData["multiple"] = fdata[0] ? fdata[0]["multiple"] : "";
     newFormData["pana"] = fdata[0] ? fdata[0]["pana"] : "";
     newFormData["partnership"] = fdata[0] ? fdata[0]["partnership"] : "";
+    newFormData["partnership2"] = fdata[0] ? fdata[0]["partnership2"] : "";
     newFormData["set"] = fdata[0] ? fdata[0]["set"] : "";
     newFormData["tp"] = fdata[0] ? fdata[0]["tp"] : "";
     newFormData["sp"] = fdata[0] ? fdata[0]["sp"] : "";
@@ -327,9 +331,10 @@ export default function Customer() {
   customers.map((customer, index) => {
     let newArray = [];
     newArray.push(
-      customer.customer_id,
+      <b>{customer.customer_id}</b>,
       customer.name,
-      customer.set,
+      customer.customer_id2,
+      <b>{customer.set}</b>,
       <ButtonGroup>
         <Button
           size="micro"
@@ -381,8 +386,8 @@ export default function Customer() {
        <div className="no-border">
        <LegacyCard>
           {rows.length ? <DataTable
-            columnContentTypes={["text", "text", "text", "text"]}
-            headings={["CID", "Name", "Set", "Action"]}
+            columnContentTypes={["text", "text","text", "text", "text"]}
+            headings={["Customer ID", "Name","Customer ID2", "Set", "Action"]}
             rows={rows}
             hasZebraStripingOnData
             increasedTableDensity
@@ -435,6 +440,16 @@ export default function Customer() {
                         value={addFormData.name}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "name")}
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Customer ID2"
+                        type="number"
+                        name="customer_id2"
+                        placeholder="Enter ID2"
+                        value={addFormData.customer_id2}
+                        onChange={(e) => addFormHandler(e, "customer_id2")}
                       />
                     </div>
                     <div className="col">
@@ -496,6 +511,16 @@ export default function Customer() {
                         value={addFormData ? addFormData.partnership : ""}
                         onChange={(e) => addFormHandler(e, "partnership")}
                         required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Partnership2"
+                        type="number"
+                        step="any"
+                        name="partnership2"
+                        value={addFormData ? addFormData.partnership2 : ""}
+                        onChange={(e) => addFormHandler(e, "partnership2")}
                       />
                     </div>
                     <div className="col">
@@ -586,7 +611,7 @@ export default function Customer() {
                   <div className="row">
                     <div className="col">
                       <TextField
-                        label="ID"
+                        label="Customer ID"
                         type="number"
                         name="customer_id"
                         placeholder="Enter customer ID"
@@ -608,6 +633,18 @@ export default function Customer() {
                         onChange={(e) => editFormHandler(e, "name")}
                       />
                     </div>
+
+                    <div className="col">
+                      <TextField
+                        label="Customer ID2"
+                        type="number"
+                        name="customer_id2"
+                        placeholder="Enter ID2"
+                        value={editCustomer.customer_id2}
+                        onChange={(e) => editFormHandler(e, "customer_id2")}
+                      />
+                    </div>
+
                     <div className="col">
                       <TextField
                         label="Limit"
@@ -667,6 +704,16 @@ export default function Customer() {
                         value={editCustomer ? editCustomer.partnership : ""}
                         onChange={(e) => editFormHandler(e, "partnership")}
                         required
+                      />
+                    </div>
+                    <div className="col">
+                      <TextField
+                        label="Partnership2"
+                        type="number"
+                        step="any"
+                        name="partnership2"
+                        value={editCustomer ? editCustomer.partnership2 : ""}
+                        onChange={(e) => editFormHandler(e, "partnership2")}
                       />
                     </div>
                     <div className="col">

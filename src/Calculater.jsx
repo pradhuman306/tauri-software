@@ -63,12 +63,14 @@ export default function Calculater() {
 
   const [addFormData, setAddFormData] = useState({
     customer_id: "",
+    customer_id2: "",
     commission: "",
     dp: "",
     jodi: "",
     multiple: "",
     pana: "",
     partnership: "",
+    partnership2: "",
     set: "",
     tp: "",
     sp: "",
@@ -100,7 +102,6 @@ export default function Calculater() {
   });
 
   const onChangeSet = (value) => {
-    console.log(value);
     const cdata = customers.filter(
       (item) => item.customer_id === value
     );
@@ -113,6 +114,7 @@ export default function Calculater() {
     newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
     newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
     newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
+    newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
     newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
     newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
     newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
@@ -216,6 +218,13 @@ export default function Calculater() {
     var partnership_percent = SUB_TOTAL * addFormData.partnership / 100;
     var TOTAL = SUB_TOTAL - partnership_percent;
 
+    if(addFormData.partnership2 && addFormData.partnership2 != ""){
+      var customer2Risk = ((SUB_TOTAL * addFormData.partnership2) / 100);
+    }else{
+      var customer2Risk = 0;
+    }
+    TOTAL = TOTAL - customer2Risk;
+
     var day_winning_amount = 0;
     day_winning_amount += (totalDayData['khula_amount']) * addFormData.multiple;
     day_winning_amount += (totalDayData['sp_amount']) * addFormData.sp;
@@ -275,6 +284,9 @@ export default function Calculater() {
     }
 
     setMainTotal(TOTAL);
+    document.querySelector("tfoot").className = '';
+    document.querySelector("tfoot").classList.add(TOTAL ? TOTAL.includes('Dr') ? 'background-debit' : 'background-credit' : 'background');
+
   };
 
 
@@ -308,7 +320,6 @@ export default function Calculater() {
 
 
   const rows = [];
-  console.log(displayData);
 
   timeZoneAll.map((zone, index) => {
     let newArray = [];
@@ -339,7 +350,6 @@ export default function Calculater() {
           newArray.push(<TextField type="text" name={`${'final'}[${amountKey}]`} value={NightData[amountKey] + DayData[amountKey]} readOnly />);
         } else {
           let zone2 = showtimeZoneAll[index];
-          console.log(zone2);
           newArray.push(<TextField type="text" name={`${zone2}[${amountKey}]`} value={displayData[zone2] ? displayData[zone2][amountKey] : ''} readOnly />);
         }
 
@@ -347,7 +357,6 @@ export default function Calculater() {
     }
     rows.push(newArray);
   })
-
 
 
   return (
@@ -390,6 +399,7 @@ export default function Calculater() {
 {/* <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly /> */}
 
 <TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly />
+<TextField label="Partnership2" type="number" step="any" name="partnership2" value={addFormData.partnership2} readOnly />
 
 <TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly />
 <TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
@@ -438,7 +448,7 @@ export default function Calculater() {
                   'TP Amount'
                 ]}
                 rows={rows}
-                totals={['', <span className={mainTotal ? mainTotal.includes('Dr') ? 'debit' : 'credit' : ''}>{mainTotal}</span>, '', '', '', '', '', '']}
+                totals={['', <span>{mainTotal}</span>, '', '', '', '', '', '']}
                 hasZebraStripingOnData
                 increasedTableDensity
                 defaultSortDirection="descending"

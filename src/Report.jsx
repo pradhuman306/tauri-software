@@ -56,11 +56,9 @@ export default function Report() {
   );
   setfilterentries(updatedArray);
 
-console.log(updatedArray);
   }
   useEffect(()=>{
     if(start != '' && end != '' && filterentries.length && customers.length){
-      console.log(filterentries);
       searchData();
     }
   },[filterentries,customers])
@@ -160,12 +158,19 @@ console.log(updatedArray);
           // calculations
           var cdata = customers.filter((item) => item.customer_id === CID);
           var newFormData = [];
+          if(cdata && cdata[0] && cdata[0]['customer_id2']){
+            var customer2data = customers.filter((item) => item.customer_id === cdata[0]['customer_id2']);
+          newFormData["customer_id2"] = customer2data[0]? customer2data[0]:[];
+          }else{
+          newFormData["customer_id2"] = []
+          }
           newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
           newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
           newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
           newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
           newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
           newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
+          newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
           newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
           newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
           newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
@@ -189,23 +194,18 @@ console.log(updatedArray);
 
         var allcustomercalculatedata = doCalcultion(allcustomerdata,CID,newFormData);
         // return false;
-        console.log(allcustomerdata);
       let tmp = allcustomerdata.filter((obj)=>{
         if (!Object.keys(obj).includes("checked") || obj.checked === false) {
-          console.log(!Object.keys(obj).includes("checked"));
           return true;
         }
       
       })
       let checked = false;
       if(tmp.length == 0){
-        console.log('inside');
         checked = true;
       }
 
-      console.log(checked);
        
-      console.log(tmp);
 
           if (CID && calculateData) {
             reportList.push({
@@ -214,8 +214,12 @@ console.log(updatedArray);
               name: cdata[0] ? cdata[0]["name"] : "",
               credit: calculateData.type == "Positive" ? calculateData.total.toFixed(2) : "",
               debit: calculateData.type == "Negative" ? calculateData.total.toFixed(2) : "",
+              customer2:calculateData.customer2?('₹'+calculateData.customer2amount.toFixed(2)+''+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):'',
               total: allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'',
-              checked: checked
+              checked: checked,
+              customer2amount:calculateData.customer2amount.toFixed(2),
+              customer2id:calculateData.customer2,
+              type:calculateData.type
             });
           }
         } // date loop end
@@ -339,13 +343,23 @@ console.log(updatedArray);
         sec_sub_total -
         (totalDayData["amount"] + totalNightData["amount"]) -
         (totalDayData["pana_amount"] + totalNightData["pana_amount"]);
+
       var partnership_percent =
         (SUB_TOTAL * newFormData["partnership"]) / 100;
       var TOTAL = SUB_TOTAL - partnership_percent;
+      if(newFormData["partnership2"] && newFormData["partnership2"] != ""){
+        var customer2Risk = ((SUB_TOTAL * newFormData["partnership2"]) / 100);
+      }else{
+        var customer2Risk = 0;
+      }
+      TOTAL = TOTAL - customer2Risk;
       var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
       var arr = {
         total: TOTAL,
-        type : type
+        type : type,
+        customer2:newFormData['customer_id2']?newFormData['customer_id2']['customer_id']:'',
+        customer2amount:customer2Risk,
+        customer2name:newFormData['customer_id2']?newFormData['customer_id2']['name']+' '+newFormData['customer_id2']['customer_id']:''
       }
       return arr;
     } // length condition
@@ -380,6 +394,13 @@ console.log(updatedArray);
     let newArray = [];
     data.map((obj, index) => {
       newArray.push({id:Date.now(),cid:obj.id,credit:obj.credit?Number(obj.credit):0,debit:obj.debit?Number(obj.debit):0,date:obj.date});
+      if(obj.customer2id && obj.customer2id != undefined){
+        if(obj.type == 'Positive'){
+    newArray.push({id:Date.now(),cid:obj.customer2id,credit:Number(obj.customer2amount),debit:0,date:obj.date});
+        }else{
+    newArray.push({id:Date.now(),cid:obj.customer2id,credit:0,debit:Number(obj.customer2amount),date:obj.date});
+        }
+      }
     })
     updateData([...newArray,...cashbookData]);
   }
@@ -412,7 +433,7 @@ console.log(updatedArray);
   const rows = [];
   reportData.map((data, index) => {
     let newArray = [];
-    newArray.push(data.date, data.name, data.credit, data.debit,data.total, <Checkbox
+    newArray.push(data.date, data.name, data.credit, data.debit, data.customer2,data.total, <Checkbox
       checked={data.checked}
       id={data.id}
       onChange={()=>handleChange(data.id,data.checked)}
@@ -458,8 +479,8 @@ console.log(updatedArray);
           <>
             <LegacyCard>
               <DataTable
-                columnContentTypes={["text", "text", "text", "text"]}
-                headings={["Date", "Name", "Credit", "Debit","Total","Status"]}
+                columnContentTypes={["text", "text", "text","text", "text"]}
+                headings={["Date", "Name", "Credit", "Debit","Customer2","Total","Status"]}
                 rows={rows}
                 hasZebraStripingOnData
                 increasedTableDensity
