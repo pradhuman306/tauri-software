@@ -215,7 +215,7 @@ export default function Report() {
               credit: calculateData.type == "Positive" ? calculateData.total.toFixed(2) : "",
               debit: calculateData.type == "Negative" ? calculateData.total.toFixed(2) : "",
               customer2:calculateData.customer2?('₹'+calculateData.customer2amount.toFixed(2)+''+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):'',
-              total: allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'',
+              total: (allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'')+''+(allcustomercalculatedata.type == "Positive"?' CR':' DR'),
               checked: checked,
               customer2amount:calculateData.customer2amount.toFixed(2),
               customer2id:calculateData.customer2,
