@@ -16,7 +16,45 @@ import { MyContext } from "./App";
 
 export default function Entry() {
   document.onkeydown = keydown;
-
+    function onArrowpress(e){
+        const inputs = document.querySelectorAll("input[type='text']");
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].addEventListener("keydown", function (event) {
+            if (event.keyCode === 39) {
+            event.preventDefault();
+              console.log('aroow next');
+              const nextIndex = i + 1;
+              if (nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+              } 
+            }
+            if(event.keyCode === 40){
+            event.preventDefault();
+            console.log('aroow down');
+              const nextIndex = i +9;
+              if (nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+              }
+            }
+            if(event.keyCode === 38){
+            event.preventDefault();
+            console.log('aroow up');
+              const nextIndex = i -9;
+              if (nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+              }
+            }
+            if (event.keyCode === 37) {
+            event.preventDefault();
+            console.log('aroow pre');
+              const nextIndex = i -1;
+              if (nextIndex < inputs.length) {
+                inputs[nextIndex].focus();
+              }
+            }
+          });
+        }
+    }
 
   const { setErrorMessage, setMessage } = useContext(MyContext);
   const [customers, setcustomers] = useState([]);
@@ -274,7 +312,7 @@ export default function Entry() {
     if (evt.keyCode == 115 && timezone != "" && tabActive != "") {
       saveEntries();
     }
-
+    onArrowpress();
   }
 
   const rowsTable = [];
@@ -283,6 +321,7 @@ export default function Entry() {
     newArray.push(
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "customer_id", index)}
         onBlur={(evnt) => handleBlur(evnt, "customer_id", index)}
         value={inFields.customer_id}
@@ -290,6 +329,7 @@ export default function Entry() {
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "name", index)}
         value={inFields.name}
         name="name"
@@ -297,12 +337,14 @@ export default function Entry() {
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "amount", index)}
         value={inFields.amount}
         name="amount"
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "pana_amount", index)}
         value={inFields.pana_amount}
         disabled={inFields.isDisabled}
@@ -310,30 +352,35 @@ export default function Entry() {
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "khula_amount", index)}
         value={inFields.khula_amount}
         name="khula_amount"
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "sp_amount", index)}
         value={inFields.sp_amount}
         name="sp_amount"
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "dp_amount", index)}
         value={inFields.dp_amount}
         name="dp_amount"
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "jodi_amount", index)}
         value={inFields.jodi_amount}
         name="jodi_amount"
       />,
       <TextField
         type="text"
+        autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "tp_amount", index)}
         value={inFields.tp_amount}
         name="tp_amount"
