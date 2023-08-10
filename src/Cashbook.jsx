@@ -23,6 +23,9 @@ export default function Cashbook() {
   const navigate = useNavigate();
   const { setMessage, setErrorMessage } = useContext(MyContext);
   const [addFormData, setAddFormData] = useState({});
+  const [cashCustData, setcashCustData] = useState({});
+  const [AllCashcustomers, setAllCashcustomers] = useState([]);
+  const [cashbookcustomerData, setcashbookcustomerData] = useState({customer_id:'CB'+1});
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
   const [setName, updateSetName] = useState("");
@@ -31,7 +34,23 @@ export default function Cashbook() {
 
   const [validationError, setValidationError] = useState({
     set: false,
+    customer_id:false
   });
+
+  const cashbookcustomerHandler = (value,param) => {
+    let validationErr = { ...validationError };
+    if (value && param == "customer_id") {
+      validationErr.customer_id = false;
+    }
+    setValidationError(validationErr);
+    const fieldName = param;
+    let fieldValue = value;
+    const newData = { ...cashbookcustomerData };
+    newData[fieldName] = fieldValue;
+    setcashbookcustomerData(newData);
+    console.log(newData);
+  }
+
   const addFormHandler = (value, param) => {
     let validationErr = { ...validationError };
     if (value && param == "set") {
@@ -51,6 +70,42 @@ export default function Cashbook() {
     modalOpen(param);
   };
 
+  const submitNewCustomer = async (event) => {
+    event.preventDefault();
+    let validationErr = { ...validationError };
+    let isSubmit = true;
+    if (!cashbookcustomerData.customer_id) {
+      isSubmit = false;
+    } else {
+      validationErr.customer_id = false;
+    }
+
+    let filteredCustomer = AllCashcustomers.filter((data)=>data.customer_id == cashbookcustomerData.customer_id);
+    if(filteredCustomer.length){
+      isSubmit = false; 
+      setErrorMessage("Customer ID already exist");
+    }
+
+    if (isSubmit) {
+      modalOpen("addCustomer");
+      console.log('submitNewCustomer');
+  addnewcustomer([{ ...cashbookcustomerData }, ...AllCashcustomers]);
+    }else{
+      console.log('validation submitNewCustomer');
+    }
+    setValidationError(validationErr);
+  }
+
+const addnewcustomer = async (customers) => {
+  setAllCashcustomers([...customers]);
+  await writeTextFile(
+    { path: "cashbookcustomer.json", contents: JSON.stringify(customers) },
+    { dir: BaseDirectory.Resource }
+  );
+  setMessage("Customer added successfully");
+  setcashbookcustomerData({});
+};
+
   const submitHandler = (event) => {
     event.preventDefault();
     let validationErr = { ...validationError };
@@ -63,7 +118,7 @@ export default function Cashbook() {
     if (isSubmit) {
       addNote();
       setAddFormData({});
-      setMessage("Set added successfully");
+      setMessage("Record added successfully");
       modalOpen("addSet");
     }
     setValidationError(validationErr);
@@ -98,7 +153,7 @@ export default function Cashbook() {
       { dir: BaseDirectory.Resource }
     );
     getdataFromFile();
-    setMessage("Set updated successfully");
+    setMessage("Record updated successfully");
   };
 
   const updateHandler = (event) => {
@@ -140,6 +195,7 @@ export default function Cashbook() {
     editSet: false,
     deleteSet: false,
     deleteCustomer: false,
+    addCustomer: false,
   });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
@@ -151,6 +207,26 @@ export default function Cashbook() {
       setIsVisible(isVisibleTemp);
     }
     setValidationError({});
+    if(id == 'addCustomer'){
+      console.log(AllCashcustomers);
+      var maxId = Math.max(...AllCashcustomers.map(o => parseInt(o.customer_id.replace(/\D/g, ""))));
+      maxId = (maxId == '-Infinity') ? 0 : maxId;
+      const newData = { ...cashbookcustomerData };
+      console.log(maxId);
+      newData['customer_id'] = 'CB'+(maxId+1);
+      setcashbookcustomerData(newData);
+    }
+    if(id == 'addSet'){
+      let custOpt = [{ label: "Select Customer", value: "" }];
+      customers.map((data) => {
+        custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+      })
+      AllCashcustomers.map((data) => {
+        custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+      })
+      setcustomersOptions(custOpt);
+    }
+    console.log(id);
   };
 
   const modalAction = () => {
@@ -173,9 +249,23 @@ export default function Cashbook() {
       { dir: BaseDirectory.Resource }
     );
     getdataFromFile();
-    setMessage("Set deleted successfully");
+    setMessage("Record deleted successfully");
     modalOpen("deleteSet");
   };
+
+  const getdateFormet = (date) => {
+    var todaydate = new Date(date);
+    let day = todaydate.getDate();
+    let month = todaydate.getMonth() + 1;
+    let year = todaydate.getFullYear();
+    if (month.toString().length <= 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length <= 1) {
+      day = '0' + day;
+    }
+    return day+'-'+month+'-'+year;
+  }
 
   const addNote = async () => {
     var todaydate = new Date();
@@ -213,6 +303,22 @@ export default function Cashbook() {
       console.log(error);
     }
 
+    // setAllCashcustomers
+    try {
+      const myfiledata = await readTextFile("cashbookcustomer.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mydata = JSON.parse(myfiledata);
+      setAllCashcustomers(mydata);
+      var maxId = Math.max(...mydata.map(o => o.customer_id));
+      maxId = maxId == '-Infinity' ? 0 : maxId;
+      const newData = { ...cashbookcustomerData };
+      newData['customer_id'] = 'CB'+(maxId+1);
+      setcashbookcustomerData(newData);
+    } catch (error) {
+      console.log(error);
+    }
+
     try {
       const myfiledata = await readTextFile("cashbook.json", {
         dir: BaseDirectory.Resource,
@@ -230,20 +336,26 @@ export default function Cashbook() {
   }, []);
 
   const rows = [];
-  var result = setData.reduce((acc, {cid, credit, debit}) => ({...acc, [cid]: {cid, credit: acc[cid] ? Number(acc[cid].credit) + Number(credit): Number(credit), debit: acc[cid] ? Number(acc[cid].debit) + Number(debit): Number(debit)}}), {});
+  var result = setData.reduce((acc, {cid, credit, debit,date}) => ({...acc, [cid]: {cid, credit: acc[cid] ? Number(acc[cid].credit) + Number(credit): Number(credit), debit: acc[cid] ? Math.abs(Number(acc[cid].debit)) + Math.abs(Number(debit)): Math.abs(Number(debit)),date:date}}), {});
   result = Object.values(result);
   result.map((data, index) => {
     let newArray = [];
     var found = customers.find(obj => {
       return obj.customer_id === data.cid;
     });
+    if(!found){
+      found = AllCashcustomers.find(obj => {
+        return obj.customer_id === data.cid;
+      });
+    }
+    if(found){
     newArray.push(
       data.cid,
-      // data.date,
       found.name,
+      getdateFormet(data.date),
       data.credit?'₹'+data.credit:'',
       data.debit?'₹'+data.debit:'',
-      <b>₹{Number(data.credit)-Number(data.debit)+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>,
+      <b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>₹{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>,
       <ButtonGroup>
         <Button
           size="micro"
@@ -259,6 +371,8 @@ export default function Cashbook() {
         </Button>
       </ButtonGroup>
     );
+  }
+
     rows.push(newArray);
   });
 
@@ -277,11 +391,32 @@ export default function Cashbook() {
     <>
       <Page
         title="CashBook"
-        primaryAction={{
-          content: "Add Payment",
-          icon: PlusMinor,
-          onAction: () => modalOpen("addSet"),
-        }}
+        fullWidth
+        // primaryAction={{
+        //   content: "Add Payment",
+        //   icon: PlusMinor,
+        //   onAction: () => modalOpen("addSet"),
+        // }}
+
+        primaryAction={
+          <ButtonGroup>
+            <div className="col subHeader">
+                <Button
+                primary
+                  onClick={(e) => modalOpen('addSet')}
+                >
+                  Add Payment
+                  </Button>
+              </div>
+              <div className="col subHeader">
+                <Button
+                primary
+                onClick={(e) => modalOpen("addCustomer")}
+                > Add Customer
+                </Button>
+              </div>
+          </ButtonGroup>
+        }
       >
         {rows.length ? 
         <LegacyCard>
@@ -292,11 +427,13 @@ export default function Cashbook() {
               "text",
               "text",
               "text",
+              "text",
               "text"
             ]}
             headings={[
               "CID",
               "Name",
+              "Date",
               "Credit",
               "Debit",
               "Total",
@@ -484,6 +621,49 @@ export default function Cashbook() {
             </div>
           </Modal.Section>
         </Modal>
+
+        {/* // customer add modal  */}
+        <Modal
+      
+      open={isVisible.addCustomer}
+      onClose={() => modalOpen("addCustomer")}
+      title="Add New Customer"
+    >
+      <Modal.Section>
+        <Form onSubmit={submitNewCustomer}>
+              <div className="row">
+                <div className="col">
+                  <TextField
+                  readOnly
+                    label="Customer ID"
+                    type="text"
+                    name="customer_id"
+                    placeholder="Enter customer ID"
+                    value={cashbookcustomerData.customer_id}
+                    error={validationError.cid}
+                    requiredIndicator={true}
+                    onChange={(e) => cashbookcustomerHandler(e, "customer_id")}
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Customer Name"
+                    type="text"
+                    name="name"
+                    placeholder="Enter customer name"
+                    value={cashbookcustomerData.name}
+                    error={validationError.name}
+                    requiredIndicator={true}
+                    onChange={(e) => cashbookcustomerHandler(e, "name")}
+                  />
+                </div>
+              </div>
+          <Button primary submit>
+            Submit
+          </Button>
+        </Form>
+      </Modal.Section>
+    </Modal>
       </Page>
     </>
   );

@@ -352,7 +352,6 @@ export default function Report() {
       }else{
         var customer2Risk = 0;
       }
-      TOTAL = TOTAL - customer2Risk;
       var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
       var arr = {
         total: TOTAL,

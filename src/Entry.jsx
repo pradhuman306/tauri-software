@@ -340,6 +340,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "amount", index)}
         value={inFields.amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="amount"
       />,
       <TextField
@@ -347,7 +348,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "pana_amount", index)}
         value={inFields.pana_amount}
-        disabled={inFields.isDisabled}
+        disabled={inFields.customer_id&& inFields.name!=''?inFields.isDisabled:true}
         name="pana_amount"
       />,
       <TextField
@@ -355,6 +356,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "khula_amount", index)}
         value={inFields.khula_amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="khula_amount"
       />,
       <TextField
@@ -362,6 +364,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "sp_amount", index)}
         value={inFields.sp_amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="sp_amount"
       />,
       <TextField
@@ -369,6 +372,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "dp_amount", index)}
         value={inFields.dp_amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="dp_amount"
       />,
       <TextField
@@ -376,6 +380,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "jodi_amount", index)}
         value={inFields.jodi_amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="jodi_amount"
       />,
       <TextField
@@ -383,6 +388,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "tp_amount", index)}
         value={inFields.tp_amount}
+        disabled={inFields.customer_id && inFields.name!=''?false:true}
         name="tp_amount"
       />
     );
@@ -392,7 +398,7 @@ export default function Entry() {
 
   let totalArray = [];
   totalArray.push(
-    <span><b>Total</b></span>,
+    <span><b>Total Row {inputFields.length}</b></span>,
     <span></span>,
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0)))}</b></span>,
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0)))}</b></span>,

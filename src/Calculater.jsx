@@ -223,7 +223,6 @@ export default function Calculater() {
     }else{
       var customer2Risk = 0;
     }
-    TOTAL = TOTAL - customer2Risk;
 
     var day_winning_amount = 0;
     day_winning_amount += (totalDayData['khula_amount']) * addFormData.multiple;
