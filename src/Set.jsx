@@ -52,7 +52,8 @@ export default function Set() {
     let validationErr = { ...validationError };
     let isSubmit = true;
     if (!addFormData.set) {
-      validationErr.set = "Please enter set";
+      validationErr.set = false;
+      setErrorMessage("Please enter set");
       isSubmit = false;
     } else {
       validationErr.set = false;
@@ -108,7 +109,8 @@ export default function Set() {
     let validationErr = { ...validationError };
     let isSubmit = true;
     if (!editSet.set) {
-      validationErr.set = "Please enter set";
+      validationErr.set = false;
+      setErrorMessage("Please enter set");
       isSubmit = false;
     } else {
       validationErr.set = false;

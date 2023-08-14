@@ -518,44 +518,44 @@ tfoot th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
     color: #fff;
  }
 
- table.Polaris-DataTable__Table tbody tr:nth-child(14), table.Polaris-DataTable__Table tbody tr:nth-child(8) {
+ .calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(14), .calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(8) {
     background: rgb(48 48 48 / 20%);
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(13) th,
-table.Polaris-DataTable__Table tbody tr:nth-child(13) td,
-table.Polaris-DataTable__Table tbody tr:nth-child(7) th,
-table.Polaris-DataTable__Table tbody tr:nth-child(7) td {
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(13) th,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(13) td,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(7) th,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(7) td {
     background: rgb(48 48 48 / 10%) !important;
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(13) td input,
-table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
-table.Polaris-DataTable__Table tbody tr:nth-child(14) td input,
-table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
-table.Polaris-DataTable__Table tbody tr:nth-child(8) td input {
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(13) td input,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(14) td input,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(7) td input,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(8) td input {
     background: transparent !important;
 
 }
 .mb-2{
     margin-bottom: 30px;
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(15) td, table.Polaris-DataTable__Table tbody tr:nth-child(15) th {
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(15) td, .calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(15) th {
     border: 1px solid #007a5c !important;
     background: rgb(0 122 92 / 10%) !important;
     color: #007a5c;
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(15) td{
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(15) td{
     border-left:0 !important;
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(15) td input{
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(15) td input{
     color: #007a5c;
     background: transparent;
     font-weight: 500;
 }
-table.Polaris-DataTable__Table tbody tr:nth-child(15) td .Polaris-TextField__Backdrop,
-table.Polaris-DataTable__Table tbody tr:nth-child(13) td .Polaris-TextField__Backdrop,
-table.Polaris-DataTable__Table tbody tr:nth-child(14) td .Polaris-TextField__Backdrop,
-table.Polaris-DataTable__Table tbody tr:nth-child(7) td .Polaris-TextField__Backdrop,
-table.Polaris-DataTable__Table tbody tr:nth-child(8) td .Polaris-TextField__Backdrop
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(15) td .Polaris-TextField__Backdrop,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(13) td .Polaris-TextField__Backdrop,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(14) td .Polaris-TextField__Backdrop,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(7) td .Polaris-TextField__Backdrop,
+.calculator-table table.Polaris-DataTable__Table tbody tr:nth-child(8) td .Polaris-TextField__Backdrop
  {
     border: 0 !important;
     background: transparent !important;

@@ -269,11 +269,13 @@ export default function Calculater() {
     setNightTotal(night_TOTAL);
 
     if (TOTAL) {
-      if(Number(addFormData.limit) < TOTAL){
+      if ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
+      if(Number(addFormData.limit) < Math.abs(TOTAL)){
         setIsVisible(true);
       }else{
         setIsVisible(false);
       }
+    }
       TOTAL = TOTAL.toFixed(2);
       if ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
         TOTAL = Math.abs(TOTAL) + ' Dr.';

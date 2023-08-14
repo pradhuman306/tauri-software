@@ -15,7 +15,7 @@ import {
   Card,
   Text,
 } from "@shopify/polaris";
-import { EditMinor, DeleteMinor, PlusMinor } from "@shopify/polaris-icons";
+import { EditMinor, DeleteMinor, PlusMinor,ViewMajor } from "@shopify/polaris-icons";
 import { MyContext } from "./App";
 
 export default function Cashbook() {
@@ -175,7 +175,23 @@ const addnewcustomer = async (customers) => {
 
   const [setData, updateSetdata] = useState([]);
   const [deleteCustomerID, setDeleteCustomerID] = useState("");
+  const [infoCustomerID, setInfoCustomerID] = useState("");
+  const [infoCustomerName, setInfoCustomerName] = useState("");
   const [customerName, setDeleteCustomerName] = useState("");
+  const [rowsCustomer, setrowsCustomer] = useState([]);
+  useEffect(() => {
+    let rowsCustomer2 = [];
+    let tmp = setData.filter(function (a) {
+      return a.cid == infoCustomerID;
+    });
+    tmp.map((customer, index) => {
+      let newArray = [];
+      newArray.push(index+1,customer.date, customer.credit?customer.credit:'',customer.debit?customer.debit:'', customer.remark?customer.remark:'');
+      rowsCustomer2.push(newArray);
+    });
+    setrowsCustomer(rowsCustomer2);
+    console.log(rowsCustomer2);
+  }, [infoCustomerID])
 
   const deleteCashbookData = async (id) => {
     var newdata = setData.filter(function (a) {
@@ -196,6 +212,7 @@ const addnewcustomer = async (customers) => {
     deleteSet: false,
     deleteCustomer: false,
     addCustomer: false,
+    customerInfo:false,
   });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
@@ -351,11 +368,15 @@ const addnewcustomer = async (customers) => {
     if(found){
     newArray.push(
       data.cid,
-      found.name,
+     <b className="customerinfo" onClick={() => {
+       setInfoCustomerID(data.cid);
+       setInfoCustomerName(found.name);
+        modalOpen("customerInfo");
+    }}>{found.name}</b>,
       getdateFormet(data.date),
       data.credit?'₹'+data.credit:'',
       data.debit?'₹'+data.debit:'',
-      <b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>₹{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>,
+      Number(data.credit)-Number(data.debit) !== 0 ? (<b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>₹{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>):'=',
       <ButtonGroup>
         <Button
           size="micro"
@@ -369,6 +390,19 @@ const addnewcustomer = async (customers) => {
         >
           <Icon source={DeleteMinor} color="base" />
         </Button>
+
+        <Button
+          size="micro"
+          outline
+          onClick={() => {
+            setInfoCustomerID(data.cid);
+            setInfoCustomerName(found.name);
+             modalOpen("customerInfo");
+          }}
+        >
+          <Icon source={ViewMajor} color="base" />
+        </Button>
+
       </ButtonGroup>
     );
   }
@@ -486,6 +520,7 @@ const addnewcustomer = async (customers) => {
                     label="Credit"
                     type="number"
                     step="any"
+                    placeholder="Enter credit"
                     name="credit"
                     value={addFormData ? addFormData.credit : 0}
                     onChange={(e) => addFormHandler(e, "credit")}
@@ -496,10 +531,23 @@ const addnewcustomer = async (customers) => {
                   <TextField
                     label="Debit"
                     type="number"
+                    placeholder="Enter debit"
                     step="any"
                     name="debit"
                     value={addFormData ? addFormData.debit : 0}
                     onChange={(e) => addFormHandler(e, "debit")}
+                    required
+                  />
+                </div>
+                <div className="col textarea">
+                  <TextField
+                    label="Remark"
+                    type="text"
+                    placeholder="Enter Remark"
+                    step="any"
+                    name="remark"
+                    value={addFormData ? addFormData.remark : ''}
+                    onChange={(e) => addFormHandler(e, "remark")}
                     required
                   />
                 </div>
@@ -624,10 +672,9 @@ const addnewcustomer = async (customers) => {
 
         {/* // customer add modal  */}
         <Modal
-      
       open={isVisible.addCustomer}
       onClose={() => modalOpen("addCustomer")}
-      title="Add New Customer"
+      title="Add Cashbook Customer"
     >
       <Modal.Section>
         <Form onSubmit={submitNewCustomer}>
@@ -664,6 +711,35 @@ const addnewcustomer = async (customers) => {
         </Form>
       </Modal.Section>
     </Modal>
+    {/* customer info */}
+
+    <Modal
+          // activator={activator}
+          open={isVisible.customerInfo}
+          onClose={() => modalOpen('customerInfo')}
+          title={'Customer: '+infoCustomerName+', CID: '+ infoCustomerID}
+          secondaryActions={[
+            {
+              content: "Close",
+              onAction: () => modalOpen('customerInfo'),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <LegacyCard>
+              <DataTable
+                columnContentTypes={["text", "text", "text","text","text"]}
+                headings={["S.no.","Date","Credit","Debit","Remark"]}
+                rows={rowsCustomer}
+                hasZebraStripingOnData
+                increasedTableDensity
+                defaultSortDirection="descending"
+              />
+            </LegacyCard>
+          </Modal.Section>
+        </Modal>
+    {/* customer info end */}
+
       </Page>
     </>
   );
