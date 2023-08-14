@@ -138,13 +138,27 @@ export default function Navbar() {
           activatorContent={
             <Link
               to="/report"
-              className={location.pathname==='/report'?'active':""}
+              className={location.pathname==='/report' || location.pathname === '/reportbycustomer'?'active':""}
             >
               Report
             </Link>
           }
         />
       </List.Item>
+      {/* reportbycustomer */}
+      {/* <List.Item>
+        <TopBar.Menu
+          activatorContent={
+            <Link
+              to="/reportbycustomer"
+              className={location.pathname==='/reportbycustomer'?'active':""}
+            >
+              Report By Customer
+            </Link>
+          }
+        />
+      </List.Item> */}
+
          <List.Item>
       <TopBar.Menu
           activatorContent={

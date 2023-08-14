@@ -10,13 +10,13 @@ import {
   Modal,
   DataTable,
   Card,
-  Checkbox,
-  Link
+  Select,
+  Checkbox
 } from "@shopify/polaris";
 import { MyContext } from "./App";
 import { useNavigate } from "react-router-dom";
 
-export default function Report() {
+export default function ReportByCustomer() {
   const navigate = useNavigate();
   const [entries, setentries] = useState([]);
   const [filterentries, setfilterentries] = useState([]);
@@ -29,6 +29,8 @@ export default function Report() {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [checked, setChecked] = useState(false);
+  const [customersOptions, setcustomersOptions] = useState([]);
+  const [selectedCId, setCID] = useState("");
 
   const handleChange = async (id,value) => {
 
@@ -59,7 +61,7 @@ export default function Report() {
 
   }
   useEffect(()=>{
-    if(start != '' && end != '' && filterentries.length && customers.length){
+    if(start != '' && end != '' && selectedCId!= '' && filterentries.length && customers.length){
       searchData();
     }
   },[filterentries,customers])
@@ -86,6 +88,11 @@ export default function Report() {
       });
       const mycust = JSON.parse(myfiledata);
       setcustomers(mycust);
+      let custOpt = [{ label: "Select Customer", value: "" }];
+      mycust.map((data) => {
+          custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+        })
+        setcustomersOptions(custOpt);
     } catch (error) {
   
       console.log(error);
@@ -120,14 +127,14 @@ export default function Report() {
 
 
   const searchData = () => {
-    if (start != "" && end != "") {
+    if (start != "" && end != "" && selectedCId != "") {                   
       var startDate = new Date(start + " 00:00:01");
       var endDate = new Date(end + " 23:59:59");
       var datevise = [];
       var customerIds = [];
       const filteredData = filterentries.filter(function (a) {
         var aDate = new Date(a.date);
-        if (aDate >= startDate && aDate <= endDate) {
+        if (aDate >= startDate && aDate <= endDate && a.customer_id == selectedCId) {
           if (!datevise.includes(a.date)) {
             datevise.push(a.date);
           }
@@ -369,8 +376,10 @@ export default function Report() {
   const onchangeHandler = (value, param) => {
     if (param == "start") {
       setStart(value);
-    } else {
+    } else if(param == 'end') {
       setEnd(value);
+    }else if(param == 'cid'){
+        setCID(value);
     }
   };
   const deleteEntries = async () => {
@@ -448,6 +457,16 @@ export default function Report() {
         primaryAction={
           <ButtonGroup>
              <div className="col subHeader">
+
+             <Select
+                  label="Customer"
+                  name="name"
+                  id="name"
+                  options={customersOptions}
+                  value={selectedCId}
+                  onChange={(e) => onchangeHandler(e,'cid')}
+                />
+
             <TextField
             label="From"
               type="date"
@@ -473,9 +492,9 @@ export default function Report() {
             </Button>
           </ButtonGroup>
         }
-        title="Report"
+        title="Report By Customer"
       >
-        <Button onClick={()=> navigate('/reportbycustomer')}>Report By Customer</Button>
+        <Button onClick={()=> navigate('/report')}>Report By Date</Button>
         {tabActive ? (
           <>
             <LegacyCard>

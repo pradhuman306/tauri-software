@@ -15,6 +15,7 @@ import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider,Toast, Page, LegacyCard, Button, Frame} from '@shopify/polaris';
 import Settings from "./Settings";
 import Cashbook from "./Cashbook";
+import ReportByCustomer from "./ReportByCustomer";
 
 export const MyContext = createContext();
 const App = () => {
@@ -67,6 +68,14 @@ export const appRouter = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Report />
+           </PrivateRoute>
+        ),
+      },
+      {
+        path: "reportbycustomer",
+        element: (
+          <PrivateRoute>
+            <ReportByCustomer />
            </PrivateRoute>
         ),
       },
