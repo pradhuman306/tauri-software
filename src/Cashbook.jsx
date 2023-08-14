@@ -540,7 +540,8 @@ const addnewcustomer = async (customers) => {
                   />
                 </div>
                 <div className="col textarea">
-                  <TextField
+                <TextField
+                    multiline={4}
                     label="Remark"
                     type="text"
                     placeholder="Enter Remark"

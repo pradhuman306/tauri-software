@@ -52,7 +52,7 @@ export default function Set() {
     let validationErr = { ...validationError };
     let isSubmit = true;
     if (!addFormData.set) {
-      validationErr.set = false;
+      validationErr.set = true;
       setErrorMessage("Please enter set");
       isSubmit = false;
     } else {
@@ -109,7 +109,7 @@ export default function Set() {
     let validationErr = { ...validationError };
     let isSubmit = true;
     if (!editSet.set) {
-      validationErr.set = false;
+      validationErr.set = true;
       setErrorMessage("Please enter set");
       isSubmit = false;
     } else {
@@ -327,6 +327,7 @@ export default function Set() {
                     name="set"
                     value={addFormData ? addFormData.set : ""}
                     requiredIndicator={true}
+                    error={validationError.set}
                     onChange={(e) => addFormHandler(e, "set")}
                     required
                     // error={setError}

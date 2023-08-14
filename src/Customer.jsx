@@ -94,16 +94,22 @@ export default function Customer() {
     let isSubmit = true;
     if (!addFormData.customer_id) {
       isSubmit = false;
+      setErrorMessage('Please enter CID')
+      validationErr.customer_id = true;
     } else {
       validationErr.cid = false;
     }
     if (!addFormData.set) {
       isSubmit = false;
+      setErrorMessage('Please enter set')
+      validationErr.set = true;
     } else {
       validationErr.set = false;
     }
     if (!addFormData.name) {
       isSubmit = false;
+      setErrorMessage('Please enter name')
+      validationErr.name = true;
     } else {
       validationErr.name = false;
     }
@@ -126,6 +132,9 @@ export default function Customer() {
     let isSubmit = true;
     if (!editCustomer.customer_id) {
       isSubmit = false;
+      setErrorMessage('Please enter CID')
+      validationErr.cid = true;
+
     } else {
       validationErr.cid = false;
     }
@@ -136,6 +145,8 @@ export default function Customer() {
     }
     if (!editCustomer.name) {
       isSubmit = false;
+      setErrorMessage('Please enter name')
+      validationErr.name = true;
     } else {
       validationErr.name = false;
     }
@@ -205,8 +216,11 @@ export default function Customer() {
     if (e != "") {
       validateErr.set = false;
     } else {
-      validateErr.set = "Please select set";
+      validateErr.set = true;
+      setErrorMessage('Please select set');
     }
+
+
     setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
     const newFormData = { ...addFormData };
@@ -229,7 +243,9 @@ export default function Customer() {
     if (e != "") {
       validateErr.set = false;
     } else {
-      validateErr.set = "Please select set";
+      validateErr.set = true;
+      setErrorMessage('Please select set');
+
     }
     setValidationError(validateErr);
     const fdata = setData.filter((item) => item.set === e);
@@ -428,6 +444,7 @@ export default function Customer() {
                         placeholder="Enter ID"
                         value={addFormData.customer_id}
                         requiredIndicator={true}
+                        error={validationError.customer_id}
                         onChange={(e) => addFormHandler(e, "customer_id")}
                       />
                     </div>
@@ -438,6 +455,7 @@ export default function Customer() {
                         name="name"
                         placeholder="Enter name"
                         value={addFormData.name}
+                        error={validationError.name}
                         requiredIndicator={true}
                         onChange={(e) => addFormHandler(e, "name")}
                       />
@@ -474,6 +492,7 @@ export default function Customer() {
                         id="set"
                         options={setOptions}
                         value={selectedSet}
+                        error={validationError.set}
                         requiredIndicator={true}
                         onChange={(e) => onChangeSet(e)}
                         required

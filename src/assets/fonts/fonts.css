@@ -276,6 +276,10 @@ li.Polaris-List__Item a.active {
     align-items: center;
 }
 
+.col.textarea>div {
+    align-items: flex-start;
+}
+
 .col {
     margin-bottom: 10px;
 }
@@ -492,19 +496,23 @@ select option{
     align-items: center;
     background: #fff;
     box-shadow: var(--p-shadow-md);
+    gap: 10px;
 }
 .row.calculator-table > div {
     display: flex;
     align-items: center;
+    border-right: 2px solid #ccc;
+}
+.row.calculator-table > div:last-child {
+    border-right: 0;
 }
 .row.calculator-table .Polaris-Labelled__LabelWrapper {
     margin-right: 0;
     margin-bottom: 0;
-}
-.row.calculator-table .Polaris-Labelled__LabelWrapper {
-    margin-right: 0;
     justify-content: center;
+    min-width: auto;
 }
+
 tfoot {
     background: #007a5c;
 }
@@ -572,7 +580,7 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
 .calculator-table .Polaris-TextField__Input {
     max-height: 25px;
     height: 22px;
-    padding: 3px 10px;
+    padding: 3px 0px 3px 10px;
     min-height: auto;
     font-size: 14px;
 }
@@ -619,6 +627,10 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
 }
 .Polaris-Labelled__LabelWrapper {
     margin-bottom: 6px;
+    min-width: 125px;
+}
+.Polaris-Button__Content {
+    white-space: nowrap;
 }
 .login-wrapper {
     display: flex;
