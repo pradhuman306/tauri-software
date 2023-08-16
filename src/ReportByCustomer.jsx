@@ -30,6 +30,7 @@ export default function ReportByCustomer() {
   const [end, setEnd] = useState("");
   const [checked, setChecked] = useState(false);
   const [customersOptions, setcustomersOptions] = useState([]);
+  const [printReportdata, setprintReportdata] = useState([]);
   const [selectedCId, setCID] = useState("");
 
   const handleChange = async (id,value) => {
@@ -158,6 +159,7 @@ export default function ReportByCustomer() {
       }
       // id loop
       var reportList = [];
+      var printReportList = [];
       for (let index = 0; index < customerIds.length; index++) {
         var CID = customerIds[index];
         // date loop
@@ -212,8 +214,10 @@ export default function ReportByCustomer() {
       if(tmp.length == 0){
         checked = true;
       }
-
-       
+      calculateData.printdata.id= CID;
+      calculateData.printdata.date= vDate;
+      calculateData.printdata.name= cdata[0] ? cdata[0]["name"] : "";
+      printReportList.push(calculateData.printdata);
 
           if (CID && calculateData) {
             reportList.push({
@@ -238,6 +242,8 @@ export default function ReportByCustomer() {
         return dateA - dateB;
       });
       setreportData(reportList);
+      console.log(printReportList);
+      setprintReportdata(printReportList);
     } else {
       setTabActive(false);
       setreportData([]);
@@ -277,8 +283,6 @@ export default function ReportByCustomer() {
         }),
         {}
       );
-
-
       var totalDayData = [];
       totalDayData["amount"] = 0;
       totalDayData["pana_amount"] = 0;
@@ -360,8 +364,63 @@ export default function ReportByCustomer() {
       }else{
         var customer2Risk = 0;
       }
-      var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
+      var type = ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) ? "Negative" : "Positive";
+      // total day night calculation
+
+      var day_winning_amount = 0;
+      day_winning_amount += (totalDayData['khula_amount']) * newFormData['multiple'];
+      day_winning_amount += (totalDayData['sp_amount']) * newFormData['sp'];
+      day_winning_amount += (totalDayData['dp_amount']) * newFormData['dp'];
+      day_winning_amount += (totalDayData['jodi_amount']) * newFormData['jodi'];
+      day_winning_amount += (totalDayData['tp_amount']) * newFormData['tp'];
+      var day_amount_commision = (((totalDayData['amount']) * newFormData['commission']) / 100);
+      var day_pana_commision = (((totalDayData['pana_amount']) * newFormData['pana']) / 100);
+      var day_sec_sub_total = day_winning_amount + day_pana_commision + day_amount_commision;
+      var day_SUB_TOTAL = day_sec_sub_total - (totalDayData['amount']) - (totalDayData['pana_amount']);
+      var day_partnership_percent = newFormData['partnership']?(day_SUB_TOTAL * newFormData['partnership'] / 100):0;
+      var DAY_TOTAL = day_SUB_TOTAL - day_partnership_percent;
+      if (DAY_TOTAL) {
+        DAY_TOTAL = DAY_TOTAL.toFixed(2);
+        if ((totalDayData['amount']) > DAY_TOTAL) {
+          DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Dr.';
+        } else {
+          DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Cr.';
+        }
+      }
+
+      var night_winning_amount = 0;
+      night_winning_amount += (totalNightData['khula_amount']) * newFormData['multiple'];
+      night_winning_amount += (totalNightData['sp_amount']) * newFormData['sp'];
+      night_winning_amount += (totalNightData['dp_amount']) * newFormData['dp'];
+      night_winning_amount += (totalNightData['jodi_amount']) * newFormData['jodi'];
+      night_winning_amount += (totalNightData['tp_amount']) * newFormData['tp'];
+      var night_amount_commision = (((totalNightData['amount']) * newFormData['commission']) / 100);
+      var night_pana_commision = (((totalNightData['pana_amount']) * newFormData['pana']) / 100);
+      var night_sec_sub_total = night_winning_amount + night_pana_commision + night_amount_commision;
+      var night_SUB_TOTAL = night_sec_sub_total - (totalNightData['amount']) - (totalNightData['pana_amount']);
+      var night_partnership_percent = newFormData['partnership']?(night_SUB_TOTAL * newFormData['partnership'] / 100):0;
+      var night_TOTAL = night_SUB_TOTAL - night_partnership_percent;
+      if (night_TOTAL) {
+        night_TOTAL = night_TOTAL.toFixed(2);
+        if ((totalNightData['amount']) > night_TOTAL) {
+          night_TOTAL = Math.abs(night_TOTAL) + ' Dr.';
+        } else {
+          night_TOTAL = Math.abs(night_TOTAL) + ' Cr.';
+        }
+      }
+      // total day night calculation end
+      let printdata = {
+        'totalDayData':totalDayData,
+        'totalNightData':totalNightData,
+        'newFormData':newFormData,
+        'result':result,
+        'DAY_TOTAL':DAY_TOTAL,
+        'night_TOTAL':night_TOTAL,
+        total: TOTAL,
+        type : type,
+      }
       var arr = {
+        printdata:printdata,
         total: TOTAL,
         type : type,
         customer2:newFormData['customer_id2']?newFormData['customer_id2']['customer_id']:'',
@@ -370,7 +429,6 @@ export default function ReportByCustomer() {
       }
       return arr;
     } // length condition
-    
   }
 
   const onchangeHandler = (value, param) => {
@@ -495,29 +553,196 @@ export default function ReportByCustomer() {
         title="Report By Customer"
       >
         <Button onClick={()=> navigate('/report')}>Report By Date</Button>
-        {tabActive ? (
+        {printReportdata.length ? (
           <>
-            <LegacyCard>
-              <DataTable
-                columnContentTypes={["text", "text", "text","text", "text"]}
-                headings={["Date", "Name", "Credit", "Debit","Customer2","Total","Status"]}
-                rows={rows}
-                hasZebraStripingOnData
-                increasedTableDensity
-                defaultSortDirection="descending"
-              />
-            </LegacyCard>
+            <div>
+              {
+    printReportdata.map((obj,index) => {
+      console.log(obj);
+      return <div className="table-warp" key={index}>
+      <table key={index} className="printreporttable">
+      <thead>
+<tr>
+  <th colSpan="3">{obj.name} </th>
+  <th colSpan="5">{obj.date}</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>{obj.newFormData.commission} <br/>Commision</td>
+  <td>{obj.newFormData.partnership} <br/>Partnership</td>
+  <td rowSpan="2">{obj.newFormData.pana} <br /> Pana-commision</td>
+  <td rowSpan="2">{obj.newFormData.multiple} <br/>Multiple</td>
+  <td rowSpan="2">{obj.newFormData.sp} <br/> SP</td>
+  <td rowSpan="2">{obj.newFormData.dp} <br/>DP</td>
+  <td rowSpan="2"> {obj.newFormData.jodi} <br/> J </td>
+  <td rowSpan="2">{obj.newFormData.tp} <br/> TP</td>
+</tr>
+<tr>
+  <td></td>
+  <th>Amount</th>
+</tr>
+<tr>
+  <th>TO </th>
+  <td>{obj.result['TO']?obj.result['TO'].amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].pana_amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].khula_amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].sp_amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].dp_amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].jodi_amount:''}</td>
+  <td>{obj.result['TO']?obj.result['TO'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th>TK </th>
+  <td>{obj.result['TK']?obj.result['TK'].amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].pana_amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].khula_amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].sp_amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].dp_amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].jodi_amount:''}</td>
+  <td>{obj.result['TK']?obj.result['TK'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> MO</th>
+  <td>{obj.result['MO']?obj.result['MO'].amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].pana_amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].khula_amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].sp_amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].dp_amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].jodi_amount:''}</td>
+  <td>{obj.result['MO']?obj.result['MO'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> KO</th>
+  <td>{obj.result['KO']?obj.result['KO'].amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].pana_amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].khula_amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].sp_amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].dp_amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].jodi_amount:''}</td>
+  <td>{obj.result['KO']?obj.result['KO'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> MK</th>
+  <td>{obj.result['MK']?obj.result['MK'].amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].pana_amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].khula_amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].sp_amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].dp_amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].jodi_amount:''}</td>
+  <td>{obj.result['MK']?obj.result['MK'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> KK</th>
+  <td>{obj.result['KK']?obj.result['KK'].amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].pana_amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].khula_amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].sp_amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].dp_amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].jodi_amount:''}</td>
+  <td>{obj.result['KK']?obj.result['KK'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> Total 1</th>
+  <th>{obj.totalDayData.amount?obj.totalDayData.amount:''}</th>
+  <th>{obj.totalDayData.pana_amount?obj.totalDayData.pana_amount:''}</th>
+  <th>{obj.totalDayData.khula_amount?obj.totalDayData.khula_amount:''}</th>
+  <th>{obj.totalDayData.sp_amount?obj.totalDayData.sp_amount:''}</th>
+  <th>{obj.totalDayData.dp_amount?obj.totalDayData.dp_amount:''}</th>
+  <th>{obj.totalDayData.jodi_amount?obj.totalDayData.jodi_amount:''}</th>
+  <th>{obj.totalDayData.tp_amount?obj.totalDayData.tp_amount:''}</th>
+</tr>
+<tr>
+  <th> MO2</th>
+  <td>{obj.result['MO2']?obj.result['MO2'].amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].pana_amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].khula_amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].sp_amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].dp_amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].jodi_amount:''}</td>
+  <td>{obj.result['MO2']?obj.result['MO2'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> BO</th>
+  <td>{obj.result['BO']?obj.result['BO'].amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].pana_amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].khula_amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].sp_amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].dp_amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].jodi_amount:''}</td>
+  <td>{obj.result['BO']?obj.result['BO'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> MK2</th>
+  <td>{obj.result['MK2']?obj.result['MK2'].amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].pana_amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].khula_amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].sp_amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].dp_amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].jodi_amount:''}</td>
+  <td>{obj.result['MK2']?obj.result['MK2'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th> BK</th>
+  <td>{obj.result['BK']?obj.result['BK'].amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].pana_amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].khula_amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].sp_amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].dp_amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].jodi_amount:''}</td>
+  <td>{obj.result['BK']?obj.result['BK'].tp_amount:''}</td>
+</tr>
+<tr>
+  <th>Total 2</th>
+  <th>{obj.totalNightData.amount?obj.totalNightData.amount:''}</th>
+  <th>{obj.totalNightData.pana_amount?obj.totalNightData.pana_amount:''}</th>
+  <th>{obj.totalNightData.khula_amount?obj.totalNightData.khula_amount:''}</th>
+  <th>{obj.totalNightData.sp_amount?obj.totalNightData.sp_amount:''}</th>
+  <th>{obj.totalNightData.dp_amount?obj.totalNightData.dp_amount:''}</th>
+  <th>{obj.totalNightData.jodi_amount?obj.totalNightData.jodi_amount:''}</th>
+  <th>{obj.totalNightData.tp_amount?obj.totalNightData.tp_amount:''}</th>
+</tr>
+<tr>
+  <th>Total</th>
+  <th>{obj.totalDayData.amount+obj.totalNightData.amount}</th>
+  <th>{obj.totalDayData.pana_amount+obj.totalNightData.pana_amount}</th>
+  <th>{obj.totalDayData.khula_amount+obj.totalNightData.khula_amount}</th>
+  <th>{obj.totalDayData.sp_amount+obj.totalNightData.sp_amount}</th>
+  <th>{obj.totalDayData.dp_amount+obj.totalNightData.dp_amount}</th>
+  <th>{obj.totalDayData.jodi_amount+obj.totalNightData.jodi_amount}</th>
+  <th>{obj.totalDayData.tp_amount+obj.totalNightData.tp_amount}</th>
+</tr>
+<tr>
+  <th>Final Total</th>
+  <th>{obj.total+''+(obj.type == "Positive"?' CR':' DR')}</th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th></th>
+  
+</tr>
+</tbody>
+</table>
+</div>
+
+    })
+              }
+
+             
+            </div>
             <div className="btn-wrap print-btn">
               <ButtonGroup>
                 <Button onClick={(e) => window.print()} primary>
                   Print
                 </Button>
-                <Button destructive onClick={(e) => modalOpen("deleteReport")}>
+                {/* <Button destructive onClick={(e) => modalOpen("deleteReport")}>
                   Delete
                 </Button>
                 <Button onClick={(e) => modalOpen('cashBook')} >
                   Add To Cashbook
-                </Button>
+                </Button> */}
               </ButtonGroup>
             </div>
           </>

@@ -705,3 +705,13 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
         display: none;
     }
 }
+
+table.printreporttable, .printreporttable tr, .printreporttable td {
+    border-collapse: collapse;
+    border: 2px solid #ddd;
+}
+.printreporttable td, .printreporttable th {
+    padding: 10px;
+    min-width: 100px;
+    text-align: center;
+}

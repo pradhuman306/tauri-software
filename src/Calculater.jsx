@@ -215,7 +215,7 @@ export default function Calculater() {
     var pana_commision = (((totalDayData['pana_amount'] + totalNightData['pana_amount']) * addFormData.pana) / 100);
     var sec_sub_total = winning_amount + pana_commision + amount_commision;
     var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
-    var partnership_percent = SUB_TOTAL * addFormData.partnership / 100;
+    var partnership_percent = addFormData.partnership?(SUB_TOTAL * addFormData.partnership / 100):0;
     var TOTAL = SUB_TOTAL - partnership_percent;
 
     if(addFormData.partnership2 && addFormData.partnership2 != ""){
@@ -234,7 +234,7 @@ export default function Calculater() {
     var day_pana_commision = (((totalDayData['pana_amount']) * addFormData.pana) / 100);
     var day_sec_sub_total = day_winning_amount + day_pana_commision + day_amount_commision;
     var day_SUB_TOTAL = day_sec_sub_total - (totalDayData['amount']) - (totalDayData['pana_amount']);
-    var day_partnership_percent = day_SUB_TOTAL * addFormData.partnership / 100;
+    var day_partnership_percent = addFormData.partnership?(day_SUB_TOTAL * addFormData.partnership / 100):0;
     var DAY_TOTAL = day_SUB_TOTAL - day_partnership_percent;
     if (DAY_TOTAL) {
       DAY_TOTAL = DAY_TOTAL.toFixed(2);
@@ -256,7 +256,7 @@ export default function Calculater() {
     var night_pana_commision = (((totalNightData['pana_amount']) * addFormData.pana) / 100);
     var night_sec_sub_total = night_winning_amount + night_pana_commision + night_amount_commision;
     var night_SUB_TOTAL = night_sec_sub_total - (totalNightData['amount']) - (totalNightData['pana_amount']);
-    var night_partnership_percent = night_SUB_TOTAL * addFormData.partnership / 100;
+    var night_partnership_percent = addFormData.partnership?(night_SUB_TOTAL * addFormData.partnership / 100):0;
     var night_TOTAL = night_SUB_TOTAL - night_partnership_percent;
     if (night_TOTAL) {
       night_TOTAL = night_TOTAL.toFixed(2);
@@ -269,7 +269,7 @@ export default function Calculater() {
     setNightTotal(night_TOTAL);
 
     if (TOTAL) {
-      if ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
+      if (addFormData.limit && (totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
       if(Number(addFormData.limit) < Math.abs(TOTAL)){
         setIsVisible(true);
       }else{

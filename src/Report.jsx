@@ -353,7 +353,9 @@ export default function Report() {
       }else{
         var customer2Risk = 0;
       }
-      var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
+      // var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
+      var type = ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) ? "Negative" : "Positive";
+
       var arr = {
         total: TOTAL,
         type : type,
