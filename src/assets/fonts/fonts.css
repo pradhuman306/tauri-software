@@ -433,12 +433,15 @@ select option{
 .Polaris-ButtonGroup__Item {
     max-width: 202px;
 }
+.Polaris-Box--printHidden>.Polaris-ButtonGroup .Polaris-ButtonGroup__Item {
+    max-width: initial;
+}
 .col.subHeader .Polaris-Labelled__LabelWrapper {
     margin-bottom: 0;
 }
 
 .col.subHeader .Polaris-Labelled__LabelWrapper {
-    width: 220px;
+    min-width: auto;
 }
 .col.subHeader .Polaris-Label__Text {
     font-weight: normal;
@@ -700,10 +703,19 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
     margin-top:25px;
 }
 
-@media print {
-    .print-btn {
-        display: none;
-    }
+.report-table-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.table-warp {
+    width: calc(50% - 8px);
+}
+
+.printreporttable {
+    width: 100%;
 }
 
 table.printreporttable, .printreporttable tr, .printreporttable td {
@@ -712,6 +724,39 @@ table.printreporttable, .printreporttable tr, .printreporttable td {
 }
 .printreporttable td, .printreporttable th {
     padding: 10px;
-    min-width: 100px;
+    min-width: 70px;
     text-align: center;
+}
+
+.Polaris-Page-Header__PrimaryActionWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+@media print {
+    .print-btn {
+        display: none;
+    }
+    .printreporttable td, .printreporttable th {
+        min-width: 40px;
+        padding: 5px 2px;
+    }
+    .printreporttable {
+        font-size: 8px;
+        line-height: 12px;
+    }
+    .Polaris-Page--fullWidth {
+        max-width: 100%;
+        padding: 0;
+    }
+    .Polaris-Box, .main-head {
+        display: none;
+    }
+    .Polaris-Frame__Main {
+        padding: 0;
+    }
+    .table-warp:nth-child(4n+1) {
+        page-break-before: always;
+    }
 }

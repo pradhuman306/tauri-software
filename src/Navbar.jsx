@@ -229,9 +229,8 @@ export default function Navbar() {
   };
   return (
 
-    <div style={{ height: '56px' }}>
+    <div style={{ height: '56px' }} className="main-head">
       <Frame topBar={topBarMarkup} logo={logo} />
-    
     </div>
   );
 }

@@ -449,6 +449,8 @@ export default function Report() {
       fullWidth
         primaryAction={
           <ButtonGroup>
+            
+        <Button onClick={()=> navigate('/reportbycustomer')}>Report By Customer</Button>
              <div className="col subHeader">
             <TextField
             label="From"
@@ -477,7 +479,6 @@ export default function Report() {
         }
         title="Report"
       >
-        <Button onClick={()=> navigate('/reportbycustomer')}>Report By Customer</Button>
         {tabActive ? (
           <>
             <LegacyCard>

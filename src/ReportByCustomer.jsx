@@ -514,17 +514,15 @@ export default function ReportByCustomer() {
       fullWidth
         primaryAction={
           <ButtonGroup>
-             <div className="col subHeader">
-
-             <Select
-                  label="Customer"
+            <Button onClick={()=> navigate('/report')}>Report By Date</Button> 
+            <Select
                   name="name"
                   id="name"
                   options={customersOptions}
                   value={selectedCId}
                   onChange={(e) => onchangeHandler(e,'cid')}
                 />
-
+             <div className="col subHeader">
             <TextField
             label="From"
               type="date"
@@ -552,10 +550,10 @@ export default function ReportByCustomer() {
         }
         title="Report By Customer"
       >
-        <Button onClick={()=> navigate('/report')}>Report By Date</Button>
+        
         {printReportdata.length ? (
           <>
-            <div>
+            <div className="report-table-wrapper">
               {
     printReportdata.map((obj,index) => {
       console.log(obj);
