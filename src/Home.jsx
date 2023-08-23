@@ -201,7 +201,7 @@ export default function Home() {
     var reportList = [];
     for (let index = 0; index < entries.length; index++) {
       var CID = entries[index].customer_id;
- 
+      var MAIN_ID = entries[index].id;
         // calculations 
         var cdata = customers.filter(
           (item) => item.customer_id === CID
@@ -222,7 +222,7 @@ export default function Home() {
         var getData = entries.filter(function (a) {
           var aDate = new Date(a.date);
           return (
-             a.customer_id == CID
+             a.id == MAIN_ID
           );
         });
   
@@ -281,12 +281,6 @@ export default function Home() {
           var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
           var partnership_percent = SUB_TOTAL * newFormData['partnership'] / 100;
           var TOTAL = SUB_TOTAL - partnership_percent;
-          if(newFormData["partnership2"] && newFormData["partnership2"] != ""){
-            var customer2Risk = ((SUB_TOTAL * newFormData["partnership2"]) / 100);
-          }else{
-            var customer2Risk = 0;
-          }
-          TOTAL = TOTAL - customer2Risk;
           totalBalance+=TOTAL;
         } // length condition
   

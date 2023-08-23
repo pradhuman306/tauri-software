@@ -317,6 +317,7 @@ li.Polaris-List__Item a.active {
 td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop {
     border-left: 1px solid #ccc;
     text-align: center;
+    min-width: 115px;
 }
 th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--firstColumn {
     text-align: center;
