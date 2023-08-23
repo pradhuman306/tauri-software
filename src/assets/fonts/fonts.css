@@ -459,7 +459,7 @@ select option{
     max-width: 210px;
 }
 .Polaris-Page--fullWidth {
-    max-width: 80%;
+    max-width: 90%;
 }
 .Polaris-DataTable__Cell--firstColumn {
     white-space: nowrap;
