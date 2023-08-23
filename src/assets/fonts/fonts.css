@@ -735,6 +735,15 @@ table.printreporttable, .printreporttable tr, .printreporttable td {
     justify-content: end;
 }
 
+a.Polaris-TopBar__LogoLink {
+    background: url(/src/assets/logo-flat.svg) no-repeat center/ cover;
+    height: 35px;
+}
+
+.Polaris-TopBar__LogoLink .Polaris-TopBar__Logo {
+    opacity: 0;
+}
+
 @media print {
     .print-btn {
         display: none;
