@@ -108,17 +108,17 @@ export default function Calculater() {
     setCID(value);
     const newFormData = { ...addFormData };
     newFormData["customer_id"] = value;
-    newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
-    newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
-    newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
-    newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
-    newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
-    newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
-    newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
-    newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
-    newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
-    newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
-    newFormData["limit"] = cdata[0] ? cdata[0]["limit"] : null;
+    newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : "";
+    newFormData["dp"] = cdata[0] && cdata[0]["dp"] ? cdata[0]["dp"] : "";
+    newFormData["jodi"] = cdata[0] && cdata[0]["jodi"]? cdata[0]["jodi"] : "";
+    newFormData["multiple"] = cdata[0] && cdata[0]["multiple"] ? cdata[0]["multiple"] : "";
+    newFormData["pana"] = cdata[0] && cdata[0]["pana"]? cdata[0]["pana"] : "";
+    newFormData["partnership"] = cdata[0] && cdata[0]["partnership"] ? cdata[0]["partnership"] : "";
+    newFormData["partnership2"] = cdata[0] && cdata[0]["partnership2"] ? cdata[0]["partnership2"] : "";
+    newFormData["set"] = cdata[0] && cdata[0]["set"] ? cdata[0]["set"] : "";
+    newFormData["tp"] = cdata[0] && cdata[0]["tp"]? cdata[0]["tp"] : "";
+    newFormData["sp"] = cdata[0] &&  cdata[0]["sp"] ? cdata[0]["sp"] : "";
+    newFormData["limit"] = cdata[0] && cdata[0]["limit"] ? cdata[0]["limit"] : null;
     setAddFormData(newFormData);
     calculations(value, selectedDate);
   };
@@ -206,61 +206,63 @@ export default function Calculater() {
     setDisplayData(result);
     // hidden calculation
     var winning_amount = 0;
-    winning_amount += (totalDayData['khula_amount'] + totalNightData['khula_amount']) * addFormData.multiple;
-    winning_amount += (totalDayData['sp_amount'] + totalNightData['sp_amount']) * addFormData.sp;
-    winning_amount += (totalDayData['dp_amount'] + totalNightData['dp_amount']) * addFormData.dp;
-    winning_amount += (totalDayData['jodi_amount'] + totalNightData['jodi_amount']) * addFormData.jodi;
-    winning_amount += (totalDayData['tp_amount'] + totalNightData['tp_amount']) * addFormData.tp;
-    var amount_commision = (((totalDayData['amount'] + totalNightData['amount']) * addFormData.commission) / 100);
-    var pana_commision = (((totalDayData['pana_amount'] + totalNightData['pana_amount']) * addFormData.pana) / 100);
+    winning_amount += (totalDayData['khula_amount'] + totalNightData['khula_amount']) * Number(addFormData.multiple);
+    winning_amount += (totalDayData['sp_amount'] + totalNightData['sp_amount']) * Number(addFormData.sp);
+    winning_amount += (totalDayData['dp_amount'] + totalNightData['dp_amount']) * Number(addFormData.dp);
+    winning_amount += (totalDayData['jodi_amount'] + totalNightData['jodi_amount']) * Number(addFormData.jodi);
+    winning_amount += (totalDayData['tp_amount'] + totalNightData['tp_amount']) * Number(addFormData.tp);
+    var amount_commision = (((totalDayData['amount'] + totalNightData['amount']) * Number(addFormData.commission)) / 100);
+    var pana_commision = (((totalDayData['pana_amount'] + totalNightData['pana_amount']) * Number(addFormData.pana)) / 100);
     var sec_sub_total = winning_amount + pana_commision + amount_commision;
     var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
-    var partnership_percent = addFormData.partnership?(SUB_TOTAL * addFormData.partnership / 100):0;
+    var partnership_percent = Number(addFormData.partnership)?(SUB_TOTAL * addFormData.partnership / 100):0;
     var TOTAL = SUB_TOTAL - partnership_percent;
 
-    if(addFormData.partnership2 && addFormData.partnership2 != ""){
+    if(Number(addFormData.partnership2) && addFormData.partnership2 != ""){
       var customer2Risk = ((SUB_TOTAL * addFormData.partnership2) / 100);
     }else{
       var customer2Risk = 0;
     }
 
     var day_winning_amount = 0;
-    day_winning_amount += (totalDayData['khula_amount']) * addFormData.multiple;
-    day_winning_amount += (totalDayData['sp_amount']) * addFormData.sp;
-    day_winning_amount += (totalDayData['dp_amount']) * addFormData.dp;
-    day_winning_amount += (totalDayData['jodi_amount']) * addFormData.jodi;
-    day_winning_amount += (totalDayData['tp_amount']) * addFormData.tp;
-    var day_amount_commision = (((totalDayData['amount']) * addFormData.commission) / 100);
-    var day_pana_commision = (((totalDayData['pana_amount']) * addFormData.pana) / 100);
+    day_winning_amount += (totalDayData['khula_amount']) * Number(addFormData.multiple);
+    day_winning_amount += (totalDayData['sp_amount']) * Number(addFormData.sp);
+    day_winning_amount += (totalDayData['dp_amount']) * Number(addFormData.dp);
+    day_winning_amount += (totalDayData['jodi_amount']) * Number(addFormData.jodi);
+    day_winning_amount += (totalDayData['tp_amount']) * Number(addFormData.tp);
+    var day_amount_commision = (((totalDayData['amount']) * Number(addFormData.commission)) / 100);
+    var day_pana_commision = (((totalDayData['pana_amount']) * Number(addFormData.pana)) / 100);
     var day_sec_sub_total = day_winning_amount + day_pana_commision + day_amount_commision;
     var day_SUB_TOTAL = day_sec_sub_total - (totalDayData['amount']) - (totalDayData['pana_amount']);
-    var day_partnership_percent = addFormData.partnership?(day_SUB_TOTAL * addFormData.partnership / 100):0;
+    var day_partnership_percent = Number(addFormData.partnership)?(day_SUB_TOTAL * addFormData.partnership / 100):0;
     var DAY_TOTAL = day_SUB_TOTAL - day_partnership_percent;
     if (DAY_TOTAL) {
       DAY_TOTAL = DAY_TOTAL.toFixed(2);
-      if ((totalDayData['amount']) > DAY_TOTAL) {
+      if (DAY_TOTAL > day_sec_sub_total) {
         DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Dr.';
       } else {
         DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Cr.';
       }
+
     }
+    console.log(DAY_TOTAL);
     setDayTotal(DAY_TOTAL);
 
     var night_winning_amount = 0;
-    night_winning_amount += (totalNightData['khula_amount']) * addFormData.multiple;
-    night_winning_amount += (totalNightData['sp_amount']) * addFormData.sp;
-    night_winning_amount += (totalNightData['dp_amount']) * addFormData.dp;
-    night_winning_amount += (totalNightData['jodi_amount']) * addFormData.jodi;
-    night_winning_amount += (totalNightData['tp_amount']) * addFormData.tp;
-    var night_amount_commision = (((totalNightData['amount']) * addFormData.commission) / 100);
-    var night_pana_commision = (((totalNightData['pana_amount']) * addFormData.pana) / 100);
+    night_winning_amount += (totalNightData['khula_amount']) * Number(addFormData.multiple);
+    night_winning_amount += (totalNightData['sp_amount']) * Number(addFormData.sp);
+    night_winning_amount += (totalNightData['dp_amount']) * Number(addFormData.dp);
+    night_winning_amount += (totalNightData['jodi_amount']) * Number(addFormData.jodi);
+    night_winning_amount += (totalNightData['tp_amount']) * Number(addFormData.tp);
+    var night_amount_commision = (((totalNightData['amount']) * Number(addFormData.commission)) / 100);
+    var night_pana_commision = (((totalNightData['pana_amount']) * Number(addFormData.pana)) / 100);
     var night_sec_sub_total = night_winning_amount + night_pana_commision + night_amount_commision;
     var night_SUB_TOTAL = night_sec_sub_total - (totalNightData['amount']) - (totalNightData['pana_amount']);
-    var night_partnership_percent = addFormData.partnership?(night_SUB_TOTAL * addFormData.partnership / 100):0;
+    var night_partnership_percent = Number(addFormData.partnership)?(night_SUB_TOTAL * addFormData.partnership / 100):0;
     var night_TOTAL = night_SUB_TOTAL - night_partnership_percent;
     if (night_TOTAL) {
       night_TOTAL = night_TOTAL.toFixed(2);
-      if ((totalNightData['amount']) > night_TOTAL) {
+      if (night_TOTAL > night_sec_sub_total) {
         night_TOTAL = Math.abs(night_TOTAL) + ' Dr.';
       } else {
         night_TOTAL = Math.abs(night_TOTAL) + ' Cr.';
@@ -269,7 +271,7 @@ export default function Calculater() {
     setNightTotal(night_TOTAL);
 
     if (TOTAL) {
-      if (addFormData.limit && (totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
+      if (Number(addFormData.limit) && (totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
       if(Number(addFormData.limit) < Math.abs(TOTAL)){
         setIsVisible(true);
       }else{
@@ -277,7 +279,9 @@ export default function Calculater() {
       }
     }
       TOTAL = TOTAL.toFixed(2);
-      if ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) {
+      var FINAL_TOTAL = totalDayData['amount'] + totalNightData['amount'];
+      var CUSTOMER_TOTAL = day_sec_sub_total + night_sec_sub_total;
+      if (FINAL_TOTAL > CUSTOMER_TOTAL) {
         TOTAL = Math.abs(TOTAL) + ' Dr.';
       } else {
         TOTAL = Math.abs(TOTAL) + ' Cr.';

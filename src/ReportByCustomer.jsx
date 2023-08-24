@@ -248,7 +248,7 @@ export default function ReportByCustomer() {
       setTabActive(false);
       setreportData([]);
       setentries(filterentries);
-      setErrorMessage("Please select date");
+      setErrorMessage("Please select field");
     }
   };
 
@@ -438,6 +438,9 @@ export default function ReportByCustomer() {
       setEnd(value);
     }else if(param == 'cid'){
         setCID(value);
+    }
+    if (start != "" && end != "") {
+      searchData();
     }
   };
   const deleteEntries = async () => {

@@ -158,6 +158,7 @@ export default function Report() {
           var vDate = datevise[index];
           // calculations
           var cdata = customers.filter((item) => item.customer_id === CID);
+          if(cdata && cdata.length){
           var newFormData = [];
           if(cdata && cdata[0] && cdata[0]['customer_id2']){
             var customer2data = customers.filter((item) => item.customer_id === cdata[0]['customer_id2']);
@@ -165,16 +166,17 @@ export default function Report() {
           }else{
           newFormData["customer_id2"] = []
           }
-          newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
-          newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
-          newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
-          newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
-          newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
-          newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
-          newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
-          newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
-          newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
-          newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
+          newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : "";
+          newFormData["dp"] = cdata[0] && cdata[0]["dp"] ? cdata[0]["dp"] : "";
+          newFormData["jodi"] = cdata[0] && cdata[0]["jodi"]? cdata[0]["jodi"] : "";
+          newFormData["multiple"] = cdata[0] && cdata[0]["multiple"] ? cdata[0]["multiple"] : "";
+          newFormData["pana"] = cdata[0] && cdata[0]["pana"]? cdata[0]["pana"] : "";
+          newFormData["partnership"] = cdata[0] && cdata[0]["partnership"] ? cdata[0]["partnership"] : "";
+          newFormData["partnership2"] = cdata[0] && cdata[0]["partnership2"] ? cdata[0]["partnership2"] : "";
+          newFormData["set"] = cdata[0] && cdata[0]["set"] ? cdata[0]["set"] : "";
+          newFormData["tp"] = cdata[0] && cdata[0]["tp"]? cdata[0]["tp"] : "";
+          newFormData["sp"] = cdata[0] &&  cdata[0]["sp"] ? cdata[0]["sp"] : "";
+
           //
           var startDate = new Date(vDate + " 00:00:01");
           var endDate = new Date(vDate + " 23:59:59");
@@ -207,8 +209,7 @@ export default function Report() {
       }
 
        
-
-          if (CID && calculateData) {
+          if (CID && cdata && cdata[0] && calculateData) {
             reportList.push({
               id: CID,
               date: vDate,
@@ -223,6 +224,7 @@ export default function Report() {
               type:calculateData.type
             });
           }
+        }
         } // date loop end
       } // customer id loop end
       reportList.sort(function compare(a, b) {
@@ -353,9 +355,11 @@ export default function Report() {
       }else{
         var customer2Risk = 0;
       }
-      // var type = parseInt(TOTAL) > 0 ? "Positive" : "Negative";
-      var type = ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) ? "Negative" : "Positive";
-
+      if ((totalDayData['amount'] + totalNightData['amount']) > sec_sub_total) {
+      var type = "Negative";
+      }else{
+      var type = "Positive";
+      }
       var arr = {
         total: TOTAL,
         type : type,
@@ -373,6 +377,9 @@ export default function Report() {
       setStart(value);
     } else {
       setEnd(value);
+    }
+    if (start != "" && end != "") {
+      searchData();
     }
   };
   const deleteEntries = async () => {
@@ -395,12 +402,12 @@ export default function Report() {
   const AddDatatoCashBook = (data) => {
     let newArray = [];
     data.map((obj, index) => {
-      newArray.push({id:Date.now(),cid:obj.id,credit:obj.credit?Number(obj.credit):0,debit:obj.debit?Number(obj.debit):0,date:obj.date});
+      newArray.push({id:Date.now(),cid:obj.id,credit:obj.credit?Number(obj.credit):0,debit:obj.debit?Number(obj.debit):0,date:obj.date,remark:'Added from Report.'});
       if(obj.customer2id && obj.customer2id != undefined){
         if(obj.type == 'Positive'){
-    newArray.push({id:Date.now(),cid:obj.customer2id,credit:Number(obj.customer2amount),debit:0,date:obj.date});
+    newArray.push({id:Date.now(),cid:obj.customer2id,credit:Number(obj.customer2amount),debit:0,date:obj.date,remark:'Added from Report.'});
         }else{
-    newArray.push({id:Date.now(),cid:obj.customer2id,credit:0,debit:Number(obj.customer2amount),date:obj.date});
+    newArray.push({id:Date.now(),cid:obj.customer2id,credit:0,debit:Number(obj.customer2amount),date:obj.date,remark:'Added from Report.'});
         }
       }
     })
@@ -433,7 +440,8 @@ export default function Report() {
     window.print();
   };
   const rows = [];
-  reportData.map((data, index) => {
+  if(reportData.length){
+  reportData.length &&reportData.map((data, index) => {
     let newArray = [];
     newArray.push(data.date, data.name, data.credit, data.debit, data.customer2,data.total, <Checkbox
       checked={data.checked}
@@ -442,7 +450,7 @@ export default function Report() {
     />);
     rows.push(newArray);
   });
-
+}
   return (
     <>
       <Page
@@ -479,7 +487,7 @@ export default function Report() {
         }
         title="Report"
       >
-        {tabActive ? (
+        {tabActive && reportData.length ? (
           <>
             <LegacyCard>
               <DataTable

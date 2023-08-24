@@ -207,17 +207,16 @@ export default function Home() {
           (item) => item.customer_id === CID
         );
         var newFormData = [];
-        newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
-        newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
-        newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
-        newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
-        newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
-        newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
-        newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
-        newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
-        newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
-        newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
-        //
+    newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : "";
+    newFormData["dp"] = cdata[0] && cdata[0]["dp"] ? cdata[0]["dp"] : "";
+    newFormData["jodi"] = cdata[0] && cdata[0]["jodi"]? cdata[0]["jodi"] : "";
+    newFormData["multiple"] = cdata[0] && cdata[0]["multiple"] ? cdata[0]["multiple"] : "";
+    newFormData["pana"] = cdata[0] && cdata[0]["pana"]? cdata[0]["pana"] : "";
+    newFormData["partnership"] = cdata[0] && cdata[0]["partnership"] ? cdata[0]["partnership"] : "";
+    newFormData["partnership2"] = cdata[0] && cdata[0]["partnership2"] ? cdata[0]["partnership2"] : "";
+    newFormData["set"] = cdata[0] && cdata[0]["set"] ? cdata[0]["set"] : "";
+    newFormData["tp"] = cdata[0] && cdata[0]["tp"]? cdata[0]["tp"] : "";
+    newFormData["sp"] = cdata[0] &&  cdata[0]["sp"] ? cdata[0]["sp"] : "";
      
         var getData = entries.filter(function (a) {
           var aDate = new Date(a.date);

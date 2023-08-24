@@ -20,7 +20,7 @@ export default function Entry() {
         const inputs = document.querySelectorAll("input[type='text']");
         for (let i = 0; i < inputs.length; i++) {
           inputs[i].addEventListener("keydown", function (event) {
-            if (event.keyCode === 39) {
+            if (event.keyCode === 39 || event.keyCode === 13) {
             event.preventDefault();
               console.log('aroow next');
               const nextIndex = i + 1;
@@ -222,6 +222,8 @@ export default function Entry() {
         { dir: BaseDirectory.Resource }
       );
       setMessage("Entry updated successfully");
+      onChangesetTimeZone("TO", 0);
+      setTabActive("");
     } else {
       let tmp = inputFields.filter((item) => item.customer_id != "");
       if (tmp.length) {
@@ -348,7 +350,7 @@ export default function Entry() {
         autoComplete="off"
         onChange={(evnt) => handleChange(evnt, "pana_amount", index)}
         value={inFields.pana_amount}
-        disabled={inFields.customer_id&& inFields.name!=''?inFields.isDisabled:true}
+        readOnly={inFields.customer_id&& inFields.name!=''?inFields.isDisabled:true}
         name="pana_amount"
       />,
       <TextField

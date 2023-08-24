@@ -238,7 +238,18 @@ export default function Set() {
 
   function keydown(evt){
     if (!evt) evt = event;
-   
+    const inputs = document.querySelectorAll("input");
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener("keydown", function (event) {
+        if(event.keyCode == 13){
+        event.preventDefault();
+          const nextIndex = i + 1;
+          if (nextIndex < inputs.length) {
+            inputs[nextIndex].focus();
+          } 
+        }
+        });
+    }
     if(evt.keyCode==115 && isVisible.addSet ){
       document.getElementById("addSetBtn").click();
     }else if(evt.keyCode==115 && isVisible.editSet){

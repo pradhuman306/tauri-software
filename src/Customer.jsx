@@ -289,12 +289,43 @@ export default function Customer() {
 
       console.log(error);
     }
+
+    // entries 
+    try {
+      const myfiledataEntries = await readTextFile("entries.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const dataEntries = JSON.parse(myfiledataEntries);
+      setEntries(dataEntries);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // cashbook
+    try {
+      const myfiledatasetCashbook = await readTextFile("cashbook.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const cashdata = JSON.parse(myfiledatasetCashbook);
+      setCashbook(cashdata);
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     getNotesFromFile();
   }, []);
 
   const deletehandler = async (id) => {
+    // customer 
+    var getcustomer = customers.filter(function (a) {
+      return a.id == id;
+    });
+    if(getcustomer.length){
+      var CUSTOMER_ID = getcustomer[0].customer_id;
+    }else{
+      var CUSTOMER_ID = 'notfound';
+    }
     customers = customers.filter(function (a) {
       return a.id != id;
     });
@@ -302,14 +333,32 @@ export default function Customer() {
       { path: "customers.json", contents: JSON.stringify(customers) },
       { dir: BaseDirectory.Resource }
     );
+    // cashbook 
+    cashbook = cashbook.filter(function (a) {
+      return a.cid != CUSTOMER_ID;
+    });
+    await writeTextFile(
+      { path: "cashbook.json", contents: JSON.stringify(cashbook) },
+      { dir: BaseDirectory.Resource }
+    );
+    // entries
+    Entries = Entries.filter(function (a) {
+      return a.customer_id != CUSTOMER_ID;
+    });
+    console.log(Entries);
+    await writeTextFile(
+      { path: "entries.json", contents: JSON.stringify(Entries) },
+      { dir: BaseDirectory.Resource }
+    );
     getNotesFromFile();
-
     setMessage("Customer deleted successfully");
     modalOpen("deleteCustomer");
   };
 
   // customers
   var [customers, setcustomers] = useState([]);
+  var [Entries, setEntries] = useState([]);
+  var [cashbook, setCashbook] = useState([]);
   const [editCustomer, setEditCustomer] = useState({});
   const [deleteCustomerID, setDeleteCustomerID] = useState("");
 
@@ -377,13 +426,25 @@ export default function Customer() {
 
   function keydown(evt){
     if (!evt) evt = event;
-   
+    const inputs = document.querySelectorAll("input");
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener("keydown", function (event) {
+        if(event.keyCode == 13){
+        event.preventDefault();
+          const nextIndex = i + 1;
+          if (nextIndex < inputs.length) {
+            inputs[nextIndex].focus();
+          } 
+        }
+        });
+    }
     if(evt.keyCode==115 && isVisible.addCustomer ){
       document.getElementById("addCustBtn").click();
     }else if(evt.keyCode==115 && isVisible.editCustomer){
       document.getElementById("editCustBtn").click();
-    }
-  
+    }else if(evt.keyCode == 13){
+      console.log(evt.key);
+    }else{}
   }
 
 
@@ -422,7 +483,7 @@ export default function Customer() {
           title="Add New Customer"
           primaryAction={{
             content: "Add Customer",
-            onAction: () => document.getElementById("addCustBtn").click(),
+            onClick: () => document.getElementById("addCustBtn").click(),
           }}
           secondaryActions={[
             {
@@ -432,7 +493,7 @@ export default function Customer() {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={submitHandler}>
+            <Form onSubmit={(e)=> console.log(e)}>
               <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
                   <div className="row">
@@ -600,7 +661,7 @@ export default function Customer() {
                   </div>
                 </Grid.Cell>
               </Grid>
-              <Button id="addCustBtn" submit>
+              <Button id="addCustBtn" onClick={submitHandler}>
                 Submit
               </Button>
             </Form>
