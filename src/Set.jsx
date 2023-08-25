@@ -238,7 +238,7 @@ export default function Set() {
 
   function keydown(evt){
     if (!evt) evt = event;
-    const inputs = document.querySelectorAll("input");
+    const inputs = document.querySelectorAll("input,textarea");
     for (let i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener("keydown", function (event) {
         if(event.keyCode == 13){
@@ -328,7 +328,7 @@ export default function Set() {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={submitHandler}>
+            <Form onSubmit={()=>console.log('submit')}>
               <div className="row">
                 <div className="col">
                   <TextField
@@ -444,7 +444,7 @@ export default function Set() {
                 </div>
               </div>
 
-              <Button id="addSetBtn" submit>
+              <Button id="addSetBtn" onClick={submitHandler}>
                 Submit
               </Button>
             </Form>
@@ -469,7 +469,7 @@ export default function Set() {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={updateHandler}>
+            <Form onSubmit={()=>console.log('updatesubmit')}>
               <div className="row">
                 <div className="col">
                   <TextField
@@ -583,7 +583,7 @@ export default function Set() {
                   />
                 </div>
               </div>
-              <Button id="editSetBtn" submit>
+              <Button id="editSetBtn" onClick={updateHandler}>
                 Submit
               </Button>
             </Form>

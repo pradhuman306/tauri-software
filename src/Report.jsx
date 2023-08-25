@@ -237,7 +237,7 @@ export default function Report() {
       setTabActive(false);
       setreportData([]);
       setentries(filterentries);
-      setErrorMessage("Please select date");
+      // setErrorMessage("Please select date");
     }
   };
 
@@ -360,6 +360,7 @@ export default function Report() {
       }else{
       var type = "Positive";
       }
+      TOTAL = Math.abs(TOTAL);
       var arr = {
         total: TOTAL,
         type : type,
@@ -378,10 +379,13 @@ export default function Report() {
     } else {
       setEnd(value);
     }
-    if (start != "" && end != "") {
-      searchData();
-    }
   };
+
+  useEffect(() => {
+    document.getElementById("searchBtn").click();
+  }, [start,end])
+  
+
   const deleteEntries = async () => {
     await writeTextFile(
       { path: "entries.json", contents: JSON.stringify(remainingEntries) },
@@ -476,6 +480,7 @@ export default function Report() {
               onChange={(e) => onchangeHandler(e, "end")}
             />
             <Button
+            id="searchBtn"
               primary
               onClick={(e) => {
                 searchData();

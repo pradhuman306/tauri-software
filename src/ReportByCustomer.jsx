@@ -153,6 +153,7 @@ export default function ReportByCustomer() {
       if (filteredData.length === 0) {
         setErrorMessage("No record found");
         setreportData([]);
+        setprintReportdata([]);
         return false;
       } else {
         setTabActive(true);
@@ -174,16 +175,16 @@ export default function ReportByCustomer() {
           }else{
           newFormData["customer_id2"] = []
           }
-          newFormData["commission"] = cdata[0] ? cdata[0]["commission"] : "";
-          newFormData["dp"] = cdata[0] ? cdata[0]["dp"] : "";
-          newFormData["jodi"] = cdata[0] ? cdata[0]["jodi"] : "";
-          newFormData["multiple"] = cdata[0] ? cdata[0]["multiple"] : "";
-          newFormData["pana"] = cdata[0] ? cdata[0]["pana"] : "";
-          newFormData["partnership"] = cdata[0] ? cdata[0]["partnership"] : "";
-          newFormData["partnership2"] = cdata[0] ? cdata[0]["partnership2"] : "";
-          newFormData["set"] = cdata[0] ? cdata[0]["set"] : "";
-          newFormData["tp"] = cdata[0] ? cdata[0]["tp"] : "";
-          newFormData["sp"] = cdata[0] ? cdata[0]["sp"] : "";
+          newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : 0;
+          newFormData["dp"] = cdata[0]&&cdata[0]["dp"] ? cdata[0]["dp"] : 0;
+          newFormData["jodi"] = cdata[0]&&cdata[0]["jodi"] ? cdata[0]["jodi"] : 0;
+          newFormData["multiple"] = cdata[0]&&cdata[0]["multiple"]  ? cdata[0]["multiple"] : 0;
+          newFormData["pana"] = cdata[0]&&cdata[0]["pana"] ? cdata[0]["pana"] : 0;
+          newFormData["partnership"] = cdata[0]&&cdata[0]["partnership"] ? cdata[0]["partnership"] : 0;
+          newFormData["partnership2"] = cdata[0]&&cdata[0]["partnership2"] ? cdata[0]["partnership2"] : 0;
+          newFormData["set"] = cdata[0]&&cdata[0]["set"] ? cdata[0]["set"] : 0;
+          newFormData["tp"] = cdata[0]&&cdata[0]["tp"] ? cdata[0]["tp"] : 0;
+          newFormData["sp"] = cdata[0]&&cdata[0]["sp"]  ? cdata[0]["sp"] : 0;
           //
           var startDate = new Date(vDate + " 00:00:01");
           var endDate = new Date(vDate + " 23:59:59");
@@ -242,7 +243,6 @@ export default function ReportByCustomer() {
         return dateA - dateB;
       });
       setreportData(reportList);
-      console.log(printReportList);
       setprintReportdata(printReportList);
     } else {
       setTabActive(false);
@@ -364,7 +364,11 @@ export default function ReportByCustomer() {
       }else{
         var customer2Risk = 0;
       }
-      var type = ((totalDayData['amount'] + totalNightData['amount']) > TOTAL) ? "Negative" : "Positive";
+      if ((totalDayData['amount'] + totalNightData['amount']) > sec_sub_total) {
+        var type = "Negative";
+        }else{
+        var type = "Positive";
+        }
       // total day night calculation
 
       var day_winning_amount = 0;
@@ -409,6 +413,7 @@ export default function ReportByCustomer() {
         }
       }
       // total day night calculation end
+      TOTAL = Math.abs(TOTAL);
       let printdata = {
         'totalDayData':totalDayData,
         'totalNightData':totalNightData,
@@ -439,10 +444,13 @@ export default function ReportByCustomer() {
     }else if(param == 'cid'){
         setCID(value);
     }
-    if (start != "" && end != "") {
-      searchData();
-    }
   };
+
+  useEffect(() => {
+    document.getElementById("searchBtn").click();
+  }, [start,end,selectedCId])
+
+
   const deleteEntries = async () => {
     await writeTextFile(
       { path: "entries.json", contents: JSON.stringify(remainingEntries) },
@@ -542,6 +550,7 @@ export default function ReportByCustomer() {
               onChange={(e) => onchangeHandler(e, "end")}
             />
             <Button
+            id="searchBtn"
               primary
               onClick={(e) => {
                 searchData();

@@ -345,7 +345,6 @@ export default function Customer() {
     Entries = Entries.filter(function (a) {
       return a.customer_id != CUSTOMER_ID;
     });
-    console.log(Entries);
     await writeTextFile(
       { path: "entries.json", contents: JSON.stringify(Entries) },
       { dir: BaseDirectory.Resource }
@@ -426,7 +425,7 @@ export default function Customer() {
 
   function keydown(evt){
     if (!evt) evt = event;
-    const inputs = document.querySelectorAll("input");
+    const inputs = document.querySelectorAll("input,textarea");
     for (let i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener("keydown", function (event) {
         if(event.keyCode == 13){
@@ -443,7 +442,6 @@ export default function Customer() {
     }else if(evt.keyCode==115 && isVisible.editCustomer){
       document.getElementById("editCustBtn").click();
     }else if(evt.keyCode == 13){
-      console.log(evt.key);
     }else{}
   }
 
@@ -685,7 +683,7 @@ export default function Customer() {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={updateHandler}>
+            <Form onSubmit={(e)=> console.log(e)}>
               <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
                   <div className="row">
@@ -854,7 +852,7 @@ export default function Customer() {
                   </div>
                 </Grid.Cell>
               </Grid>
-              <Button id="editCustBtn" submit>
+              <Button id="editCustBtn" onClick={updateHandler}>
                 Update
               </Button>
             </Form>

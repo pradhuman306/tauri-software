@@ -51,7 +51,6 @@ export default function Navbar() {
   };
 
   const handleNavigationToggle = useCallback(() => {
-    console.log('toggle navigation visibility');
   }, []);
 
   useEffect(() => {

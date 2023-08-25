@@ -48,7 +48,6 @@ export default function Cashbook() {
     const newData = { ...cashbookcustomerData };
     newData[fieldName] = fieldValue;
     setcashbookcustomerData(newData);
-    console.log(newData);
   }
 
   const addFormHandler = (value, param) => {
@@ -88,10 +87,8 @@ export default function Cashbook() {
 
     if (isSubmit) {
       modalOpen("addCustomer");
-      console.log('submitNewCustomer');
   addnewcustomer([{ ...cashbookcustomerData }, ...AllCashcustomers]);
     }else{
-      console.log('validation submitNewCustomer');
     }
     setValidationError(validationErr);
   }
@@ -190,7 +187,6 @@ const addnewcustomer = async (customers) => {
       rowsCustomer2.push(newArray);
     });
     setrowsCustomer(rowsCustomer2);
-    console.log(rowsCustomer2);
   }, [infoCustomerID])
 
   const deleteCashbookData = async (id) => {
@@ -225,11 +221,9 @@ const addnewcustomer = async (customers) => {
     }
     setValidationError({});
     if(id == 'addCustomer'){
-      console.log(AllCashcustomers);
       var maxId = Math.max(...AllCashcustomers.map(o => parseInt(o.customer_id.replace(/\D/g, ""))));
       maxId = (maxId == '-Infinity') ? 0 : maxId;
       const newData = { ...cashbookcustomerData };
-      console.log(maxId);
       newData['customer_id'] = 'CB'+(maxId+1);
       setcashbookcustomerData(newData);
     }
@@ -243,7 +237,6 @@ const addnewcustomer = async (customers) => {
       })
       setcustomersOptions(custOpt);
     }
-    console.log(id);
   };
 
   const modalAction = () => {
@@ -412,7 +405,18 @@ const addnewcustomer = async (customers) => {
 
   function keydown(evt){
     if (!evt) evt = event;
-   
+    const inputs = document.querySelectorAll("input,textarea");
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener("keydown", function (event) {
+        if(event.keyCode == 13){
+        event.preventDefault();
+          const nextIndex = i + 1;
+          if (nextIndex < inputs.length) {
+            inputs[nextIndex].focus();
+          } 
+        }
+        });
+    }
     if(evt.keyCode==115 && isVisible.addSet ){
       document.getElementById("addSetBtn").click();
     }else if(evt.keyCode==115 && isVisible.editSet){
@@ -501,7 +505,7 @@ const addnewcustomer = async (customers) => {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={submitHandler}>
+            <Form onSubmit={()=>console.log('submit')}>
               <div className="row">
                 <div className="col">
 
@@ -554,7 +558,7 @@ const addnewcustomer = async (customers) => {
                 </div>
               </div>
 
-              <Button id="addSetBtn" submit>
+              <Button id="addSetBtn" onClick={submitHandler}>
                 Submit
               </Button>
             </Form>
@@ -579,7 +583,7 @@ const addnewcustomer = async (customers) => {
           ]}
         >
           <Modal.Section>
-            <Form onSubmit={updateHandler}>
+            <Form onSubmit={()=>console.log('update')}>
               <div className="row">
                 <div className="col">
                   <TextField
@@ -617,7 +621,7 @@ const addnewcustomer = async (customers) => {
                   />
                 </div>
               </div>
-              <Button id="editSetBtn" submit>
+              <Button id="editSetBtn" onClick={updateHandler}>
                 Submit
               </Button>
             </Form>
@@ -678,7 +682,7 @@ const addnewcustomer = async (customers) => {
       title="Add Cashbook Customer"
     >
       <Modal.Section>
-        <Form onSubmit={submitNewCustomer}>
+        <Form onSubmit={()=>console.log('customer submit')}>
               <div className="row">
                 <div className="col">
                   <TextField
@@ -706,7 +710,7 @@ const addnewcustomer = async (customers) => {
                   />
                 </div>
               </div>
-          <Button primary submit>
+          <Button primary onClick={submitNewCustomer}>
             Submit
           </Button>
         </Form>

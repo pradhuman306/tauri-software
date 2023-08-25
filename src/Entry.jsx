@@ -23,7 +23,11 @@ export default function Entry() {
             if (event.keyCode === 39 || event.keyCode === 13) {
             event.preventDefault();
               console.log('aroow next');
-              const nextIndex = i + 1;
+              var nextIndex = i + 1;
+              if(inputs[nextIndex]&&inputs[nextIndex].readOnly){
+                nextIndex = nextIndex+1
+              }
+
               if (nextIndex < inputs.length) {
                 inputs[nextIndex].focus();
               } 
@@ -60,7 +64,7 @@ export default function Entry() {
   const [customers, setcustomers] = useState([]);
   var [entries, setentries] = useState([]);
   const todaydate = new Date();
-  const [date, setDate] = useState("");
+  var [date, setDate] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const modalOpen = () => {
     if (isVisible) {
@@ -79,10 +83,6 @@ export default function Entry() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
       } catch (error) {
-        // await writeTextFile(
-        //   { path: "customers.json", contents: JSON.stringify(customers) },
-        //   { dir: BaseDirectory.Resource }
-        // );
         console.log(error);
       }
       // entries
@@ -93,10 +93,6 @@ export default function Entry() {
         const mycustentries = JSON.parse(myfiledataentries);
         setentries(mycustentries);
       } catch (error) {
-        // await writeTextFile(
-        //   { path: "entries.json", contents: JSON.stringify(entries) },
-        //   { dir: BaseDirectory.Resource }
-        // );
         console.log(error);
       }
     };
@@ -113,17 +109,23 @@ export default function Entry() {
     setDate(year + '-' + month + '-' + day);
   }, []);
 
-  const [tabActive, setTabActive] = useState("");
+  const [tabActive, setTabActive] = useState("entry");
 
-
+  
   const dateChange = async (value) => {
     setDate(value);
-    setTabActive("");
+    // setTabActive("");
   };
 
   const [timezone, setTimeZone] = useState("TO");
   const [inputFields, setInputFields] = useState([]);
-
+  useEffect(() => {
+    if(tabActive == 'entry'){
+      newEntry('entry');
+    }else{
+      editEntry("edit");
+    }
+  }, [date,timezone])
   const handleChange = (value, name, index) => {
     const list = [...inputFields];
     list[index][name] = value;
@@ -155,17 +157,13 @@ export default function Entry() {
               inputFields.pop();
               setInputFields(inputFields)
             }
-
           }, 500);
-
         }
       }
     }
-
   };
 
   const addInputField = () => {
-
     setInputFields([
       ...inputFields,
       {
@@ -183,12 +181,11 @@ export default function Entry() {
         tp_amount: "",
       },
     ]);
-
   };
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
   const onChangesetTimeZone = (tz, index) => {
     setTimeZone(tz);
-    setTabActive("");
+    // setTabActive("");
     if (activeButtonIndex === index) return;
     setActiveButtonIndex(index);
   };
@@ -223,7 +220,7 @@ export default function Entry() {
       );
       setMessage("Entry updated successfully");
       onChangesetTimeZone("TO", 0);
-      setTabActive("");
+      setTabActive("entry");
     } else {
       let tmp = inputFields.filter((item) => item.customer_id != "");
       if (tmp.length) {
@@ -253,14 +250,32 @@ export default function Entry() {
         ]);
         setMessage("Entry saved successfully");
         onChangesetTimeZone("TO", 0);
-        setTabActive("");
+        setTabActive("entry");
       } else {
         setErrorMessage("Please enter cid");
       }
     }
   };
 
+  const [AddactiveClass, setAddActiveClass] = useState('');
+  const [EditactiveClass, setEditActiveClass] = useState('');
+
   const newEntry = async (v) => {
+    setAddActiveClass('primary');
+    setEditActiveClass('');
+    if(date == ""){
+      let day = todaydate.getDate();
+      let month = todaydate.getMonth() + 1;
+      let year = todaydate.getFullYear();
+      if (month.toString().length <= 1) {
+        month = '0' + month;
+      }
+      if (day.toString().length <= 1) {
+        day = '0' + day;
+      }
+      setDate(year + '-' + month + '-' + day);
+      date = year + '-' + month + '-' + day;
+    }
     if (date == "") {
       setErrorMessage("Please select date");
     } else {
@@ -285,6 +300,8 @@ export default function Entry() {
   };
 
   const editEntry = async (v) => {
+    setAddActiveClass('');
+    setEditActiveClass('primary');
     if (date == "" && timezone == "") {
       setErrorMessage("Please select time and date");
     } else if (date == "") {
@@ -395,23 +412,21 @@ export default function Entry() {
       />
     );
     rowsTable.push(newArray);
-  
   });
 
   let totalArray = [];
   totalArray.push(
     <span><b>Total Row {inputFields.length}</b></span>,
     <span></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.sp_amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.dp_amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0)))}</b></span>,
-    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0)))}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.sp_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.sp_amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.dp_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.dp_amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0))):''}</b></span>,
+    <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0))):""}</b></span>,
   );
   rowsTable.push(totalArray);
-
   const rowsCustomer = [];
   customers.map((customer, index) => {
     let newArray = [];
@@ -431,7 +446,6 @@ export default function Entry() {
       >
         {/* View customer popup */}
         <Modal
-          // activator={activator}
           open={isVisible}
           onClose={() => modalOpen()}
           title="Customers"
@@ -515,14 +529,12 @@ export default function Entry() {
               >
                 BO
               </Button>
-
               <Button
                 pressed={activeButtonIndex === 9}
                 onClick={() => onChangesetTimeZone("MK2", 9)}
               >
                 MK2
               </Button>
-
               <Button
                 pressed={activeButtonIndex === 10}
                 onClick={() => onChangesetTimeZone("BK", 10)}
@@ -539,28 +551,22 @@ export default function Entry() {
           }
           primaryAction={
             <ButtonGroup>
-<Text>Date</Text>
-            
+            <Text>Date</Text>
                 <TextField
                   type="date"
-                  // label="Select Date"
                   value={date}
                   onChange={(e) => dateChange(e)}
                 />
-             
-
               <Button
-                className={tabActive == "entry" ? "active" : ""}
+                pressed={AddactiveClass!=''?true:false}
                 onClick={() => newEntry("entry")}
               >
                 Entry
               </Button>
               <Button
-                primary
-                className={tabActive == "edit" ? "active" : ""}
+              pressed={EditactiveClass!=''?true:false}
                 onClick={() => editEntry("edit")}
               >
-                {" "}
                 Edit
               </Button>
             </ButtonGroup>

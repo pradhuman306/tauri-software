@@ -238,14 +238,13 @@ export default function Calculater() {
     var DAY_TOTAL = day_SUB_TOTAL - day_partnership_percent;
     if (DAY_TOTAL) {
       DAY_TOTAL = DAY_TOTAL.toFixed(2);
-      if (DAY_TOTAL > day_sec_sub_total) {
+      if (totalDayData['amount'] > day_sec_sub_total) {
         DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Dr.';
       } else {
         DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Cr.';
       }
 
     }
-    console.log(DAY_TOTAL);
     setDayTotal(DAY_TOTAL);
 
     var night_winning_amount = 0;
@@ -262,7 +261,7 @@ export default function Calculater() {
     var night_TOTAL = night_SUB_TOTAL - night_partnership_percent;
     if (night_TOTAL) {
       night_TOTAL = night_TOTAL.toFixed(2);
-      if (night_TOTAL > night_sec_sub_total) {
+      if (totalNightData['amount'] > night_sec_sub_total) {
         night_TOTAL = Math.abs(night_TOTAL) + ' Dr.';
       } else {
         night_TOTAL = Math.abs(night_TOTAL) + ' Cr.';

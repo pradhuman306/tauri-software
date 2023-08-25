@@ -207,16 +207,16 @@ export default function Home() {
           (item) => item.customer_id === CID
         );
         var newFormData = [];
-    newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : "";
-    newFormData["dp"] = cdata[0] && cdata[0]["dp"] ? cdata[0]["dp"] : "";
-    newFormData["jodi"] = cdata[0] && cdata[0]["jodi"]? cdata[0]["jodi"] : "";
-    newFormData["multiple"] = cdata[0] && cdata[0]["multiple"] ? cdata[0]["multiple"] : "";
-    newFormData["pana"] = cdata[0] && cdata[0]["pana"]? cdata[0]["pana"] : "";
-    newFormData["partnership"] = cdata[0] && cdata[0]["partnership"] ? cdata[0]["partnership"] : "";
-    newFormData["partnership2"] = cdata[0] && cdata[0]["partnership2"] ? cdata[0]["partnership2"] : "";
-    newFormData["set"] = cdata[0] && cdata[0]["set"] ? cdata[0]["set"] : "";
-    newFormData["tp"] = cdata[0] && cdata[0]["tp"]? cdata[0]["tp"] : "";
-    newFormData["sp"] = cdata[0] &&  cdata[0]["sp"] ? cdata[0]["sp"] : "";
+    newFormData["commission"] = cdata[0] && cdata[0]["commission"] ? cdata[0]["commission"] : 0;
+    newFormData["dp"] = cdata[0] && cdata[0]["dp"] ? cdata[0]["dp"] : 0;
+    newFormData["jodi"] = cdata[0] && cdata[0]["jodi"]? cdata[0]["jodi"] : 0;
+    newFormData["multiple"] = cdata[0] && cdata[0]["multiple"] ? cdata[0]["multiple"] : 0;
+    newFormData["pana"] = cdata[0] && cdata[0]["pana"]? cdata[0]["pana"] : 0;
+    newFormData["partnership"] = cdata[0] && cdata[0]["partnership"] ? cdata[0]["partnership"] : 0;
+    newFormData["partnership2"] = cdata[0] && cdata[0]["partnership2"] ? cdata[0]["partnership2"] : 0;
+    newFormData["set"] = cdata[0] && cdata[0]["set"] ? cdata[0]["set"] : 0;
+    newFormData["tp"] = cdata[0] && cdata[0]["tp"]? cdata[0]["tp"] : 0;
+    newFormData["sp"] = cdata[0] &&  cdata[0]["sp"] ? cdata[0]["sp"] : 0;
      
         var getData = entries.filter(function (a) {
           var aDate = new Date(a.date);
@@ -280,11 +280,19 @@ export default function Home() {
           var SUB_TOTAL = sec_sub_total - (totalDayData['amount'] + totalNightData['amount']) - (totalDayData['pana_amount'] + totalNightData['pana_amount']);
           var partnership_percent = SUB_TOTAL * newFormData['partnership'] / 100;
           var TOTAL = SUB_TOTAL - partnership_percent;
-          totalBalance+=TOTAL;
+        totalBalance+=TOTAL;
+          // TOTAL = Math.abs(TOTAL);
+          // if ((totalDayData['amount'] + totalNightData['amount']) > sec_sub_total) {
+          //   totalBalance+=-TOTAL;
+          // }else{
+          // totalBalance+=TOTAL;
+          //   }
+          // totalBalance+=TOTAL;
         } // length condition
   
       // } // date loop end
     } // customer id loop end
+    console.log('iiiiiiiii');
   return totalBalance.toFixed(2).toLocaleString("en-IN");
   }
   return (
