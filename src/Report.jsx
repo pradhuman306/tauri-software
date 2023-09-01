@@ -479,7 +479,8 @@ export default function Report() {
               value={end}
               onChange={(e) => onchangeHandler(e, "end")}
             />
-            <Button
+            <div className="hidden">
+            <Button 
             id="searchBtn"
               primary
               onClick={(e) => {
@@ -488,6 +489,7 @@ export default function Report() {
             >
               Search
             </Button>
+            </div>
           </ButtonGroup>
         }
         title="Report"

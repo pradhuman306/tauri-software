@@ -713,6 +713,7 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
 
 .table-warp {
     width: calc(50% - 8px);
+    background: #fff;
 }
 
 .printreporttable {
@@ -721,7 +722,7 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
 
 table.printreporttable, .printreporttable tr, .printreporttable td {
     border-collapse: collapse;
-    border: 2px solid #ddd;
+    border: 1px solid #dfe0e2;
 }
 .printreporttable td, .printreporttable th {
     padding: 10px;
@@ -742,6 +743,15 @@ a.Polaris-TopBar__LogoLink {
 
 .Polaris-TopBar__LogoLink .Polaris-TopBar__Logo {
     opacity: 0;
+}
+.hidden {
+    display: none;
+}
+.left {
+    text-align: left !important;
+}
+.printreporttable td, .printreporttable th {
+    padding: 7px;
 }
 
 @media print {

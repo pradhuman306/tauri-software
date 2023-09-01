@@ -36,6 +36,7 @@ export default function Login() {
     <AppProvider i18n={enTranslations}>
       <main>
         <div className="login-wrapper">
+          <div></div>
           <div className="login-top">
             <figure>
               <img src={flaglogo} alt="logo" />

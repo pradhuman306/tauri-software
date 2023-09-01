@@ -549,6 +549,7 @@ export default function ReportByCustomer() {
               value={end}
               onChange={(e) => onchangeHandler(e, "end")}
             />
+            <div className="hidden">
             <Button
             id="searchBtn"
               primary
@@ -558,6 +559,7 @@ export default function ReportByCustomer() {
             >
               Search
             </Button>
+            </div>
           </ButtonGroup>
         }
         title="Report By Customer"
@@ -724,13 +726,7 @@ export default function ReportByCustomer() {
 </tr>
 <tr>
   <th>Final Total</th>
-  <th>{obj.total+''+(obj.type == "Positive"?' CR':' DR')}</th>
-  <th></th>
-  <th></th>
-  <th></th>
-  <th></th>
-  <th></th>
-  <th></th>
+  <th className="left" colSpan={7}>{obj.total+''+(obj.type == "Positive"?' CR':' DR')}</th>
   
 </tr>
 </tbody>
