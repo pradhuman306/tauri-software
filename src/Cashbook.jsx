@@ -183,7 +183,7 @@ const addnewcustomer = async (customers) => {
     });
     tmp.map((customer, index) => {
       let newArray = [];
-      newArray.push(index+1,customer.date, customer.credit?customer.credit:'',customer.debit?customer.debit:'', customer.remark?customer.remark:'');
+      newArray.push(index+1,customer.date,<span className="credit">{customer.credit?''+customer.credit+' CR':''}</span>,<span className="debit">{customer.debit?''+customer.debit+' DR':''}</span>, customer.remark?customer.remark:'');
       rowsCustomer2.push(newArray);
     });
     setrowsCustomer(rowsCustomer2);
@@ -294,6 +294,7 @@ const addnewcustomer = async (customers) => {
     addFormData.debit = addFormData.debit?addFormData.debit:0;
     addFormData.id = Date.now();
     updateData([{ ...addFormData }, ...setData]);
+    getdataFromFile();
   };
   const getdataFromFile = async () => {
 
@@ -367,9 +368,9 @@ const addnewcustomer = async (customers) => {
         modalOpen("customerInfo");
     }}>{found.name}</b>,
       getdateFormet(data.date),
-      data.credit?'₹'+data.credit:'',
-      data.debit?'₹'+data.debit:'',
-      Number(data.credit)-Number(data.debit) !== 0 ? (<b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>₹{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>):'=',
+      <span className="credit">{data.credit?''+data.credit+' CR':''}</span>,
+      <span className="debit">{data.debit?''+data.debit+' DR':''}</span>,
+      Number(data.credit)-Number(data.debit) !== 0 ? (<b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>):'=',
       <ButtonGroup>
         <Button
           size="micro"

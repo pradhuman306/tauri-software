@@ -779,4 +779,7 @@ a.Polaris-TopBar__LogoLink {
     .table-warp:nth-child(4n+1) {
         page-break-before: always;
     }
+    .report th:last-child, .report td:last-child {
+        display: none;
+    }
 }

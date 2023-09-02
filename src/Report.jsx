@@ -213,10 +213,10 @@ export default function Report() {
             reportList.push({
               id: CID,
               date: vDate,
-              name: cdata[0] ? cdata[0]["name"] : "",
-              credit: calculateData.type == "Positive" ? calculateData.total.toFixed(2) : "",
-              debit: calculateData.type == "Negative" ? calculateData.total.toFixed(2) : "",
-              customer2:calculateData.customer2?('₹'+calculateData.customer2amount.toFixed(2)+''+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):'',
+              name: cdata[0] ? <b>{cdata[0]["name"]}</b> : "",
+              credit: <span className="credit">{calculateData.type == "Positive" ? calculateData.total.toFixed(2)+" CR" : ""}</span> ,
+              debit: <span className="debit">{calculateData.type == "Negative" ? calculateData.total.toFixed(2)+" DR" : ""}</span>,
+              customer2:<span className={allcustomercalculatedata.type == "Positive"?' debit':' credit'}>{calculateData.customer2?(calculateData.customer2amount.toFixed(2)+''+(allcustomercalculatedata.type == "Positive"?' DR':' CR')+' '+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):''}</span>,
               total: (allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'')+''+(allcustomercalculatedata.type == "Positive"?' CR':' DR'),
               checked: checked,
               customer2amount:calculateData.customer2amount.toFixed(2),
@@ -360,6 +360,7 @@ export default function Report() {
       }else{
       var type = "Positive";
       }
+      customer2Risk =  Math.abs(customer2Risk);
       TOTAL = Math.abs(TOTAL);
       var arr = {
         total: TOTAL,
@@ -497,6 +498,7 @@ export default function Report() {
         {tabActive && reportData.length ? (
           <>
             <LegacyCard>
+              <div className="report">
               <DataTable
                 columnContentTypes={["text", "text", "text","text", "text"]}
                 headings={["Date", "Name", "Credit", "Debit","Customer2","Total","Status"]}
@@ -505,6 +507,7 @@ export default function Report() {
                 increasedTableDensity
                 defaultSortDirection="descending"
               />
+              </div>
             </LegacyCard>
             <div className="btn-wrap print-btn">
               <ButtonGroup>
@@ -514,9 +517,11 @@ export default function Report() {
                 <Button destructive onClick={(e) => modalOpen("deleteReport")}>
                   Delete
                 </Button>
+                <div className="hidden">
                 <Button onClick={(e) => modalOpen('cashBook')} >
                   Add To Cashbook
                 </Button>
+                </div>
               </ButtonGroup>
             </div>
           </>

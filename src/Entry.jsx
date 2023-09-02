@@ -125,7 +125,7 @@ export default function Entry() {
     }else{
       editEntry("edit");
     }
-  }, [date,timezone])
+  }, [date,timezone,tabActive]);
   const handleChange = (value, name, index) => {
     const list = [...inputFields];
     list[index][name] = value;
