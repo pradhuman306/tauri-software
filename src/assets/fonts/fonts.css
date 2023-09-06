@@ -84,10 +84,16 @@
     background-color: var(--primary-color);
 }
 
-
 body{
     font-size: 14px;
     font-family: 'Inter' !important;
+    background: linear-gradient(86deg, #002cc1 0%, #42e0dc 45%, #002cc1 90%) !important;
+}
+.Polaris-Page-Header__Row {
+    color: #fff !important;
+}
+.Polaris-Select {
+    color: var(--p-color-text) !important;
 }
 
 .Polaris-Frame__Content {
