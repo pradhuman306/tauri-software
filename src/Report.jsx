@@ -351,7 +351,7 @@ export default function Report() {
         (SUB_TOTAL * newFormData["partnership"]) / 100;
       var TOTAL = SUB_TOTAL - partnership_percent;
       if(newFormData["partnership2"] && newFormData["partnership2"] != ""){
-        var customer2Risk = ((SUB_TOTAL * newFormData["partnership2"]) / 100);
+        var customer2Risk = ((TOTAL * newFormData["partnership2"]) / 100);
       }else{
         var customer2Risk = 0;
       }
