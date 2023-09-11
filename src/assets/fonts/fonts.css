@@ -84,14 +84,20 @@
     background-color: var(--primary-color);
 }
 
-body{
+/* body{
     font-size: 14px;
     font-family: 'Inter' !important;
     background: linear-gradient(86deg, #002cc1 0%, #42e0dc 45%, #002cc1 90%) !important;
+} */
+body{
+    font-size: 14px;
+    font-family: 'Inter' !important;
+    background-color: var(--light-bg) !important;
 }
-.Polaris-Page-Header__Row {
+
+/* .Polaris-Page-Header__Row {
     color: #fff !important;
-}
+} */
 .Polaris-Select {
     color: var(--p-color-text) !important;
 }
@@ -333,16 +339,18 @@ th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-Dat
 .calculator-table .Polaris-TextField__Input {
     font-size: 16px;
 }
+th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--header {
+    text-align: center;
+    font-size: 14px;
+    background: #007a5c;
+    color: #fff;
+}
 
 .customerHeader .Polaris-Labelled__LabelWrapper {
     width: auto;
     margin-right: 10px;
 }
-th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--header {
-    text-align: center;
-    font-size: 14px;
-    background: #e4e5e7;
-}
+
 .calculator-table .Polaris-TextField__Input{
     text-align: center;
 }
