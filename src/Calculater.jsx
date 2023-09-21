@@ -25,8 +25,7 @@ export default function Calculater() {
         })
         setcustomersOptions(custOpt);
       } catch (error) {
-
-        console.log(error);
+       // console.log(error);
       }
       try {
         const myfileNotes = await readTextFile("entries.json", {
@@ -36,7 +35,7 @@ export default function Calculater() {
         setentries(mycustomers);
       } catch (error) {
 
-        console.log(error);
+                // console.log(error);
       }
     };
     getNotesFromFile();

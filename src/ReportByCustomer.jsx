@@ -79,7 +79,7 @@ export default function ReportByCustomer() {
     } catch (error) {
    
       getNotesFromFile();
-      console.log(error);
+              // console.log(error);
     }
 
     //customers
@@ -96,7 +96,7 @@ export default function ReportByCustomer() {
         setcustomersOptions(custOpt);
     } catch (error) {
   
-      console.log(error);
+              // console.log(error);
     }
 
     try {
@@ -106,7 +106,7 @@ export default function ReportByCustomer() {
       const mydata = JSON.parse(myfiledata);
       updateCashbookdata(mydata);
     } catch (error) {
-      console.log(error);
+              // console.log(error);
     }
 
   };
@@ -523,9 +523,11 @@ export default function ReportByCustomer() {
     <>
       <Page
       fullWidth
+      secondaryActions={
+        <Button onClick={()=> navigate('/report')}>Report By Date</Button> 
+      }
         primaryAction={
           <ButtonGroup>
-            <Button onClick={()=> navigate('/report')}>Report By Date</Button> 
             <Select
                   name="name"
                   id="name"

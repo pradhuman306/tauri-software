@@ -12,4 +12,4 @@ npm run tauri dev
 
 npm run tauri build 
 
-npm run tauri build --debug
+npm run tauri build -- --debug

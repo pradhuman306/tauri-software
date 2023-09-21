@@ -97,7 +97,8 @@
         "center": true,
         "title": "Bhole",
         "width": 1500,
-        "height": 800
+        "height": 750,
+        "maximized": true
       }
     ]
   }

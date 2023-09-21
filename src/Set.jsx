@@ -193,7 +193,7 @@ export default function Set() {
     } catch (error) {
      
       getdataFromFile();
-      console.log(error);
+              // console.log(error);
     }
   };
   useEffect(() => {

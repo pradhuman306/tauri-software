@@ -62,7 +62,7 @@ export default function Navbar() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
       } catch (error) {
-         console.log(error);
+                 // console.log(error);
       }
       // entries
     };

@@ -345,6 +345,9 @@ th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-Dat
     background: #007a5c;
     color: #fff;
 }
+.cashbook-table table tbody tr:last-child {
+    background:rgb(48 48 48 / 20%)
+}
 
 .customerHeader .Polaris-Labelled__LabelWrapper {
     width: auto;

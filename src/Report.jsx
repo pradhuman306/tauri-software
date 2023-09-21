@@ -76,7 +76,7 @@ export default function Report() {
     } catch (error) {
    
       getNotesFromFile();
-      console.log(error);
+              // console.log(error);
     }
 
     //customers
@@ -88,7 +88,7 @@ export default function Report() {
       setcustomers(mycust);
     } catch (error) {
   
-      console.log(error);
+              // console.log(error);
     }
 
     try {
@@ -98,7 +98,7 @@ export default function Report() {
       const mydata = JSON.parse(myfiledata);
       updateCashbookdata(mydata);
     } catch (error) {
-      console.log(error);
+              // console.log(error);
     }
 
   };
@@ -460,10 +460,11 @@ export default function Report() {
     <>
       <Page
       fullWidth
+      secondaryActions={
+        <Button onClick={()=> navigate('/reportbycustomer')}>Report By Customer</Button>
+      }
         primaryAction={
           <ButtonGroup>
-            
-        <Button onClick={()=> navigate('/reportbycustomer')}>Report By Customer</Button>
              <div className="col subHeader">
             <TextField
             label="From"

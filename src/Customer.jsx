@@ -276,7 +276,7 @@ export default function Customer() {
       updateSetOptions(optionsSet);
     } catch (error) {
    
-      console.log(error);
+              // console.log(error);
     }
 
     try {
@@ -287,7 +287,7 @@ export default function Customer() {
       setcustomers(mycustomers);
     } catch (error) {
 
-      console.log(error);
+              // console.log(error);
     }
 
     // entries 
@@ -298,7 +298,8 @@ export default function Customer() {
       const dataEntries = JSON.parse(myfiledataEntries);
       setEntries(dataEntries);
     } catch (error) {
-      console.log(error);
+              // console.log(error);
+
     }
 
     // cashbook
@@ -309,7 +310,7 @@ export default function Customer() {
       const cashdata = JSON.parse(myfiledatasetCashbook);
       setCashbook(cashdata);
     } catch (error) {
-      console.log(error);
+              // console.log(error);
     }
   };
   useEffect(() => {

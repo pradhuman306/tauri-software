@@ -37,6 +37,54 @@ export default function Cashbook() {
     customer_id:false
   });
 
+  const getdataFromFile = async () => {
+
+    // customers 
+    try {
+      const myfiledata = await readTextFile("customers.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mycust = JSON.parse(myfiledata);
+      setcustomers(mycust);
+      let custOpt = [{ label: "Select Customer", value: "" }];
+      mycust.map((data) => {
+        custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+      })
+      setcustomersOptions(custOpt);
+    } catch (error) {
+              // console.log(error);
+    }
+
+    // setAllCashcustomers
+    try {
+      const myfiledata = await readTextFile("cashbookcustomer.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mydata = JSON.parse(myfiledata);
+      setAllCashcustomers(mydata);
+      var maxId = Math.max(...mydata.map(o => o.customer_id));
+      maxId = maxId == '-Infinity' ? 0 : maxId;
+      const newData = { ...cashbookcustomerData };
+      newData['customer_id'] = 'CB'+(maxId+1);
+      setcashbookcustomerData(newData);
+    } catch (error) {
+              // console.log(error);
+    }
+    try {
+      const myfiledata = await readTextFile("cashbook.json", {
+        dir: BaseDirectory.Resource,
+      });
+      const mydata = JSON.parse(myfiledata);
+      updateSetdata(mydata);
+      console.log(mydata);
+    } catch (error) {
+              // console.log(error);
+    }
+  };
+  useEffect(() => {
+    getdataFromFile();
+  }, []);
+
   const cashbookcustomerHandler = (value,param) => {
     let validationErr = { ...validationError };
     if (value && param == "customer_id") {
@@ -64,6 +112,7 @@ export default function Cashbook() {
   };
 
   const handleEditSet = (id, param) => {
+    console.log(setData);
     let tmp = setData.filter((item) => item.id === id);
     setEditSet(tmp[0]);
     modalOpen(param);
@@ -136,6 +185,7 @@ const addnewcustomer = async (customers) => {
   };
 
   const updateSet = async () => {
+    console.log(editSet);
     let tmp = setData.map((obj) => {
       if (obj.id == editSet.id) {
         return {
@@ -149,7 +199,7 @@ const addnewcustomer = async (customers) => {
       { path: "cashbook.json", contents: JSON.stringify(tmp) },
       { dir: BaseDirectory.Resource }
     );
-    getdataFromFile();
+    location.reload();
     setMessage("Record updated successfully");
   };
 
@@ -157,17 +207,23 @@ const addnewcustomer = async (customers) => {
     event.preventDefault();
     let validationErr = { ...validationError };
     let isSubmit = true;
-    if (!editSet.set) {
-      validationErr.set = "Please enter set";
+    if (!editSet.id) {
+      validationErr.debit = "Refresh and try again";
       isSubmit = false;
     } else {
-      validationErr.set = false;
+      validationErr.debit = false;
     }
     if (isSubmit) {
       updateSet();
       modalOpen("editSet");
     }
     setValidationError(validationErr);
+  };
+
+  const handleEditcash = (id, cid,param) => {
+    let tmp = setData.filter((item) => item.id === id);
+    setEditSet(tmp[0]);
+    modalOpen(param);
   };
 
   const [setData, updateSetdata] = useState([]);
@@ -183,11 +239,14 @@ const addnewcustomer = async (customers) => {
     });
     tmp.map((customer, index) => {
       let newArray = [];
-      newArray.push(index+1,customer.date,<span className="credit">{customer.credit?''+customer.credit+' CR':''}</span>,<span className="debit">{customer.debit?''+customer.debit+' DR':''}</span>, customer.remark?customer.remark:'');
+      newArray.push(index+1,customer.date,<span className="credit">{customer.credit?''+customer.credit+' CR':''}</span>,<span className="debit">{customer.debit?''+customer.debit+' DR':''}</span>, customer.remark?customer.remark:'',
+      <Button size="micro" onClick={() => handleEditSet(customer.id,"editSet")}>
+      <Icon source={EditMinor} color="base" />
+    </Button>);
       rowsCustomer2.push(newArray);
     });
     setrowsCustomer(rowsCustomer2);
-  }, [infoCustomerID])
+  }, [infoCustomerID,setData])
 
   const deleteCashbookData = async (id) => {
     var newdata = setData.filter(function (a) {
@@ -224,7 +283,7 @@ const addnewcustomer = async (customers) => {
       var maxId = Math.max(...AllCashcustomers.map(o => parseInt(o.customer_id.replace(/\D/g, ""))));
       maxId = (maxId == '-Infinity') ? 0 : maxId;
       const newData = { ...cashbookcustomerData };
-      newData['customer_id'] = 'CB'+(maxId+1);
+      newData['customer_id'] = 'CB'+(parseInt(maxId)+1);
       setcashbookcustomerData(newData);
     }
     if(id == 'addSet'){
@@ -296,59 +355,11 @@ const addnewcustomer = async (customers) => {
     updateData([{ ...addFormData }, ...setData]);
     getdataFromFile();
   };
-  const getdataFromFile = async () => {
-
-    // customers 
-    try {
-      const myfiledata = await readTextFile("customers.json", {
-        dir: BaseDirectory.Resource,
-      });
-      const mycust = JSON.parse(myfiledata);
-      setcustomers(mycust);
-      let custOpt = [{ label: "Select Customer", value: "" }];
-      mycust.map((data) => {
-        custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
-      })
-      setcustomersOptions(custOpt);
-    } catch (error) {
-      console.log(error);
-    }
-
-    // setAllCashcustomers
-    try {
-      const myfiledata = await readTextFile("cashbookcustomer.json", {
-        dir: BaseDirectory.Resource,
-      });
-      const mydata = JSON.parse(myfiledata);
-      setAllCashcustomers(mydata);
-      var maxId = Math.max(...mydata.map(o => o.customer_id));
-      maxId = maxId == '-Infinity' ? 0 : maxId;
-      const newData = { ...cashbookcustomerData };
-      newData['customer_id'] = 'CB'+(maxId+1);
-      setcashbookcustomerData(newData);
-    } catch (error) {
-      console.log(error);
-    }
-
-    try {
-      const myfiledata = await readTextFile("cashbook.json", {
-        dir: BaseDirectory.Resource,
-      });
-      const mydata = JSON.parse(myfiledata);
-      updateSetdata(mydata);
-    } catch (error) {
-     
-      getdataFromFile();
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getdataFromFile();
-  }, []);
-
   const rows = [];
   var result = setData.reduce((acc, {cid, credit, debit,date}) => ({...acc, [cid]: {cid, credit: acc[cid] ? Number(acc[cid].credit) + Number(credit): Number(credit), debit: acc[cid] ? Math.abs(Number(acc[cid].debit)) + Math.abs(Number(debit)): Math.abs(Number(debit)),date:date}}), {});
   result = Object.values(result);
+  var TotalCredit = 0;
+  var TotalDebit = 0;
   result.map((data, index) => {
     let newArray = [];
     var found = customers.find(obj => {
@@ -360,6 +371,8 @@ const addnewcustomer = async (customers) => {
       });
     }
     if(found){
+      TotalCredit = TotalCredit+data.credit;
+      TotalDebit = TotalDebit+data.debit;
     newArray.push(
       data.cid,
      <b className="customerinfo" onClick={() => {
@@ -400,10 +413,9 @@ const addnewcustomer = async (customers) => {
       </ButtonGroup>
     );
   }
-
     rows.push(newArray);
   });
-
+  rows.push(['',<b>Total</b>,'',<b className="credit">{TotalCredit} CR</b>,<b className="debit">{TotalDebit} DR</b>,<b>{TotalCredit> TotalDebit? <b className="credit">{(TotalCredit-TotalDebit)} CR</b>: <b className="debit">{(TotalDebit-TotalCredit)} DR </b>}</b>,'']);
   function keydown(evt){
     if (!evt) evt = event;
     const inputs = document.querySelectorAll("input,textarea");
@@ -427,7 +439,7 @@ const addnewcustomer = async (customers) => {
   }
 
   return (
-    <>
+    <div className="cashbook-table">
       <Page
         title="CashBook"
         fullWidth
@@ -566,69 +578,6 @@ const addnewcustomer = async (customers) => {
           </Modal.Section>
         </Modal>
 
-        {/* Edit set popup */}
-        <Modal
-          small
-          open={isVisible.editSet}
-          onClose={() => modalOpen("editSet")}
-          title="Edit Set"
-          primaryAction={{
-            content: "Update Set",
-            onAction: () => document.getElementById("editSetBtn").click(),
-          }}
-          secondaryActions={[
-            {
-              content: "Cancel",
-              onAction: () => modalOpen("editSet"),
-            },
-          ]}
-        >
-          <Modal.Section>
-            <Form onSubmit={()=>console.log('update')}>
-              <div className="row">
-                <div className="col">
-                  <TextField
-                    label="Customer"
-                    type="number"
-                    step="any"
-                    name="cid"
-                    value={editSet ? editSet.cid : ""}
-                    error={validationError.cid}
-                    requiredIndicator={true}
-                    onChange={(e) => editFormHandler(e, "cid")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Credit"
-                    type="number"
-                    step="any"
-                    name="credit"
-                    value={editSet ? editSet.credit : ""}
-                    onChange={(e) => editFormHandler(e, "credit")}
-                    required
-                  />
-                </div>
-                <div className="col">
-                  <TextField
-                    label="Debit"
-                    type="number"
-                    step="any"
-                    name="debit"
-                    value={editSet ? editSet.pana : ""}
-                    onChange={(e) => editFormHandler(e, "debit")}
-                    required
-                  />
-                </div>
-              </div>
-              <Button id="editSetBtn" onClick={updateHandler}>
-                Submit
-              </Button>
-            </Form>
-          </Modal.Section>
-        </Modal>
-
         {/* Delete set popup */}
         <Modal
           small
@@ -720,7 +669,7 @@ const addnewcustomer = async (customers) => {
     {/* customer info */}
 
     <Modal
-          // activator={activator}
+    large
           open={isVisible.customerInfo}
           onClose={() => modalOpen('customerInfo')}
           title={'Customer: '+infoCustomerName+', CID: '+ infoCustomerID}
@@ -734,8 +683,8 @@ const addnewcustomer = async (customers) => {
           <Modal.Section>
             <LegacyCard>
               <DataTable
-                columnContentTypes={["text", "text", "text","text","text"]}
-                headings={["S.no.","Date","Credit","Debit","Remark"]}
+                columnContentTypes={["text", "text", "text","text","text","text"]}
+                headings={["S.no.","Date","Credit","Debit","Remark","Action"]}
                 rows={rowsCustomer}
                 hasZebraStripingOnData
                 increasedTableDensity
@@ -746,7 +695,72 @@ const addnewcustomer = async (customers) => {
         </Modal>
     {/* customer info end */}
 
+
+       {/* Edit set popup */}
+       <Modal
+          small
+          open={isVisible.editSet}
+          onClose={() => modalOpen("editSet")}
+          title="Edit Cashbook"
+          primaryAction={{
+            content: "Update",
+            onAction: () => document.getElementById("editSetBtn").click(),
+          }}
+          secondaryActions={[
+            {
+              content: "Cancel",
+              onAction: () => modalOpen("editSet"),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <Form onSubmit={()=>console.log('update')}>
+              <div className="row">
+                <div className="col">
+                  <TextField
+                    label="Credit"
+                    type="number"
+                    step="any"
+                    name="credit"
+                    placeholder="Enter Credit Amount"
+                    value={editSet && editSet.credit ? editSet.credit : ''}
+                    onChange={(e) => editFormHandler(e, "credit")}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    label="Debit"
+                    type="number"
+                    step="any"
+                    name="debit"
+                    placeholder="Enter Debit Amount"
+                    value={editSet && editSet.debit ? editSet.debit : ''}
+                    onChange={(e) => editFormHandler(e, "debit")}
+                    required
+                  />
+                </div>
+                <div className="col">
+                  <TextField
+                    multiline={4}
+                    label="Remark"
+                    type="text"
+                    placeholder="Enter Remark"
+                    name="remark"
+                    value={editSet ? editSet.remark : ''}
+                    onChange={(e) => editFormHandler(e, "remark")}
+                    required
+                  />
+                </div>
+              </div>
+              <Button id="editSetBtn" onClick={updateHandler}>
+                Submit
+              </Button>
+            </Form>
+          </Modal.Section>
+        </Modal>
+
       </Page>
-    </>
+    </div>
   );
 }

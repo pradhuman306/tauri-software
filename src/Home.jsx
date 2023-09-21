@@ -75,7 +75,7 @@ export default function Home() {
       updateSetOptions(optionsSet);
     } catch (error) {
      
-      console.log(error);
+              // console.log(error);
     }
 
     try {
@@ -86,7 +86,7 @@ export default function Home() {
       setcustomers(mycustomers);
     } catch (error) {
      
-      console.log(error);
+              // console.log(error);
     }
     try {
       const myfileentries = await readTextFile("entries.json", {
@@ -96,7 +96,7 @@ export default function Home() {
       setEntries(entry);
     } catch (error) {
   
-      console.log(error);
+              // console.log(error);
     }
   };
   useEffect(() => {

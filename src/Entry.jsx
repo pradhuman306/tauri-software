@@ -83,7 +83,7 @@ export default function Entry() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
       } catch (error) {
-        console.log(error);
+                // console.log(error);
       }
       // entries
       try {
@@ -93,7 +93,7 @@ export default function Entry() {
         const mycustentries = JSON.parse(myfiledataentries);
         setentries(mycustentries);
       } catch (error) {
-        console.log(error);
+                // console.log(error);
       }
     };
     getdataFromFile();
