@@ -335,6 +335,7 @@ export default function Entry() {
   }
 
   const rowsTable = [];
+  const totalTablerow = [];
   inputFields.map((inFields, index) => {
     let newArray = [];
     newArray.push(
@@ -414,10 +415,9 @@ export default function Entry() {
     rowsTable.push(newArray);
   });
 
-  let totalArray = [];
-  totalArray.push(
-    <span><b>Total Row {inputFields.length}</b></span>,
-    <span></span>,
+  totalTablerow.push(
+    '',
+    'Rows:'+(inputFields.length),
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.amount),0))):''}</b></span>,
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.pana_amount),0))):''}</b></span>,
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.khula_amount),0))):''}</b></span>,
@@ -426,15 +426,16 @@ export default function Entry() {
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.jodi_amount),0))):''}</b></span>,
     <span><b>{Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0)))?Number((inputFields.reduce((a,v) =>  a = a + Number(v.tp_amount),0))):""}</b></span>,
   );
-  rowsTable.push(totalArray);
+  console.log('totalTablerow',totalTablerow);
+  
   const rowsCustomer = [];
-  customers.map((customer, index) => {
+  customers.sort((a, b) => parseInt(a.customer_id) > parseInt(b.customer_id) ? 1 : -1).map((customer, index) => {
     let newArray = [];
     newArray.push(customer.customer_id, customer.name, customer.set);
     rowsCustomer.push(newArray);
   });
   return (
-    <div>
+    <div className="entry-page">
       <Page
         fullWidth
         title="Entry/Edit"
@@ -599,6 +600,8 @@ export default function Entry() {
                     "TP Amount",
                   ]}
                   rows={rowsTable}
+                  totals={totalTablerow}
+                showTotalsInFooter
                   hasZebraStripingOnData
                   increasedTableDensity
                   defaultSortDirection="descending"

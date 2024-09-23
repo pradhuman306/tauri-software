@@ -65,6 +65,9 @@ export default function Customer() {
     const fieldValue = value;
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
+    if(fieldName == 'customer_id'){
+    newFormData['set'] = fieldValue;
+    }
     setAddFormData(newFormData);
   };
 
@@ -84,6 +87,9 @@ export default function Customer() {
     const fieldValue = value;
     const newFormData1 = { ...editCustomer };
     newFormData1[fieldName] = fieldValue;
+    if(fieldName == 'customer_id'){
+      newFormData['set'] = fieldValue;
+      }
     setEditCustomer(newFormData1);
   };
 
@@ -284,6 +290,7 @@ export default function Customer() {
         dir: BaseDirectory.Resource,
       });
       const mycustomers = JSON.parse(myfiledata);
+      console.log(mycustomers);
       setcustomers(mycustomers);
     } catch (error) {
 
@@ -393,7 +400,9 @@ export default function Customer() {
     setValidationError({});
   };
   const rows = [];
-  customers.map((customer, index) => {
+  customers
+  .sort((a, b) => parseInt(a.customer_id) > parseInt(b.customer_id) ? 1 : -1)
+  .map((customer, index) => {
     let newArray = [];
     newArray.push(
       <b>{customer.customer_id}</b>,
@@ -505,7 +514,7 @@ export default function Customer() {
                         value={addFormData.customer_id}
                         requiredIndicator={true}
                         error={validationError.customer_id}
-                        onChange={(e) => addFormHandler(e, "customer_id")}
+                        onChange={(e) =>addFormHandler(e, "customer_id")}
                       />
                     </div>
                     <div className="col">
@@ -546,7 +555,7 @@ export default function Customer() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
                   <div className="row">
                     <div className="col">
-                      <Select
+                      {/* <Select
                         label="Set"
                         name="set"
                         id="set"
@@ -556,7 +565,22 @@ export default function Customer() {
                         requiredIndicator={true}
                         onChange={(e) => onChangeSet(e)}
                         required
+                      /> */}
+
+                      <TextField
+                        label="Set"
+                        type="number"
+                        step="any"
+                        name="set"
+                        error={validationError.set}
+                        requiredIndicator={true}
+                        value={addFormData ? addFormData.set : ""}
+                        // value={selectedSet}
+                        onChange={(e) => addFormHandler(e, "set")}
+                      required
+                      readOnly
                       />
+
                     </div>
 
                     <div className="col">
@@ -740,17 +764,17 @@ export default function Customer() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6, xl: 6 }}>
                   <div className="row">
                     <div className="col">
-                      <Select
-                        label="Set"
-                        name="set"
-                        id="set"
-                        options={setOptions}
-                        value={selectedSet}
-                        error={validationError.set}
-                        requiredIndicator={true}
-                        onChange={(e) => onChangeSetEdit(e)}
-                        required
+                      <TextField
+                      label="Set"
+                      type="number"
+                      step="any"
+                      name="set"
+                      value={editCustomer ? editCustomer.set : ""}
+                      onChange={(e) => editFormHandler(e, "set")}
+                      required
+                      readOnly
                       />
+                      
                     </div>
                     <div className="col">
                       <TextField

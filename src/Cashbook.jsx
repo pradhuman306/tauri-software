@@ -29,6 +29,8 @@ export default function Cashbook() {
   const [editSet, setEditSet] = useState({});
   const [deleteSetID, setDeleteSetID] = useState("");
   const [setName, updateSetName] = useState("");
+  const [Password, setPassword] = useState("");
+  const [pageAccess, setpageAccess] = useState(false);
   const [customers, setcustomers] = useState([]);
   const [customersOptions, setcustomersOptions] = useState([]);
 
@@ -36,7 +38,9 @@ export default function Cashbook() {
     set: false,
     customer_id:false
   });
-
+  const [passwordvalidationError,setpasswordvalidationError]= useState({
+    password:false,
+  })
   const getdataFromFile = async () => {
 
     // customers 
@@ -47,7 +51,7 @@ export default function Cashbook() {
       const mycust = JSON.parse(myfiledata);
       setcustomers(mycust);
       let custOpt = [{ label: "Select Customer", value: "" }];
-      mycust.map((data) => {
+      mycust.sort((a, b) => parseInt(a.customer_id) > parseInt(b.customer_id) ? 1 : -1).map((data) => {
         custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
       })
       setcustomersOptions(custOpt);
@@ -83,6 +87,9 @@ export default function Cashbook() {
   };
   useEffect(() => {
     getdataFromFile();
+    if(!pageAccess){
+      modalOpen("pageLock");
+    }
   }, []);
 
   const cashbookcustomerHandler = (value,param) => {
@@ -169,6 +176,26 @@ const addnewcustomer = async (customers) => {
     }
     setValidationError(validationErr);
   };
+
+  const changePassword = (value, param) => {
+    setPassword(value);
+    console.log(value);
+  };
+
+  const verifyPassword = () => {
+    let pvalidationErr = { ...passwordvalidationError };
+    if(Password == '2023'){
+      setpageAccess(true);
+      modalOpen("pageLock");
+    pvalidationErr.password = false;
+    console.log('trueeeeeeeeee');
+    }else{
+    pvalidationErr.password = 'Invalid password !';
+      setpageAccess(false);
+    console.log('falseeeeeeeeee');
+    }
+    setpasswordvalidationError(pvalidationErr);
+  }
 
   const editFormHandler = (value, param) => {
     let validationErr = { ...validationError };
@@ -268,6 +295,7 @@ const addnewcustomer = async (customers) => {
     deleteCustomer: false,
     addCustomer: false,
     customerInfo:false,
+    pageLock:false,
   });
   const modalOpen = (id) => {
     let isVisibleTemp = { ...isVisible };
@@ -291,7 +319,7 @@ const addnewcustomer = async (customers) => {
       customers.map((data) => {
         custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
       })
-      AllCashcustomers.map((data) => {
+      AllCashcustomers.sort((a, b) => a.customer_id > b.customer_id ? 1 : -1).map((data) => {
         custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
       })
       setcustomersOptions(custOpt);
@@ -336,6 +364,14 @@ const addnewcustomer = async (customers) => {
     return day+'-'+month+'-'+year;
   }
 
+  function format(num) {
+    if(num){
+      return (num / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }else{
+      return num;
+    }
+  }
+
   const addNote = async () => {
     var todaydate = new Date();
     let day = todaydate.getDate();
@@ -356,6 +392,7 @@ const addnewcustomer = async (customers) => {
     getdataFromFile();
   };
   const rows = [];
+  const footerRows = [];
   var result = setData.reduce((acc, {cid, credit, debit,date}) => ({...acc, [cid]: {cid, credit: acc[cid] ? Number(acc[cid].credit) + Number(credit): Number(credit), debit: acc[cid] ? Math.abs(Number(acc[cid].debit)) + Math.abs(Number(debit)): Math.abs(Number(debit)),date:date}}), {});
   result = Object.values(result);
   var TotalCredit = 0;
@@ -381,9 +418,9 @@ const addnewcustomer = async (customers) => {
         modalOpen("customerInfo");
     }}>{found.name}</b>,
       getdateFormet(data.date),
-      <span className="credit">{data.credit?''+data.credit+' CR':''}</span>,
-      <span className="debit">{data.debit?''+data.debit+' DR':''}</span>,
-      Number(data.credit)-Number(data.debit) !== 0 ? (<b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>{Math.abs(Number(data.credit)-Number(data.debit))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>):'=',
+      <span className="credit">{data.credit?''+format(data.credit)+' CR':''}</span>,
+      <span className="debit">{data.debit?''+format(data.debit)+' DR':''}</span>,
+      Number(data.credit)-Number(data.debit) !== 0 ? (<b className={Number(data.credit)-Number(data.debit) > 0 ? 'credit' : 'debit'}>{format(Math.abs(Number(data.credit)-Number(data.debit)))+''+((Number(data.credit)-Number(data.debit))>0?' CR':' DR')}</b>):'=',
       <ButtonGroup>
         <Button
           size="micro"
@@ -415,7 +452,7 @@ const addnewcustomer = async (customers) => {
   }
     rows.push(newArray);
   });
-  rows.push(['',<b>Total</b>,'',<b className="credit">{TotalCredit} CR</b>,<b className="debit">{TotalDebit} DR</b>,<b>{TotalCredit> TotalDebit? <b className="credit">{(TotalCredit-TotalDebit)} CR</b>: <b className="debit">{(TotalDebit-TotalCredit)} DR </b>}</b>,'']);
+  footerRows.push('','','',<b className="credit">{format(TotalCredit)} CR</b>,<b className="debit">{format(TotalDebit)} DR</b>,<b>{TotalCredit> TotalDebit? <b className="credit">{format(TotalCredit-TotalDebit)} CR</b>: <b className="debit">{format(TotalDebit-TotalCredit)} DR </b>}</b>,'');
   function keydown(evt){
     if (!evt) evt = event;
     const inputs = document.querySelectorAll("input,textarea");
@@ -439,7 +476,7 @@ const addnewcustomer = async (customers) => {
   }
 
   return (
-    <div className="cashbook-table">
+    <div className={pageAccess?'cashbook-table':'cashbook-table background-blur'}>
       <Page
         title="CashBook"
         fullWidth
@@ -491,6 +528,8 @@ const addnewcustomer = async (customers) => {
               "Action",
             ]}
             rows={rows}
+            totals={footerRows}
+            showTotalsInFooter
             hasZebraStripingOnData
             increasedTableDensity
             defaultSortDirection="descending"
@@ -757,6 +796,39 @@ const addnewcustomer = async (customers) => {
                 Submit
               </Button>
             </Form>
+          </Modal.Section>
+        </Modal>
+
+         {/* Lock popup */}
+         <Modal
+          small
+          open={isVisible.pageLock}
+          title="Enter Privacy Password"
+          onClose={(e)=> navigate(-1)}
+          primaryAction={{
+            content: "Verify",
+            onAction: () => verifyPassword(),
+          }}
+          secondaryActions={{
+            content:'← Go Back',
+            onAction:()=> navigate(-1)
+          }}
+        >
+          <Modal.Section>
+            <div className="pagelock">
+            <Form onSubmit={()=>console.log('p submit')}>
+            <TextField
+                    type="Password"
+                    placeholder="Enter Password"
+                    name="Password"
+                    value={Password}
+                    error={passwordvalidationError.password}
+                    onChange={(e) => changePassword(e, "Password")}
+                    onkeydown={(e)=>console.log(e,'p submit')}
+                    required
+                  />
+                  </Form>
+            </div>
           </Modal.Section>
         </Modal>
 

@@ -59,7 +59,8 @@ export const appRouter = createBrowserRouter([
         path: "/",
         element: (
           <PrivateRoute>
-            <Home />
+            {/* <Home /> */}
+            <Customer />
           </PrivateRoute>
         ),
       },

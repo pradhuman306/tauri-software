@@ -1,57 +1,59 @@
 import { React, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { TopBar, ActionList, Frame, List } from '@shopify/polaris';
-import { EnterMajor } from '@shopify/polaris-icons';
+import { TopBar, ActionList, Frame, List } from "@shopify/polaris";
+import { EnterMajor } from "@shopify/polaris-icons";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 export default function Navbar() {
   const location = useLocation();
-  const logoImg = '../src/assets/logo-flat.svg';
+  // const logoImg = "../src/assets/logo-flat.svg";
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSecondaryMenuOpen, setIsSecondaryMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   var [entries, setentries] = useState([]);
   const [customers, setcustomers] = useState([]);
   const [contentItems, setcontentItems] = useState([]);
 
   const toggleIsUserMenuOpen = useCallback(
     () => setIsUserMenuOpen((isUserMenuOpen) => !isUserMenuOpen),
-    [],
+    []
   );
 
   const toggleIsSecondaryMenuOpen = useCallback(
     () => setIsSecondaryMenuOpen((isSecondaryMenuOpen) => !isSecondaryMenuOpen),
-    [],
+    []
   );
 
   const handleSearchResultsDismiss = useCallback(() => {
     setIsSearchActive(false);
-    setSearchValue('');
+    setSearchValue("");
   }, []);
 
   const handleSearchChange = (value) => {
     let contentItems = [];
     if (customers.length) {
-      let tmp = customers.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
+      let tmp = customers.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
       setSearchValue(value);
       if (tmp.length) {
         tmp.map((item) => {
           contentItems.push({
-            content: item.name, onAction: () => {
+            content: item.name,
+            onAction: () => {
               navigate(`/calculater/${item.customer_id}`);
               handleSearchResultsDismiss();
-            }
+            },
           });
-        })
+        });
       }
       setIsSearchActive(value.length > 0);
       setcontentItems(contentItems);
     }
   };
 
-  const handleNavigationToggle = useCallback(() => {
-  }, []);
+  const handleNavigationToggle = useCallback(() => {}, []);
 
   useEffect(() => {
     const getdataFromFile = async () => {
@@ -62,7 +64,7 @@ export default function Navbar() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
       } catch (error) {
-                 // console.log(error);
+        // console.log(error);
       }
       // entries
     };
@@ -71,32 +73,33 @@ export default function Navbar() {
 
   const logo = {
     width: 100,
-    topBarSource: logoImg,
-    url: '/',
-    accessibilityLabel: 'Bhole',
+    url: "/",
+    accessibilityLabel: "Bhole",
   };
   const userMenuMarkup = (
     <>
-    <TopBar.UserMenu
-      actions={[
-        {
-          items: [{ content: 'Logout', icon: EnterMajor, onAction: () => handleClick() }],
-        },
-      ]}
-      name="Bhole"
-      detail="Admin"
-      initials="B"
-      open={isUserMenuOpen}
-      onToggle={toggleIsUserMenuOpen}
-    />
-        </>
+      <TopBar.UserMenu
+        actions={[
+          {
+            items: [
+              {
+                content: "Logout",
+                icon: EnterMajor,
+                onAction: () => handleClick(),
+              },
+            ],
+          },
+        ]}
+        name="Bhole"
+        detail="Admin"
+        initials="B"
+        open={isUserMenuOpen}
+        onToggle={toggleIsUserMenuOpen}
+      />
+    </>
   );
 
-  const searchResultsMarkup = (
-    <ActionList
-      items={contentItems}
-    />
-  );
+  const searchResultsMarkup = <ActionList items={contentItems} />;
 
   const searchFieldMarkup = (
     <TopBar.SearchField
@@ -109,35 +112,45 @@ export default function Navbar() {
 
   const secondaryMenuMarkup = (
     <List className="mainLink">
-     <List.Item>
+      <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
               to="/customer"
-              className={location.pathname==='/customer'?'active':""}
+              className={
+                location.pathname === "/customer" || location.pathname === "/"
+                  ? "active"
+                  : ""
+              }
             >
               Customer
             </Link>
           }
         />
-        </List.Item>
-         <List.Item>
-      <TopBar.Menu
+      </List.Item>
+      {/* <List.Item>
+        <TopBar.Menu
           activatorContent={
-        <Link
-          to="/set"
-          className={location.pathname==='/set'?'active':""}
-        >
-          Set
-        </Link>}
+            <Link
+              to="/set"
+              className={location.pathname === "/set" ? "active" : ""}
+            >
+              Set
+            </Link>
+          }
         />
-   </List.Item>
-   <List.Item>
+      </List.Item> */}
+      <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
               to="/report"
-              className={location.pathname==='/report' || location.pathname === '/reportbycustomer'?'active':""}
+              className={
+                location.pathname === "/report" ||
+                location.pathname === "/reportbycustomer"
+                  ? "active"
+                  : ""
+              }
             >
               Report
             </Link>
@@ -158,41 +171,48 @@ export default function Navbar() {
         />
       </List.Item> */}
 
-         <List.Item>
-      <TopBar.Menu
+      <List.Item>
+        <TopBar.Menu
           activatorContent={
-        <Link
-          to="/entry"
-          className={location.pathname==='/entry'?'active':""}
-        >
-          Entry/Edit
-        </Link>}/>
-        </List.Item>
-        <List.Item>
+            <Link
+              to="/entry"
+              className={location.pathname === "/entry" ? "active" : ""}
+            >
+              Entry/Edit
+            </Link>
+          }
+        />
+      </List.Item>
+      <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
               to="/calculater/:cid"
-              className={location.pathname==='/calculater/:cid' || location.pathname.includes('calculater')?'active':""}
+              className={
+                location.pathname === "/calculater/:cid" ||
+                location.pathname.includes("calculater")
+                  ? "active"
+                  : ""
+              }
             >
               Calculator
             </Link>
           }
         />
-         </List.Item>
-         <List.Item>
+      </List.Item>
+      <List.Item>
         <TopBar.Menu
           activatorContent={
             <Link
               to="/cashbook"
-              className={location.pathname==='/cashbook' ?'active':""}
+              className={location.pathname === "/cashbook" ? "active" : ""}
             >
-              CashBook 
+              CashBook
             </Link>
           }
         />
-         </List.Item>
-  </List>
+      </List.Item>
+    </List>
   );
 
   const topBarMarkup = (
@@ -221,14 +241,13 @@ export default function Navbar() {
   }, [getusername, getPassword, isLoggedIn]);
 
   const handleClick = () => {
-    console.log('logout');
+    console.log("logout");
     setIsLoggedIn(false);
     localStorage.clear();
     navigate("/login");
   };
   return (
-
-    <div style={{ height: '56px' }} className="main-head">
+    <div style={{ height: "56px" }} className="main-head">
       <Frame topBar={topBarMarkup} logo={logo} />
     </div>
   );

@@ -69,6 +69,24 @@
 .credit, .credit .Polaris-TextField__Input {
     color: var(--primary-color);
 }
+.credit-bg{
+    color: #fff !important;
+    background: var(--primary-color);
+    display: block;
+    padding: 5px;
+}
+.debit-bg{
+    color: #fff !important;
+    background: var(--error-color);
+    display: block;
+    padding: 5px;
+}
+.span-bg{
+    color: #fff !important;
+    background: #000;
+    display: block;
+    padding: 5px;
+}
 
 .debit, .debit .Polaris-TextField__Input {
     color: var(--error-color);
@@ -83,7 +101,9 @@
     color: var(--white-color);
     background-color: var(--primary-color);
 }
-
+.background-credit tr th, .background-credit tr td, .background-debit tr th,.background-debit tr td {
+    color: var(--white-color) !important;
+}
 /* body{
     font-size: 14px;
     font-family: 'Inter' !important;
@@ -510,24 +530,36 @@ select option{
     height: 25px;
 }
 
-.row.calculator-table {
+.calculator-module .row.calculator-table {
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px;
     display: flex;
     align-items: center;
     background: #fff;
     box-shadow: var(--p-shadow-md);
     gap: 10px;
 }
-.row.calculator-table > div {
+
+.report-module .Polaris-DataTable__TableRow .Polaris-DataTable__Cell:nth-child(5) {
+    max-width: 120px !important;
+    min-width: 100px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+}
+
+
+.calculator-module .row.calculator-table > div {
     display: flex;
     align-items: center;
     border-right: 2px solid #ccc;
 }
-.row.calculator-table > div:last-child {
+
+.calculator-module .row.calculator-table > div:last-child {
     border-right: 0;
 }
-.row.calculator-table .Polaris-Labelled__LabelWrapper {
+
+.calculator-module .row.calculator-table .Polaris-Labelled__LabelWrapper {
     margin-right: 0;
     margin-bottom: 0;
     justify-content: center;
@@ -595,8 +627,15 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
    border: 0;
    color: #fff;
 }
-.customTd tr.Polaris-DataTable__TableRow.Polaris-DataTable--hoverable > th+td {
+/* .customTd tr.Polaris-DataTable__TableRow.Polaris-DataTable--hoverable > th+td {
     width: 210px;
+} */
+.Polaris-DataTable__IncreasedTableDensity .Polaris-DataTable__Cell {
+    padding: 5px 10px;
+}
+table .Polaris-TextField__Input {
+  min-height: 25px;
+    height: 25px;
 }
 .calculator-table .Polaris-TextField__Input {
     max-height: 25px;
@@ -604,6 +643,10 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
     padding: 3px 0px 3px 10px;
     min-height: auto;
     font-size: 14px;
+}
+.calculator-module .Polaris-Page-Header--mediumTitle.Polaris-Page-Header--noBreadcrumbs .Polaris-Page-Header__Row {
+    flex-wrap: nowrap;
+    width: 180px !important;
 }
 
 .calculator-table td {
@@ -716,6 +759,22 @@ tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop{
     font-size: 28px;
     font-weight: 700;
 }
+.big-amount {
+    font-size: 16px;
+}
+.calculator-module .subHeader .Polaris-Select, .calculator-module .Polaris-Box--printHidden>.Polaris-ButtonGroup .Polaris-ButtonGroup__Item {
+    width: 190px;
+    max-width: 190px;
+}
+
+.background-blur {
+    filter: blur(10px);
+}
+.calculator-module select option {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Inter' !important;
+}
 .align-center{
     text-align: center;
     margin-top:25px;
@@ -770,6 +829,48 @@ a.Polaris-TopBar__LogoLink {
 .printreporttable td, .printreporttable th {
     padding: 7px;
 }
+.Polaris-Select__SelectedOption {
+    font-weight: 700;
+}
+.calculator-module .Polaris-Box {
+    padding: 8px 0 3px;
+}
+.calculator-module .Polaris-Page__Content {
+    padding: 5px 0;
+}
+.calculator-module {
+    display: flex;
+    margin: 8px 0 0;
+}
+
+.left-sidebar .Polaris-Page-Header__Row {
+    flex-direction: column;
+}
+.left-sidebar .Polaris-Page-Header__TitleWrapper {
+    align-self: self-start;
+}
+
+.right-content .Polaris-Page--fullWidth, .left-sidebar .Polaris-Page--fullWidth {
+    max-width: 100%;
+}
+
+.left-sidebar .col>div {
+    display: flex;
+    align-items: self-start;
+    flex-direction: column;
+}
+.left-sidebar .Polaris-Page-Header__RightAlign, .left-sidebar  .Polaris-Page-Header__PrimaryActionWrapper {
+margin-left: 0;
+margin-top: 10px;
+}
+
+.right-content .contentWrapper {
+    margin-bottom: 5px;
+}
+
+.left-sidebar .Polaris-Page--fullWidth {
+    padding-right: 0;
+}
 
 @media print {
     .print-btn {
@@ -799,4 +900,74 @@ a.Polaris-TopBar__LogoLink {
     .report th:last-child, .report td:last-child {
         display: none;
     }
+}
+
+thead {
+    position: sticky;
+}
+
+tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop.Polaris-DataTable__Cell--header {
+    position: sticky;
+    display: table-cell;
+}
+tbody {
+    display: block;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    width: 100%;
+}
+.report-module tbody {
+    max-height: calc(100vh - 321px);
+}
+.Polaris-Modal-Dialog__Container tbody{
+    max-height: calc(100vh - 280px);
+}
+.cashbook-table tbody {
+    max-height: calc(100vh - 228px);
+}
+tfoot {
+    background: rgb(0 122 92 / 20%);
+    color: #000;
+}
+tfoot th.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop, tfoot td.Polaris-DataTable__Cell.Polaris-DataTable__Cell--verticalAlignTop {
+    color: #000;
+    font-weight: 600;
+}
+.Polaris-DataTable__Footer{
+    background: rgb(0 122 92 / 20%) !important;
+    padding: 0;
+    border-top: 1px solid #cccccc;
+}
+
+.Polaris-DataTable__Footer tbody {
+display: flex;
+justify-content: space-between;
+}
+.Polaris-DataTable__Footer td {
+    padding: var(--p-space-2) var(--p-space-4);
+    font-weight: 800 !important;
+}
+.calculator-table.calc-inputs input{
+    font-weight: 800;
+}
+
+.calculator-table tr th:first-child {
+    width: 110px !important;
+}
+
+.entry-page tbody {
+    max-height: calc(100vh - 357px);
+}
+.entry-page .Polaris-Page.Polaris-Page--fullWidth .Polaris-Box{
+    padding-bottom: 0;
+}
+
+.entry-page .contentWrapper.customTd .Polaris-Box {
+padding: 5px 0;
 }

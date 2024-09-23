@@ -90,7 +90,7 @@ export default function ReportByCustomer() {
       const mycust = JSON.parse(myfiledata);
       setcustomers(mycust);
       let custOpt = [{ label: "Select Customer", value: "" }];
-      mycust.map((data) => {
+      mycust.sort((a, b) => parseInt(a.customer_id) > parseInt(b.customer_id) ? 1 : -1).map((data) => {
           custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
         })
         setcustomersOptions(custOpt);

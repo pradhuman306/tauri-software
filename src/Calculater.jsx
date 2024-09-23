@@ -20,8 +20,8 @@ export default function Calculater() {
         const mycust = JSON.parse(myfiledata);
         setcustomers(mycust);
         let custOpt = [{ label: "Select Customer", value: "" }];
-        mycust.map((data) => {
-          custOpt.push({ label: data.name + " (" + data.customer_id + ")", value: data.customer_id });
+        mycust.sort((a, b) => parseInt(a.customer_id) > parseInt(b.customer_id) ? 1 : -1).map((data) => {
+          custOpt.push({ label: data.customer_id + " (" + data.name + ")", value: data.customer_id });
         })
         setcustomersOptions(custOpt);
       } catch (error) {
@@ -79,7 +79,7 @@ export default function Calculater() {
   const [selectedDate, setDate] = useState("");
   const [timeZoneAll, setTimeZoneAll] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1', 'Total Day', 'MO', 'BO', 'MK', 'BK', 'Total-2', 'Total Night', 'Final Total']);
   const [showtimeZoneAll, setTimeZoneAllshow] = useState(['TO', 'TK', 'MO', 'KO', 'MK', 'KK', 'Total-1', 'Total Day', 'MO2', 'BO', 'MK2', 'BK', 'Total-2', 'Total Night', 'Final Total']);
-  const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount']);
+  const [amountDetails, setAmountDetails] = useState(['amount', 'pana_amount', 'khula_amount', 'sp_amount', 'dp_amount', 'jodi_amount', 'tp_amount','winning_amount']);
 
   const [DayData, setDayData] = useState({
     amount: 0,
@@ -145,20 +145,43 @@ export default function Calculater() {
         aDate >= startDate && aDate <= endDate && a.customer_id == id
       );
     });
-    const result = filteredData.reduce((acc, { timezone, amount, dp_amount, jodi_amount, khula_amount, pana_amount, sp_amount, tp_amount }) => ({
-      ...acc,
-      [timezone]: {
+    const result = filteredData.reduce((acc, { timezone, amount, dp_amount, jodi_amount, khula_amount, pana_amount, sp_amount, tp_amount }) => {
+      const previous = acc[timezone] || {}; // Handle if timezone doesn't exist yet
+  
+      // Accumulating the amounts
+      const newEntry = {
         timezone,
-        amount: acc[timezone] ? (Number(acc[timezone].amount) + Number(amount)) : Number(amount),
-        dp_amount: acc[timezone] ? Number(acc[timezone].dp_amount) + Number(dp_amount) : Number(dp_amount),
-        jodi_amount: acc[timezone] ? Number(acc[timezone].jodi_amount) + Number(jodi_amount) : Number(jodi_amount),
-        khula_amount: acc[timezone] ? Number(acc[timezone].khula_amount) + Number(khula_amount) : Number(khula_amount),
-        pana_amount: acc[timezone] ? Number(acc[timezone].pana_amount) + Number(pana_amount) : Number(pana_amount),
-        sp_amount: acc[timezone] ? Number(acc[timezone].sp_amount) + Number(sp_amount) : Number(sp_amount),
-        tp_amount: acc[timezone] ? Number(acc[timezone].tp_amount) + Number(tp_amount) : Number(tp_amount),
-      }
-    }),
-      {});
+        amount: previous.amount ? Number(previous.amount) + Number(amount) : Number(amount),
+        dp_amount: previous.dp_amount ? Number(previous.dp_amount) + Number(dp_amount) : Number(dp_amount),
+        jodi_amount: previous.jodi_amount ? Number(previous.jodi_amount) + Number(jodi_amount) : Number(jodi_amount),
+        khula_amount: previous.khula_amount ? Number(previous.khula_amount) + Number(khula_amount) : Number(khula_amount),
+        pana_amount: previous.pana_amount ? Number(previous.pana_amount) + Number(pana_amount) : Number(pana_amount),
+        sp_amount: previous.sp_amount ? Number(previous.sp_amount) + Number(sp_amount) : Number(sp_amount),
+        tp_amount: previous.tp_amount ? Number(previous.tp_amount) + Number(tp_amount) : Number(tp_amount),
+      };
+  
+      // Calculate the winning_amount
+      const winning_amount_total = 
+        (newEntry.khula_amount * Number(addFormData.multiple)) +
+        (newEntry.sp_amount * Number(addFormData.sp)) +
+        (newEntry.dp_amount * Number(addFormData.dp)) +
+        (newEntry.jodi_amount * Number(addFormData.jodi)) +
+        (newEntry.tp_amount * Number(addFormData.tp));
+      // Calculate commissions
+      const amount_commission = ((newEntry.amount * Number(addFormData.commission)) / 100);
+      const pana_commission = ((newEntry.pana_amount * Number(addFormData.pana)) / 100);
+      // Calculate the total
+      const sec_sub_total = winning_amount_total + amount_commission + pana_commission;
+      const WIN_SUB_TOTAL = sec_sub_total - (newEntry.amount - newEntry.pana_amount);
+      var win_partnership_percent = Number(addFormData.partnership)?(WIN_SUB_TOTAL * addFormData.partnership / 100):0;
+      var WIN_TOTAL = WIN_SUB_TOTAL - win_partnership_percent;
+      // Add sec_sub_total and winning_amount_total to the newEntry
+      newEntry.winning_amount = WIN_TOTAL;
+      return {
+        ...acc,
+        [timezone]: newEntry,
+      };
+  }, {});
 
     var totalDayData = [];
     totalDayData["amount"] = 0;
@@ -168,6 +191,7 @@ export default function Calculater() {
     totalDayData["dp_amount"] = 0;
     totalDayData["jodi_amount"] = 0;
     totalDayData["tp_amount"] = 0;
+    totalDayData["winning_amount"] = 0;
     var first_arr = ["TO", "TK", "MO", "KO", "MK", "KK", "A1"];
     // total 1 calculate
     for (let index = 0; index < first_arr.length; index++) {
@@ -179,6 +203,7 @@ export default function Calculater() {
       totalDayData["dp_amount"] = result[zone] ? totalDayData["dp_amount"] + Number(result[zone].dp_amount) : totalDayData["dp_amount"];
       totalDayData["jodi_amount"] = result[zone] ? totalDayData["jodi_amount"] + Number(result[zone].jodi_amount) : totalDayData["jodi_amount"];
       totalDayData["tp_amount"] = result[zone] ? totalDayData["tp_amount"] + Number(result[zone].tp_amount) : totalDayData["tp_amount"];
+      totalDayData["winning_amount"] =result[zone] ? totalDayData["winning_amount"] + Number(result[zone].winning_amount) : totalDayData["winning_amount"];
     }
     setDayData(totalDayData);
     var totalNightData = [];
@@ -189,6 +214,7 @@ export default function Calculater() {
     totalNightData["dp_amount"] = 0;
     totalNightData["jodi_amount"] = 0;
     totalNightData["tp_amount"] = 0;
+    totalNightData["winning_amount"] = 0;
     var second_arr = ["MO2", "BO", "MK2", "BK", "A2"];
     // total 2 calculate
     for (let index = 0; index < second_arr.length; index++) {
@@ -200,6 +226,7 @@ export default function Calculater() {
       totalNightData["dp_amount"] = result[zone] ? totalNightData["dp_amount"] + Number(result[zone].dp_amount) : totalNightData["dp_amount"];
       totalNightData["jodi_amount"] = result[zone] ? totalNightData["jodi_amount"] + Number(result[zone].jodi_amount) : totalNightData["jodi_amount"];
       totalNightData["tp_amount"] = result[zone] ? totalNightData["tp_amount"] + Number(result[zone].tp_amount) : totalNightData["tp_amount"];
+      totalNightData["winning_amount"] =result[zone] ? totalNightData["winning_amount"] + Number(result[zone].winning_amount) : totalNightData["winning_amount"];
     }
     setNightData(totalNightData);
     setDisplayData(result);
@@ -238,9 +265,9 @@ export default function Calculater() {
     if (DAY_TOTAL) {
       DAY_TOTAL = DAY_TOTAL.toFixed(2);
       if (totalDayData['amount'] > day_sec_sub_total) {
-        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Dr.';
+        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' DR';
       } else {
-        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' Cr.';
+        DAY_TOTAL = Math.abs(DAY_TOTAL) + ' CR';
       }
 
     }
@@ -261,9 +288,9 @@ export default function Calculater() {
     if (night_TOTAL) {
       night_TOTAL = night_TOTAL.toFixed(2);
       if (totalNightData['amount'] > night_sec_sub_total) {
-        night_TOTAL = Math.abs(night_TOTAL) + ' Dr.';
+        night_TOTAL = Math.abs(night_TOTAL) + ' DR';
       } else {
-        night_TOTAL = Math.abs(night_TOTAL) + ' Cr.';
+        night_TOTAL = Math.abs(night_TOTAL) + ' CR';
       }
     }
     setNightTotal(night_TOTAL);
@@ -280,9 +307,9 @@ export default function Calculater() {
       var FINAL_TOTAL = totalDayData['amount'] + totalNightData['amount'];
       var CUSTOMER_TOTAL = day_sec_sub_total + night_sec_sub_total;
       if (FINAL_TOTAL > CUSTOMER_TOTAL) {
-        TOTAL = Math.abs(TOTAL) + ' Dr.';
+        TOTAL = Math.abs(TOTAL) + ' DR';
       } else {
-        TOTAL = Math.abs(TOTAL) + ' Cr.';
+        TOTAL = Math.abs(TOTAL) + ' CR';
       }
     }
 
@@ -363,16 +390,13 @@ export default function Calculater() {
 
 
   return (
-    <>
-
-
-
-      <Page
+    <div className="calculator-module">
+     <div className="left-sidebar">
+     <Page
         fullWidth
         title="Calculator"
         primaryAction={
           <ButtonGroup>
-            
             <div className="col subHeader">
                 <Select
                   label="Customer"
@@ -395,42 +419,30 @@ export default function Calculater() {
         }
       >
       </Page>
-
-        <Page fullWidth>
-        <div className="row calculator-table">
-
+     </div>
+<div className="right-content">
+<Page fullWidth>
+        <div className="row calculator-table calc-inputs">
 {/* <TextField label="Set" type="number" step="any" name="set" value={addFormData.set} readOnly /> */}
-
 <TextField label="Partnership" type="number" step="any" name="partnership" value={addFormData.partnership} readOnly />
 <TextField label="Partnership2" type="number" step="any" name="partnership2" value={addFormData.partnership2} readOnly />
-
 <TextField label="Commission" type="number" step="any" name="commission" value={addFormData.commission} readOnly />
 <TextField label="Pana" type="number" step="any" name="pana" value={addFormData.pana} readOnly />
 <TextField label="Multiple" type="number" step="any" name="multiple" value={addFormData.multiple} readOnly />
-
 <TextField label="SP" type="number" step="any" name="sp" value={addFormData.sp} readOnly />
-
 <TextField label="DP" type="number" step="any" name="dp" value={addFormData.dp} readOnly />
-
 <TextField label="Jodi" type="number" step="any" name="jodi" value={addFormData.jodi} readOnly />
-
 <TextField label="TP" type="number" step="any" name="tp" value={addFormData.tp} readOnly />
-
 </div>
         </Page>
-       
-      <div className="contentWrapper mb-2">
-
-        
+      <div className="contentWrapper">
         <Page fullWidth>
-
-
-
           <LegacyCard>
             <div className="calculator-table">
               <DataTable
                 showTotalsInFooter
                 columnContentTypes={[
+                  'text',
                   'text',
                   'text',
                   'text',
@@ -448,7 +460,8 @@ export default function Calculater() {
                   'SP Amount',
                   'DP Amount',
                   'JODI Amount',
-                  'TP Amount'
+                  'TP Amount',
+                  'Winning'
                 ]}
                 rows={rows}
                 totals={['', <span>{mainTotal}</span>, '', '', '', '', '', '']}
@@ -462,9 +475,9 @@ export default function Calculater() {
               />
             </div>
           </LegacyCard>
-
         </Page>
       </div>
+</div>
       <Modal
           small
           open={isVisible}
@@ -478,6 +491,6 @@ export default function Calculater() {
             </div>
           </Modal.Section>
         </Modal>
-    </>
+    </div>
   );
 }

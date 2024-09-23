@@ -22,6 +22,8 @@ export default function Report() {
   const [filterentries, setfilterentries] = useState([]);
   const [customers, setcustomers] = useState([]);
   const [reportData, setreportData] = useState([]);
+  const [footerTotal, setfooterTotal] = useState([]);
+  const [totalOfRows, settotalOfRows] = useState('0.00');
   const [tabActive, setTabActive] = useState(false);
   const { setErrorMessage, setMessage } = useContext(MyContext);
   const [remainingEntries, setRemainingEntries] = useState([]);
@@ -151,6 +153,10 @@ export default function Report() {
       }
       // id loop
       var reportList = [];
+      var footerData = [];
+      var mainTotal = 0;
+      var totalcredit = 0;
+      var totaldebit = 0;
       for (let index = 0; index < customerIds.length; index++) {
         var CID = customerIds[index];
         // date loop
@@ -210,16 +216,22 @@ export default function Report() {
 
        
           if (CID && cdata && cdata[0] && calculateData) {
+            mainTotal+= allcustomercalculatedata.totalwithsign;
+            if(calculateData.type == "Positive"){
+              totalcredit+= calculateData.total;
+            }else{
+              totaldebit+= calculateData.total;
+            }
             reportList.push({
               id: CID,
               date: vDate,
               name: cdata[0] ? <b>{cdata[0]["name"]}</b> : "",
-              credit: <span className="credit">{calculateData.type == "Positive" ? calculateData.total.toFixed(2)+" CR" : ""}</span> ,
-              debit: <span className="debit">{calculateData.type == "Negative" ? calculateData.total.toFixed(2)+" DR" : ""}</span>,
-              customer2:<span className={allcustomercalculatedata.type == "Positive"?' debit':' credit'}>{calculateData.customer2?(calculateData.customer2amount.toFixed(2)+''+(allcustomercalculatedata.type == "Positive"?' DR':' CR')+' '+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):''}</span>,
-              total: (allcustomercalculatedata ? (allcustomercalculatedata.total).toFixed(2):'')+''+(allcustomercalculatedata.type == "Positive"?' CR':' DR'),
+              credit: <span className="credit">{calculateData.type == "Positive" ? calculateData.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })+" CR" : ""}</span> ,
+              debit: <span className="debit">{calculateData.type == "Negative" ? calculateData.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })+" DR" : ""}</span>,
+              customer2:<span className={allcustomercalculatedata.type == "Positive"?' debit':' credit'}>{calculateData.customer2?(calculateData.customer2amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })+''+(allcustomercalculatedata.type == "Positive"?' DR':' CR')+' '+(calculateData.customer2name?'('+calculateData.customer2name+')':'')):''}</span>,
+              total: (allcustomercalculatedata ? (allcustomercalculatedata.total).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }):'')+''+(allcustomercalculatedata.type == "Positive"?' CR':' DR'),
               checked: checked,
-              customer2amount:calculateData.customer2amount.toFixed(2),
+              customer2amount:calculateData.customer2amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
               customer2id:calculateData.customer2,
               type:calculateData.type
             });
@@ -227,12 +239,31 @@ export default function Report() {
         }
         } // date loop end
       } // customer id loop end
+
+      
       reportList.sort(function compare(a, b) {
         var dateA = new Date(a.date);
         var dateB = new Date(b.date);
         return dateA - dateB;
       });
+
+      reportList.sort((a, b) => parseInt(a.id) > parseInt(b.id) ? 1 : -1);
+
+      footerData.push(
+        '',
+        '',
+        '',
+        '',
+        <span className="credit credit-bg">{parseFloat(totalcredit).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CR</span>,
+        <span className="debit debit-bg">{parseFloat(totaldebit).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DR</span>,
+        '',
+        '');
+        settotalOfRows(mainTotal > 0 
+          ? Math.abs(mainTotal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' 
+          : Math.abs(mainTotal).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ');
+      setfooterTotal(footerData);
       setreportData(reportList);
+      console.log('mainTotal',mainTotal);
     } else {
       setTabActive(false);
       setreportData([]);
@@ -350,6 +381,7 @@ export default function Report() {
       var partnership_percent =
         (SUB_TOTAL * newFormData["partnership"]) / 100;
       var TOTAL = SUB_TOTAL - partnership_percent;
+      var totalwithsign = TOTAL;
       if(newFormData["partnership2"] && newFormData["partnership2"] != ""){
         var customer2Risk = ((TOTAL * newFormData["partnership2"]) / 100);
       }else{
@@ -365,6 +397,7 @@ export default function Report() {
       var arr = {
         total: TOTAL,
         type : type,
+        totalwithsign:totalwithsign,
         customer2:newFormData['customer_id2']?newFormData['customer_id2']['customer_id']:'',
         customer2amount:customer2Risk,
         customer2name:newFormData['customer_id2']?newFormData['customer_id2']['name']+' '+newFormData['customer_id2']['customer_id']:''
@@ -444,20 +477,37 @@ export default function Report() {
   const printReport = (e) => {
     window.print();
   };
+
+  const getdateFormet = (date) => {
+    if(date){
+    var todaydate = new Date(date);
+    let day = todaydate.getDate();
+    let month = todaydate.getMonth() + 1;
+    let year = todaydate.getFullYear();
+    if (month.toString().length <= 1) {
+      month = '0' + month;
+    }
+    if (day.toString().length <= 1) {
+      day = '0' + day;
+    }
+    return day+'-'+month+'-'+year;
+  }
+
+  }
   const rows = [];
   if(reportData.length){
   reportData.length &&reportData.map((data, index) => {
     let newArray = [];
-    newArray.push(data.date, data.name, data.credit, data.debit, data.customer2,data.total, <Checkbox
+    newArray.push(data.id?data.id:'',getdateFormet(data.date), data.name?data.name:'',data.customer2, <b>{data.credit}</b>, <b>{data.debit}</b>,<b className="big-amount">{data.total}</b>, data.date?<Checkbox
       checked={data.checked}
       id={data.id}
       onChange={()=>handleChange(data.id,data.checked)}
-    />);
+    />:'');
     rows.push(newArray);
   });
 }
   return (
-    <>
+    <div className="report-module">
       <Page
       fullWidth
       secondaryActions={
@@ -502,8 +552,15 @@ export default function Report() {
               <div className="report">
               <DataTable
                 columnContentTypes={["text", "text", "text","text", "text"]}
-                headings={["Date", "Name", "Credit", "Debit","Customer2","Total","Status"]}
+                headings={["Cust_ID","Date", "Name","Customer2", "Credit", "Debit","Total","Status"]}
                 rows={rows}
+                totals={footerTotal}
+                showTotalsInFooter
+                footerContent={<tbody><tr><td>Totals</td><td></td><td></td><td></td><td><span className="span-bg">{totalOfRows}</span></td><td></td><td><span className="span-bg">{totalOfRows}</span></td><td></td></tr></tbody>}
+                totalsName={{
+                  singular: 'Profit / Loss',
+                  plural: 'Profit / Loss',
+                }}
                 hasZebraStripingOnData
                 increasedTableDensity
                 defaultSortDirection="descending"
@@ -550,7 +607,7 @@ export default function Report() {
         >
           <Modal.Section>
             <div className="">
-              Are you sure you want to delete this entries!
+              <b>Are you sure you want to delete this entries!</b>
             </div>
           </Modal.Section>
         </Modal>
@@ -578,6 +635,6 @@ export default function Report() {
           </Modal.Section>
         </Modal>
       </Page>
-    </>
+    </div>
   );
 }
