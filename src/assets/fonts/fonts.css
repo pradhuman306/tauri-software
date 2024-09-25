@@ -69,6 +69,9 @@
 .credit, .credit .Polaris-TextField__Input {
     color: var(--primary-color);
 }
+.danger .Polaris-Button--primary{
+    background: var(--error-color);
+}
 .credit-bg{
     color: #fff !important;
     background: var(--primary-color);

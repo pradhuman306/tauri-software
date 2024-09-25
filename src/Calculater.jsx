@@ -168,15 +168,15 @@ export default function Calculater() {
         (newEntry.jodi_amount * Number(addFormData.jodi)) +
         (newEntry.tp_amount * Number(addFormData.tp));
       // Calculate commissions
-      const amount_commission = ((newEntry.amount * Number(addFormData.commission)) / 100);
-      const pana_commission = ((newEntry.pana_amount * Number(addFormData.pana)) / 100);
+      // const amount_commission = ((newEntry.amount * Number(addFormData.commission)) / 100);
+      // const pana_commission = ((newEntry.pana_amount * Number(addFormData.pana)) / 100);
       // Calculate the total
-      const sec_sub_total = winning_amount_total + amount_commission + pana_commission;
-      const WIN_SUB_TOTAL = sec_sub_total - (newEntry.amount - newEntry.pana_amount);
-      var win_partnership_percent = Number(addFormData.partnership)?(WIN_SUB_TOTAL * addFormData.partnership / 100):0;
-      var WIN_TOTAL = WIN_SUB_TOTAL - win_partnership_percent;
+      // const sec_sub_total = winning_amount_total + amount_commission + pana_commission;
+      // const WIN_SUB_TOTAL = sec_sub_total - (newEntry.amount - newEntry.pana_amount);
+      // var win_partnership_percent = Number(addFormData.partnership)?(WIN_SUB_TOTAL * addFormData.partnership / 100):0;
+      // var WIN_TOTAL = WIN_SUB_TOTAL - win_partnership_percent;
       // Add sec_sub_total and winning_amount_total to the newEntry
-      newEntry.winning_amount = WIN_TOTAL;
+      newEntry.winning_amount = winning_amount_total.toFixed(2);
       return {
         ...acc,
         [timezone]: newEntry,

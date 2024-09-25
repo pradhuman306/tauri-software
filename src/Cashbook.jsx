@@ -288,10 +288,24 @@ const addnewcustomer = async (customers) => {
     modalOpen("deleteCustomer");
   };
 
+  const deleteAllEntry = async () => {
+    var newdata = setData.filter(function (a) {
+      return a.cid == 'px';
+    });
+    await writeTextFile(
+      { path: "cashbook.json", contents: JSON.stringify(newdata) },
+      { dir: BaseDirectory.Resource }
+    );
+    getdataFromFile();
+    setMessage("Data deleted successfully");
+    modalOpen("deleteall");
+  };
+
   const [isVisible, setIsVisible] = useState({
     addSet: false,
     editSet: false,
     deleteSet: false,
+    deleteall:false,
     deleteCustomer: false,
     addCustomer: false,
     customerInfo:false,
@@ -452,7 +466,7 @@ const addnewcustomer = async (customers) => {
   }
     rows.push(newArray);
   });
-  footerRows.push('','','',<b className="credit">{format(TotalCredit)} CR</b>,<b className="debit">{format(TotalDebit)} DR</b>,<b>{TotalCredit> TotalDebit? <b className="credit">{format(TotalCredit-TotalDebit)} CR</b>: <b className="debit">{format(TotalDebit-TotalCredit)} DR </b>}</b>,'');
+  footerRows.push('','','',<b className="credit">{format(TotalCredit)} CR</b>,<b className="debit">{format(TotalDebit)} DR</b>,<b>{TotalCredit> TotalDebit? <b className="credit">{format(TotalCredit-TotalDebit)} CR</b>: <b className="debit">{format(TotalDebit-TotalCredit)} DR </b>}</b>,  <div className="danger"><Button primary onClick={(e) => modalOpen('deleteall')}>Delete All</Button></div>);
   function keydown(evt){
     if (!evt) evt = event;
     const inputs = document.querySelectorAll("input,textarea");
@@ -640,12 +654,35 @@ const addnewcustomer = async (customers) => {
           </Modal.Section>
         </Modal>
 
+         {/* Delete set popup */}
+         <Modal
+          small
+          // activator={activator}
+          open={isVisible.deleteall}
+          onClose={() => modalOpen("deleteall")}
+          title="Delete"
+          primaryAction={{
+            content: "Yes",
+            onAction: () => deleteAllEntry(),
+          }}
+          secondaryActions={[
+            {
+              content: "Cancel",
+              onAction: () => modalOpen("deleteall"),
+            },
+          ]}
+        >
+          <Modal.Section>
+            <div className="">Are you sure you want to delete All Cashbook?</div>
+          </Modal.Section>
+        </Modal>
+
          {/* Delete customer popup */}
          <Modal
           small
           open={isVisible.deleteCustomer}
           onClose={() => modalOpen("deleteCustomer")}
-          title="Delete Customer"
+          title="Delete Entry"
           primaryAction={{
             content: "Yes",
             onAction: () => deleteCashbookData(deleteCustomerID),
